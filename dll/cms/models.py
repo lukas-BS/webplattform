@@ -106,7 +106,7 @@ class BlockPage(DllPageMixin, Page):
     ]
 
     content_panels = Page.content_panels + [
-        StreamFieldPanel("body"),
+        StreamFieldPanel(heading="Body", field_name="body"),
     ]
 
     class Meta:
