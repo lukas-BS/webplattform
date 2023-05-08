@@ -4,7 +4,6 @@ import datetime
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-from django.utils.timezone import utc
 import django_extensions.db.fields
 import filer.fields.image
 
@@ -20,7 +19,9 @@ class Migration(migrations.Migration):
             name="created",
             field=django_extensions.db.fields.CreationDateTimeField(
                 auto_now_add=True,
-                default=datetime.datetime(2020, 1, 13, 16, 21, 3, 238862, tzinfo=utc),
+                default=datetime.datetime(
+                    2020, 1, 13, 16, 21, 3, 238862, tzinfo=datetime.timezone.utc
+                ),
                 verbose_name="created",
             ),
         ),

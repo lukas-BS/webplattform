@@ -57,11 +57,12 @@ class PublishAdminMixin:
                 }
             )
         return res
-            
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
-        extra_context["preview_urls"] = self._get_preview_urls(self.get_object(request, object_id))
+        extra_context["preview_urls"] = self._get_preview_urls(
+            self.get_object(request, object_id)
+        )
         return super().change_view(
             request,
             object_id,
@@ -164,6 +165,7 @@ class TeachingModuleAdmin(ImportExportMixin, ContentAdmin):
         qs = super(TeachingModuleAdmin, self).get_export_queryset(request)
         return qs.drafts()
 
+    @admin.action(description="Unterrichtsbausteine als XLSX exportieren")
     def export_xlsx(self, request, queryset):
         output = BytesIO()
         workbook = xlsxwriter.Workbook(output)
@@ -219,8 +221,6 @@ class TeachingModuleAdmin(ImportExportMixin, ContentAdmin):
         ] = "attachment; filename=unterrichtsbausteine.xlsx"
 
         return response
-
-    export_xlsx.short_description = "Unterrichtsbausteine als XLSX exportieren"
 
 
 class ToolLinkInline(admin.TabularInline):

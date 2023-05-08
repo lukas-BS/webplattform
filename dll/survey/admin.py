@@ -15,6 +15,7 @@ from dll.survey.models import (
 )
 
 
+@admin.register(Trigger)
 class TriggerAdmin(admin.ModelAdmin):
     pass
 
@@ -32,6 +33,7 @@ class SurveyQuestionInlineAdmin(nested_admin.NestedStackedInline):
     min_num = 1
 
 
+@admin.register(Survey)
 class SurveyAdmin(nested_admin.NestedModelAdmin):
     actions = ["export_xlsx"]
     inlines = [SurveyQuestionInlineAdmin]
@@ -40,11 +42,11 @@ class SurveyAdmin(nested_admin.NestedModelAdmin):
     class Media:
         css = {"all": ("admin/css/survey_admin.css",)}
 
+    @admin.display(description="Anzahl Antworten")
     def get_answer_count(self, obj):
         return SurveyResult.objects.filter(survey=obj).count()
 
-    get_answer_count.short_description = "Anzahl Antworten"
-
+    @admin.action(description="Umfrageergebnisse exportieren")
     def export_xlsx(self, request, queryset):
         output = BytesIO()
         workbook = xlsxwriter.Workbook(output)
@@ -81,8 +83,6 @@ class SurveyAdmin(nested_admin.NestedModelAdmin):
 
         return response
 
-    export_xlsx.short_description = "Umfrageergebnisse exportieren"
-
 
 class SurveyResultAnswerInlineAdmin(admin.StackedInline):
     model = SurveyResultAnswer
@@ -91,11 +91,7 @@ class SurveyResultAnswerInlineAdmin(admin.StackedInline):
     extra = 0
 
 
+@admin.register(SurveyResult)
 class SurveyResultAdmin(admin.ModelAdmin):
     inlines = [SurveyResultAnswerInlineAdmin]
     list_display = ["__str__", "created"]
-
-
-admin.site.register(Trigger, TriggerAdmin)
-admin.site.register(Survey, SurveyAdmin)
-admin.site.register(SurveyResult, SurveyResultAdmin)

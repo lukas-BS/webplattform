@@ -25,6 +25,7 @@ class NewsletterSubscriptionAdmin(admin.ModelAdmin):
     change_list_template = "admin/newsletter_subscription_changelist.html"
     readonly_fields = ("created_", "doi_confirmed_date_")
 
+    @admin.display(description=_("DOI Confirmation Date"))
     def doi_confirmed_date_(self, obj):
         if obj.doi_confirmed_date:
             return formats.date_format(
@@ -32,16 +33,13 @@ class NewsletterSubscriptionAdmin(admin.ModelAdmin):
             )
         return "-"
 
-    doi_confirmed_date_.short_description = _("DOI Confirmation Date")
-
+    @admin.display(description=_("Registered"))
     def created_(self, obj):
         if obj.created:
             return formats.date_format(
                 obj.created, format="DATETIME_FORMAT", use_l10n=True
             )
         return "-"
-
-    created_.short_description = _("Registered")
 
     def get_urls(self):
         urls = super(NewsletterSubscriptionAdmin, self).get_urls()

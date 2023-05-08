@@ -2,7 +2,6 @@
 
 import datetime
 from django.db import migrations
-from django.utils.timezone import utc
 import django_extensions.db.fields
 
 
@@ -17,7 +16,9 @@ class Migration(migrations.Migration):
             name="created",
             field=django_extensions.db.fields.CreationDateTimeField(
                 auto_now_add=True,
-                default=datetime.datetime(2020, 1, 23, 9, 2, 31, 966823, tzinfo=utc),
+                default=datetime.datetime(
+                    2020, 1, 23, 9, 2, 31, 966823, tzinfo=datetime.timezone.utc
+                ),
                 null=True,
                 verbose_name="created",
             ),

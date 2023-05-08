@@ -31,7 +31,7 @@ class LoaderNode(template.Node):
         super(LoaderNode, self).__init__()
 
     def get_domains(self, request):
-        host = request.META.get("HTTP_HOST")
+        host = request.headers.get("host")
         if not host:
             return []
 
@@ -55,7 +55,7 @@ class LoaderNode(template.Node):
         return box.encrypt(message, nonce)
 
     def get_message(self, request, domain):
-        host = request.META.get("HTTP_HOST", None)
+        host = request.headers.get("host", None)
         if not host:
             return {}
         enc_payload = self.encrypt_payload(
