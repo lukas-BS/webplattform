@@ -1,7 +1,7 @@
 from django.forms.utils import ErrorList
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
-from wagtail.core import blocks
+from wagtail import blocks
 from wagtail.blocks.struct_block import StructBlockValidationError
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
@@ -168,7 +168,7 @@ class DllElementBlock(ImageVideoBlock):
                 {"link_text": ErrorList(["Link Text muss mit URL verwendet werden."])},
             )
         return result
-    
+
     @property
     def blah(self):
         return "blah"

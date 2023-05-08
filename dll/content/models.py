@@ -771,7 +771,7 @@ class Tool(Content):
     with_costs = models.BooleanField(_("Kostenpflichtig"), default=False)
 
     potentials = models.ManyToManyField(
-        "Potential", verbose_name=_("Potential Kategorien"), null=True, blank=True
+        "Potential", verbose_name=_("Potential Kategorien"), blank=True
     )
 
     class Meta(Content.Meta):

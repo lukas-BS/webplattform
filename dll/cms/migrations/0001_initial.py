@@ -3,8 +3,8 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import dll.cms.models
-import wagtail.core.blocks
-import wagtail.core.fields
+import wagtail.blocks
+import wagtail.fields
 import wagtail.embeds.blocks
 import wagtail.images.blocks
 
@@ -33,10 +33,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "body",
-                    wagtail.core.fields.StreamField(
+                    wagtail.fields.StreamField(
                         [
-                            ("headline", wagtail.core.blocks.CharBlock()),
-                            ("text", wagtail.core.blocks.RichTextBlock()),
+                            ("headline", wagtail.blocks.CharBlock()),
+                            ("text", wagtail.blocks.RichTextBlock()),
                             ("image", wagtail.images.blocks.ImageChooserBlock()),
                             ("video", wagtail.embeds.blocks.EmbedBlock()),
                         ]
@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
                         to="wagtailcore.Page",
                     ),
                 ),
-                ("body", wagtail.core.fields.RichTextField(null=True)),
+                ("body", wagtail.fields.RichTextField(null=True)),
             ],
             options={
                 "verbose_name": "Simple Page",

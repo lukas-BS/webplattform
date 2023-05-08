@@ -4,9 +4,9 @@ from urllib.parse import urlparse
 from django.templatetags.static import static
 from django.utils.html import format_html
 
-from wagtail.core.rich_text import LinkHandler
+from wagtail.rich_text import LinkHandler
 from draftjs_exporter.dom import DOM
-from wagtail.core import hooks
+from wagtail import hooks
 import wagtail.admin.rich_text.editors.draftail.features as draftail_features
 from wagtail.admin.rich_text.converters.html_to_contentstate import (
     ExternalLinkElementHandler,

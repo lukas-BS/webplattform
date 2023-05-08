@@ -4,10 +4,10 @@ from django.contrib.sites.models import Site
 from django.db.models import TextField
 from django.utils.functional import cached_property
 from meta.views import Meta
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
-from wagtail.core.blocks import RichTextBlock
-from wagtail.core.fields import RichTextField, StreamField
-from wagtail.core.models import Page
+from wagtail.admin.panels import FieldPanel
+from wagtail.blocks import RichTextBlock
+from wagtail.fields import RichTextField, StreamField
+from wagtail.models import Page
 
 from dll.cms.blocks import (
     SingleElementBlock,
@@ -95,6 +95,7 @@ class BlockPage(DllPageMixin, Page):
             ("richtext", RichTextBlock(template="blocks/richtext.html")),
         ],
         blank=True,
+        use_json_field=True,
     )
 
     extra_source = TextField(blank=True)
@@ -106,7 +107,7 @@ class BlockPage(DllPageMixin, Page):
     ]
 
     content_panels = Page.content_panels + [
-        StreamFieldPanel(heading="Body", field_name="body"),
+        FieldPanel(heading="Body", field_name="body"),
     ]
 
     class Meta:
@@ -123,6 +124,7 @@ class Frontpage(DllPageMixin, Page):
             ("richtext", RichTextBlock(template="blocks/richtext.html")),
         ],
         null=True,
+        use_json_field=True,
     )
 
     extra_source = TextField(blank=True, null=True)
@@ -134,7 +136,7 @@ class Frontpage(DllPageMixin, Page):
     ]
 
     content_panels = Page.content_panels + [
-        StreamFieldPanel("body"),
+        FieldPanel("body"),
     ]
 
     def get_context(self, request, *args, **kwargs):

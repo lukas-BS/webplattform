@@ -9,7 +9,7 @@
   <div class="float-right">
 		<form class="search-form" action="{% url 'search' %}" method="get" accept-charset="utf-8" role="search" autocomplete="off">
       <input type="hidden" autocomplete="false">
-      <button class="search-form__submit" type="submit">
+      <button class="search-form__submit" type="submit" aria-label="Suche absenden">
         <i class="fa fa-search"></i>
       </button>
       <input class="search-form__field" id="autoComplete" name="q" type="text" placeholder="Das {{ template_suffix }} durchsuchen">

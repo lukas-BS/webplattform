@@ -1,6 +1,6 @@
 from draftjs_exporter.dom import DOM
-from wagtail.core import hooks
-from wagtail.core.models import Page
+from wagtail import hooks
+from wagtail.models import Page
 from wagtail.tests.utils import WagtailPageTests
 from wagtail.tests.utils.form_data import rich_text, nested_form_data
 

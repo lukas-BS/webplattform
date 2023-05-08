@@ -89,7 +89,7 @@ INSTALLED_APPS = [
     "wagtail.admin",
     "wagtail.contrib.modeladmin",
     "wagtailmenus",
-    "wagtail.core",
+    "wagtail",
     "nested_admin",
     "dll.cms",
     "dll.survey",
@@ -683,3 +683,7 @@ TOOL_FUNCTION_POTENTIAL_MAPPING = {
     "Problemlösen mit digitalen Werkzeugen": "Probleme lösen",
     "Testing & Assessment": "Testen und Bewerten",
 }
+
+WAGTAILADMIN_BASE_URL = env.str("WAGTAIL_BASE_URL", "https://digitallearninglab.de")
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
