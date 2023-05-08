@@ -1,7 +1,7 @@
 from django.urls import reverse
 from wagtail.models import Page
-from wagtail.tests.utils import WagtailPageTests
-from wagtail.tests.utils.form_data import nested_form_data, rich_text, streamfield
+from wagtail.test.utils import WagtailPageTests
+from wagtail.test.utils.form_data import nested_form_data, rich_text, streamfield
 
 from dll.cms.models import SimplePage, BlockPage
 from dll.user.models import DllUser

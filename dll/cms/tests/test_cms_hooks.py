@@ -1,8 +1,8 @@
 from draftjs_exporter.dom import DOM
 from wagtail import hooks
 from wagtail.models import Page
-from wagtail.tests.utils import WagtailPageTests
-from wagtail.tests.utils.form_data import rich_text, nested_form_data
+from wagtail.test.utils import WagtailPageTests
+from wagtail.test.utils.form_data import rich_text, nested_form_data
 
 from dll.cms.models import SimplePage
 from dll.cms.wagtail_hooks import extended_link_entity, register_extended_link_feature
