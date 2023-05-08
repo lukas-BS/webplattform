@@ -947,7 +947,7 @@ def search_view(request):
         "additional_info": 1,
         "authors": 1,
     }
-    if request.is_ajax():
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
         results = [{"title": result.name, "url": result.url} for result in sqs[:10]]
         return JsonResponse(results, safe=False)
 
