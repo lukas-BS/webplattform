@@ -1,4 +1,6 @@
 {% load static %}
+<html>
+    <head>
 <style>
     html, body {
         height: 100%;
@@ -100,13 +102,15 @@
         }
     }
 </style>
-<div class="lazy-embed">
-    <span class="embed-play">▶</span>
-    <img class="embed-logo" src="{% static logo_mobile_1x %}" srcset="{% static logo_mobile_1x %} 1x, {% static logo_mobile_2x %} 2x" alt="{{ title }} Logo">
+</head>
+<body>
+<div class='lazy-embed'>
+    <span class='embed-play'>▶</span>
+    <img class='embed-logo' src='{% static logo_mobile_1x %}' srcset='{% static logo_mobile_1x %} 1x, {% static logo_mobile_2x %} 2x' alt='{{ title }} Logo'>
 
-<div class="embed-print">
-    <p class="embed-hint">
-        <b class="embed-hint--start">Hinweis:</b>
+<div class='embed-print'>
+    <p class='embed-hint'>
+        <b class='embed-hint--start'>Hinweis:</b>
         Beim Abspielen dieses YouTube Videos werden
         Cookies gesetzt. Von der dann möglichen Erhebung
         und Verwendung Ihrer Daten durch YouTube haben
@@ -115,8 +119,10 @@
         von YouTube unter www.google.de/intl/de/policies/privacy
         entnehmen.
     </p>
-    <div class="text-center">
-        <a href="{{url}}?autoplay=1" onclick="parent.allowYoutube()" class="btn btn-primary embed-button">Akzeptieren und <br>Inhalte laden</a>
+    <div class='text-center'>
+        <a href='{{url}}?autoplay=1' onclick='parent.allowYoutube()' class='btn btn-primary embed-button'>Akzeptieren und <br>Inhalte laden</a>
     </div>
 </div>
 </div>
+</body>
+</html>
