@@ -164,6 +164,7 @@
         applications: [],
         subject: null,
         toolFunctions: [],
+        sorting: 'privacy',
         potentials: [],
         operatingSystems: [],
         dataPrivacy: null,
