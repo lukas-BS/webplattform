@@ -81,17 +81,33 @@ class VideoEmbedMixin(models.Model):
 
     @property
     def video_embed_code(self):
+        res = ""
+        ctx = {"embed_url": self.video_url}
+        if settings.SITE_ID == 1:
+            ctx.update(
+                {
+                    "logo_mobile_1x": "img/logo/dll_logo_rgb_ohne_claim.png",
+                }
+            )
+        elif settings.SITE_ID == 2:
+            ctx.update(
+                {
+                    "logo_mobile_1x": "img/logo/logo_dlt_mobile.svg",
+                }
+            )
         if not self.video_url:
-            return ""
+            return res
         if "vimeo.com" in self.video_url:
-            return render_to_string(
-                "dll/filter/partials/vimeo_embed.html", {"embed_url": self.video_url}
+            res = render_to_string(
+                "dll/filter/partials/vimeo_embed.html",
+                context=ctx,
             )
         if "youtube.com" in self.video_url:
-            return render_to_string(
-                "dll/filter/partials/youtube_embed.html", {"embed_url": self.video_url}
+            res = render_to_string(
+                "dll/filter/partials/youtube_embed.html",
+                context=ctx,
             )
-        return ""
+        return res.replace("\n", "")
 
     def clean(self):
         """
