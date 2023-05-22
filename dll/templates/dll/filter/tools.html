@@ -11,7 +11,11 @@
   <script>
   window.subjectFilter = {{ subject_filter|safe }};
   window.functionsFilter = {{ functions_filter|safe }};
-  window.potentialFilter = {{ potential_filter|safe }};
+  window.potentialFilter = {{ potential_filter|safe|escape }};
+  {% for potential_video in potential_videos %}
+    window.potentialVideo{{potential_video.pk}} = "{{ potential_video.embed|safe|escape }}";
+  {% endfor %}
+
   window.dataPrivacyFilter = {{ data_privacy_filter|safe }};
   window.loggedIn = {{ request.user.is_authenticated|yesno:"true,false" }};
   window.dltFeatures = {{ DLT_FEATURES_ENABLED|yesno:"true,false" }};

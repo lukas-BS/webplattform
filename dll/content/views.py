@@ -611,11 +611,14 @@ class ToolFilterView(BaseFilterView):
                 "value": potential.pk,
                 "name": potential.name,
                 "description": potential.description,
-                "video_embed": potential.video_embed_code,
             }
             for potential in Potential.objects.all()
         ]
-        ctx["potential_filter"] = json.dumps(potential_filter)
+        ctx["potential_videos"] = [
+            {"pk": potential.pk, "embed": potential.video_embed_code}
+            for potential in Potential.objects.all()
+        ]
+        ctx["potential_filter"] = potential_filter
         data_privacy_filter = [
             {
                 "value": DataPrivacyAssessment.COMPLIANT[0],

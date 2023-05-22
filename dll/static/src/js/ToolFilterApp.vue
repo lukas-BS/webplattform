@@ -128,7 +128,7 @@
                 <div class="col-12">
                   <h1 class="d-none d-lg-block text-center mb-5" v-text="potential.name"></h1>
                 </div>
-                <div class="col-lg-12 col-xl-7 mb-4" v-html="potential.video_embed"></div>
+                <div class="col-lg-12 col-xl-7 mb-4" v-html="window['potentialVideo' + potential.value]"></div>
                 <div class="col-lg-12 col-xl-5">
                   <p class="mb-5 d-none d-lg-block" v-html="potential.description"></p>
                 </div>
@@ -181,10 +181,11 @@
           return {
             title: pot.name,
             description: pot.description,
-            videoEmbed: pot.video_embed,
+            videoEmbed: window['potentialVideo' + pot.value],
             value: pot.value
           }
         }).filter(p => p)
+        console.log(123)
       }
     },
     methods: {
