@@ -580,7 +580,7 @@ class UserFavoriteView(BreadcrumbMixin, TemplateView):
         return ctx
 
 
-class UserToolBoxView(BreadcrumbMixin, TemplateView):
+class UserToolBoxView(LoginRequiredMixin, BreadcrumbMixin, TemplateView):
     template_name = "dll/user/content/tool_box.html"
     breadcrumb_title = "Meine favorisierten Tools"
     breadcrumb_url = reverse_lazy("user-toolbox-overview")
