@@ -23,7 +23,7 @@ ENV PYTHONUNBUFFERED=1 \
 COPY pyproject.toml poetry.lock /code/dll/
 RUN apt update \
     && apt install -y libpq-dev gcc git python3-dev mime-support gettext libgettextpo-dev optipng jpegoptim \
-    && pip install poetry \
+    && pip install poetry==1.4.2 \
 		&& cd /code/dll && poetry install --no-dev \
 		&& rm -rf "$POETRY_CACHE_DIR" \
     && apt purge -y gcc python3-dev \
