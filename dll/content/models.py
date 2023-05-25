@@ -773,13 +773,6 @@ class Tool(Content):
         to="content.ToolFunction", verbose_name=_("Tool-Funktionen"), blank=True
     )
 
-    # digital.learning.tools fields
-    disclaimer = models.TextField(
-        verbose_name=_("Disclaimer"),
-        default=config.DISCLAIMER_DEFAULT_TEXT,
-        blank=True,
-        null=True,
-    )
     subjects = models.ManyToManyField(
         "Subject", verbose_name=_("Fächerbezug"), blank=True
     )
@@ -793,6 +786,10 @@ class Tool(Content):
     class Meta(Content.Meta):
         verbose_name = _("Tool")
         verbose_name_plural = _("Tools")
+
+    @property
+    def disclaimer(self):
+        return config.DISCLAIMER_DEFAULT_TEXT
 
     def sync_functions_to_potentials(self):
         self.functions.set([])
