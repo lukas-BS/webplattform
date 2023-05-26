@@ -114,7 +114,7 @@ class ToolSubjectFilter(PolymorphicAttributeFilter):
 class ToolDataPrivacyFilter(PolymorphicAttributeFilter):
     model = "Tool"
     query_parameter_name = "dataPrivacy"
-    field_name = "dataprivacyassessment__overall"
+    field_name = "data_privacy_assessment__overall"
 
 
 class ToolWithCostsFilter(PolymorphicAttributeFilter):
