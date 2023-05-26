@@ -1693,6 +1693,9 @@ class Potential(TimeStampedModel, VideoEmbedMixin):
         on_delete=models.SET_NULL,
         null=True,
     )
+    icon_white = FilerImageField(
+        verbose_name=_("Icon weiß"), on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         return self.name
