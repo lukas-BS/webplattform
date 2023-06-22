@@ -122,7 +122,7 @@
     </div>
     <div class="col col-12 col-lg-7 col-xl-8">
       <div class="section-info mb-5" v-show="activePotentials.length" v-if="getDltFeaturesEnabled()">
-          <div class="js-potential-slider" ref="potentialSlider">
+          <div class="js-potential-slider potential-slider" ref="potentialSlider">
             <div class="js-potential-slide" v-for="potential in getPotentials()" ref="potentialSlides" :data-ref="potential.value">
               <div class="row">
                 <div class="col-12">

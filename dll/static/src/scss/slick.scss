@@ -31,3 +31,11 @@
 .slick-next {
     right: 15px !important;
 }
+.potential-slider {
+  .slick-prev {
+      left: -25px !important;
+  }
+  .slick-next {
+      right: -10px !important;
+  }
+}
