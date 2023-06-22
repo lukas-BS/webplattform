@@ -185,6 +185,9 @@ class ContentDetailBase(DetailView):
     def get_testimonial_form(self):
         return TestimonialForm(author=self.request.user, content=self.object)
 
+    def get_recommended_content(self):
+        return more_like_this(self.object)
+
     def get_context_data(self, **kwargs):
         ctx = super(ContentDetailBase, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated:
@@ -195,7 +198,7 @@ class ContentDetailBase(DetailView):
         ctx["competences"] = Competence.objects.all()
         ctx["functions"] = ToolFunction.objects.all()
         ctx["potentials"] = Potential.objects.all()
-        ctx["recommended_content"] = more_like_this(self.object)
+        ctx["recommended_content"] = self.get_recommended_content()
         if self.request.user.is_authenticated:
             ctx["favored"] = Favorite.objects.filter(
                 user=self.request.user, content=self.get_object().get_draft()
@@ -257,6 +260,11 @@ class ToolDetailView(ContentDetailView):
             ] = f"{self.request.scheme}://{dll_domain}/tools/{self.object.slug}/"
 
         return ctx
+
+    def get_recommended_content(self):
+        if settings.SITE_ID == 2:
+            return more_like_this(self.object, Tool)
+        return super(ToolDetailView, self).get_recommended_content()
 
 
 class TrendDetailView(ContentDetailView):
