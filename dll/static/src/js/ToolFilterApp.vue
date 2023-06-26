@@ -130,7 +130,7 @@
                 </div>
                 <div class="col-lg-12 col-xl-7 mb-4" v-html="window['potentialVideo' + potential.value]"></div>
                 <div class="col-lg-12 col-xl-5">
-                  <p class="mb-5 d-none d-lg-block" v-html="potential.description"></p>
+                  <p class="mb-5 d-none d-lg-block mt-3" v-html="potential.description"></p>
                 </div>
               </div>
             </div>
