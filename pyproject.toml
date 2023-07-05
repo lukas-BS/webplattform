@@ -6,13 +6,13 @@ authors = ["ITBH"]
 license = "GPL-3.0-only"
 
 [tool.poetry.dependencies]
-python = "~=3.10"
-Django = "~4.2.3"
-psycopg2 = {version = "2.9.6", extras = ["binary"]}
-django-meta = "~2.2.0"
-django-webpack-loader = "==2.0.1"
-django-extensions = "3.2.3"
-django-filer = "2.2.6"
+python = "~=3.8"
+Django = "3.2.18"
+psycopg2 = {version = "2.9.4", extras = ["binary"]}
+django-meta = "2.1.0"
+django-webpack-loader = "==1.8.1"
+django-extensions = "3.2.1"
+django-filer = "2.2.4"
 django-polymorphic = "3.1.0"
 blessings = "1.7"
 curtsies = "0.4.1"
