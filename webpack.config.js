@@ -61,7 +61,6 @@ const plugins = [
     chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
   }),
   new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
-  new webpack.HotModuleReplacementPlugin(),
   new CleanWebpackPlugin(),
   new LodashModuleReplacementPlugin({
     'collections': true,
@@ -102,9 +101,10 @@ module.exports = {
   devtool: devMode ? 'eval-cheap-source-map' : 'source-map',
   devServer: {
     hot: true,
-    quiet: false,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    writeToDisk: true
+    devMiddleware: {
+      writeToDisk: true
+    }
   },
   module: { rules: [vueRule, jsRule, styleRule, assetRule] },
   // externals: { jquery: 'jQuery', Sentry: 'Sentry' },
