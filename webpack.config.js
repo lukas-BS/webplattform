@@ -46,11 +46,11 @@ const jsRule = {
 
 const assetRule = {
   test: /.(jpg|png|woff(2)?|eot|gif|ttf|woff|woff2|svg)$/,
-  loader: 'file-loader'
+  type: 'asset/resource'
 };
 
 const plugins = [
-  new BundleTracker({ filename: './static/dist/webpack-stats.json', path: __dirname }),
+  new BundleTracker({ filename: 'webpack-stats.json', path: __dirname + '/static/dist/' }),
   new webpack.ProvidePlugin({
     $: "jquery",
     jQuery: "jquery"
@@ -99,7 +99,7 @@ module.exports = {
     filename: '[name]-[hash].js',
     // publicPath: hotReload ? 'http://localhost:8080/' : ''
   },
-  devtool: devMode ? 'cheap-eval-source-map' : 'source-map',
+  devtool: devMode ? 'eval-cheap-source-map' : 'source-map',
   devServer: {
     hot: true,
     quiet: false,
