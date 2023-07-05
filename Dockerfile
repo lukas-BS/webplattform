@@ -1,6 +1,6 @@
 ### Stage 1: The frontend builder
 
-FROM node:12.22.12 AS webpack
+FROM node:20-alpine3.17 AS webpack
 
 RUN mkdir /node_deps
 

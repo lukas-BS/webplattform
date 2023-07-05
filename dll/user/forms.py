@@ -11,7 +11,7 @@ from django.contrib.auth.forms import (
 )
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from wagtail.core.templatetags.wagtailcore_tags import slugurl
+from wagtail.templatetags.wagtailcore_tags import slugurl
 
 from .models import DllUser
 

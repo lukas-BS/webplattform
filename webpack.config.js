@@ -6,7 +6,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const BundleTracker = require('webpack-bundle-tracker');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const SentryCliPlugin = require('@sentry/webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
 var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
@@ -46,22 +45,21 @@ const jsRule = {
 
 const assetRule = {
   test: /.(jpg|png|woff(2)?|eot|gif|ttf|woff|woff2|svg)$/,
-  loader: 'file-loader'
+  type: 'asset/resource'
 };
 
 const plugins = [
-  new BundleTracker({ filename: './static/dist/webpack-stats.json', path: __dirname }),
+  new BundleTracker({ filename: 'webpack-stats.json', path: path.join(__dirname, '/static/dist/') }),
   new webpack.ProvidePlugin({
     $: "jquery",
     jQuery: "jquery"
   }),
   new VueLoaderPlugin(),
   new MiniCssExtractPlugin({
-    filename: devMode ? '[name].css' : '[name].[hash].css',
+    filename: devMode ? '[name].css' : '[name].[contenthash].css',
     chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
   }),
   new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
-  new webpack.HotModuleReplacementPlugin(),
   new CleanWebpackPlugin(),
   new LodashModuleReplacementPlugin({
     'collections': true,
@@ -71,19 +69,6 @@ const plugins = [
 
 if (devMode) {
   styleRule.use = ['css-hot-loader', ...styleRule.use];
-} else {
-  plugins.push(
-    new webpack.EnvironmentPlugin(['NODE_ENV', 'RAVEN_JS_DSN', 'SENTRY_ENVIRONMENT', 'SOURCE_VERSION'])
-  );
-  if (process.env.SENTRY_DSN) {
-    plugins.push(
-      new SentryCliPlugin({
-        include: '.',
-        release: process.env.SOURCE_VERSION,
-        ignore: ['node_modules', 'webpack.config.js'],
-      })
-    );
-  }
 }
 
 
@@ -96,15 +81,16 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './static/dist/'),
-    filename: '[name]-[hash].js',
+    filename: '[name].[contenthash].bundle.js',
     // publicPath: hotReload ? 'http://localhost:8080/' : ''
   },
-  devtool: devMode ? 'cheap-eval-source-map' : 'source-map',
+  devtool: devMode ? 'eval-cheap-source-map' : 'source-map',
   devServer: {
     hot: true,
-    quiet: false,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    writeToDisk: true
+    devMiddleware: {
+      writeToDisk: true
+    }
   },
   module: { rules: [vueRule, jsRule, styleRule, assetRule] },
   // externals: { jquery: 'jQuery', Sentry: 'Sentry' },

@@ -7,7 +7,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.views.generic import FormView, TemplateView
-from wagtail.core.templatetags.wagtailcore_tags import slugurl
+from wagtail.templatetags.wagtailcore_tags import slugurl
 
 from dll.content.models import Content
 from dll.communication.forms import ContactForm, NewsletterForm

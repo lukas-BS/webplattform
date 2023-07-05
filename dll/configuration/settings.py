@@ -90,7 +90,7 @@ INSTALLED_APPS = [
     "wagtail.admin",
     "wagtail.contrib.modeladmin",
     "wagtailmenus",
-    "wagtail.core",
+    "wagtail",
     "nested_admin",
     "dll.cms",
     "dll.survey",
@@ -178,7 +178,6 @@ TIME_ZONE = "Europe/Berlin"
 
 USE_I18N = True
 
-USE_L10N = True
 
 USE_TZ = True
 
@@ -702,6 +701,9 @@ TOOL_FUNCTION_POTENTIAL_MAPPING = {
     "Testing & Assessment": "Testen und Bewerten",
 }
 
+WAGTAILADMIN_BASE_URL = env.str("WAGTAIL_BASE_URL", "https://digitallearninglab.de")
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 WAGTAILEMBEDS_FINDERS = [
     {
         "class": "dll.general.youtube_embed_provider",

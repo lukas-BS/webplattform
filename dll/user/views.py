@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import TemplateView, FormView, RedirectView
 from django.views.generic.base import View
 from rest_framework.generics import ListAPIView
-from wagtail.core.templatetags.wagtailcore_tags import slugurl
+from wagtail.templatetags.wagtailcore_tags import slugurl
 
 from dll.communication.models import CoAuthorshipInvitation, NewsletterSubscrption
 from dll.communication.tasks import send_mail

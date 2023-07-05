@@ -1,7 +1,7 @@
 from django.forms.utils import ErrorList
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
-from wagtail.core import blocks
+from wagtail import blocks
 from wagtail.blocks.struct_block import StructBlockValidationError
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
@@ -110,6 +110,7 @@ class SingleElementBlock(ImageVideoBlock):
 
     class Meta:
         template = "blocks/single_element_block.html"
+        label_format = "SEB - {headline}{text}{video}{image}"
 
 
 class DllElementBlock(ImageVideoBlock):
@@ -168,9 +169,14 @@ class DllElementBlock(ImageVideoBlock):
             )
         return result
 
+    @property
+    def blah(self):
+        return "blah"
+
     class Meta:
         template = "blocks/dll_element_block.html"
-        icon = "wagtail-admin-layout"
+        icon = "form"
+        label_format = "DEB - {subline}{text}{video}{image}"
 
 
 def generate_default_blocks(count):
@@ -192,6 +198,7 @@ class TwoColumnLayout(blocks.StructBlock):
     class Meta:
         template = "blocks/two_column_block.html"
         icon = "wagtail-admin-columns-2"
+        label_format = "Two Column Block"
 
 
 class ThreeColumnLayout(blocks.StructBlock):
@@ -207,6 +214,7 @@ class ThreeColumnLayout(blocks.StructBlock):
     class Meta:
         template = "blocks/three_column_block.html"
         icon = "wagtail-admin-columns-3"
+        label_format = "Three Column Block"
 
 
 class IFrameBlock(blocks.StructBlock):
@@ -289,6 +297,7 @@ class MultiElementBlock(blocks.StructBlock):
 
     class Meta:
         template = "blocks/multi_element_block.html"
+        label_format = "Multi Element Block"
 
 
 class SideBySideBlock(ImageVideoBlock):
@@ -361,3 +370,4 @@ class SideBySideBlock(ImageVideoBlock):
 
     class Meta:
         template = "blocks/side_by_side.html"
+        label_format = "SBS - {headline}{sub_headline}{text}{image}{video}"

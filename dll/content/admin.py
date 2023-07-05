@@ -179,6 +179,7 @@ class TeachingModuleAdmin(ImportExportMixin, ContentAdmin):
         qs = super(TeachingModuleAdmin, self).get_export_queryset(request)
         return qs.drafts()
 
+    @admin.action(description="Unterrichtsbausteine als XLSX exportieren")
     def export_xlsx(self, request, queryset):
         output = BytesIO()
         workbook = xlsxwriter.Workbook(output)
@@ -234,8 +235,6 @@ class TeachingModuleAdmin(ImportExportMixin, ContentAdmin):
         ] = "attachment; filename=unterrichtsbausteine.xlsx"
 
         return response
-
-    export_xlsx.short_description = "Unterrichtsbausteine als XLSX exportieren"
 
 
 class ToolLinkInline(admin.TabularInline):

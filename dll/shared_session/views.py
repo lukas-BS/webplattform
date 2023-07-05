@@ -38,7 +38,7 @@ class SharedSessionView(View):
             if is_session_empty or getattr(
                 settings, "SHARED_SESSION_ALWAYS_REPLACE", False
             ):
-                http_host = request.META["HTTP_HOST"]
+                http_host = request.headers["host"]
 
                 if (timezone.now() - parse(message["ts"])).total_seconds() < getattr(
                     settings, "SHARED_SESSION_TIMEOUT", 30
