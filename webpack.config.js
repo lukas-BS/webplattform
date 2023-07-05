@@ -6,7 +6,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const BundleTracker = require('webpack-bundle-tracker');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const SentryCliPlugin = require('@sentry/webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
 var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
@@ -50,14 +49,14 @@ const assetRule = {
 };
 
 const plugins = [
-  new BundleTracker({ filename: 'webpack-stats.json', path: __dirname + '/static/dist/' }),
+  new BundleTracker({ filename: 'webpack-stats.json', path: path.join(__dirname, '/static/dist/') }),
   new webpack.ProvidePlugin({
     $: "jquery",
     jQuery: "jquery"
   }),
   new VueLoaderPlugin(),
   new MiniCssExtractPlugin({
-    filename: devMode ? '[name].css' : '[name].[hash].css',
+    filename: devMode ? '[name].css' : '[name].[contenthash].css',
     chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
   }),
   new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
@@ -70,19 +69,6 @@ const plugins = [
 
 if (devMode) {
   styleRule.use = ['css-hot-loader', ...styleRule.use];
-} else {
-  plugins.push(
-    new webpack.EnvironmentPlugin(['NODE_ENV', 'RAVEN_JS_DSN', 'SENTRY_ENVIRONMENT', 'SOURCE_VERSION'])
-  );
-  if (process.env.SENTRY_DSN) {
-    plugins.push(
-      new SentryCliPlugin({
-        include: '.',
-        release: process.env.SOURCE_VERSION,
-        ignore: ['node_modules', 'webpack.config.js'],
-      })
-    );
-  }
 }
 
 
@@ -95,7 +81,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './static/dist/'),
-    filename: '[name]-[hash].js',
+    filename: '[name].[contenthash].bundle.js',
     // publicPath: hotReload ? 'http://localhost:8080/' : ''
   },
   devtool: devMode ? 'eval-cheap-source-map' : 'source-map',
