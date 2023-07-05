@@ -149,9 +149,23 @@ class CompetenceAdditionalInformationInlineAdmin(admin.StackedInline):
 class ContentAdmin(
     PublishAdminMixin, SimpleHistoryAdmin, admin.ModelAdmin, DynamicArrayMixin
 ):
+    list_display = ("__str__", "get_author_name", "get_published_date")
     exclude = ("json_data", "tags")
     inlines = [ContentLinkInlineAdmin]
     search_fields = ["name"]
+
+    @admin.display()
+    def get_author_name(self, obj):
+        return obj.author.full_name if obj.author else "---"
+
+    get_author_name.short_description = "Autor_in"
+
+    @admin.display()
+    def get_published_date(self, obj):
+        pub = obj.get_published()
+        return pub.created if pub else "---"
+
+    get_published_date.short_description = "Veröffentlichungsdatum"
 
 
 @admin.register(TeachingModule)
@@ -238,6 +252,7 @@ class DataPrivacyAssessmentAdmin(admin.StackedInline):
             None,
             {
                 "fields": (
+                    ("display",),
                     ("server_location", "server_location_text"),
                     ("provider", "provider_text"),
                     ("user_registration", "user_registration_text"),
@@ -253,9 +268,7 @@ class DataPrivacyAssessmentAdmin(admin.StackedInline):
 
 
 @admin.register(Tool)
-class ToolAdmin(
-    PublishAdminMixin, SimpleHistoryAdmin, ImportExportMixin, admin.ModelAdmin
-):
+class ToolAdmin(ContentAdmin, ImportExportMixin, admin.ModelAdmin):
     exclude = ("json_data", "tags", "functions")
     resource_class = ToolResource
     list_filter = (PublishedFilter,)

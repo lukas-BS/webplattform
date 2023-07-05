@@ -185,6 +185,9 @@ class ContentDetailBase(DetailView):
     def get_testimonial_form(self):
         return TestimonialForm(author=self.request.user, content=self.object)
 
+    def get_recommended_content(self):
+        return more_like_this(self.object)
+
     def get_context_data(self, **kwargs):
         ctx = super(ContentDetailBase, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated:
@@ -195,7 +198,7 @@ class ContentDetailBase(DetailView):
         ctx["competences"] = Competence.objects.all()
         ctx["functions"] = ToolFunction.objects.all()
         ctx["potentials"] = Potential.objects.all()
-        ctx["recommended_content"] = more_like_this(self.object)
+        ctx["recommended_content"] = self.get_recommended_content()
         if self.request.user.is_authenticated:
             ctx["favored"] = Favorite.objects.filter(
                 user=self.request.user, content=self.get_object().get_draft()
@@ -257,6 +260,11 @@ class ToolDetailView(ContentDetailView):
             ] = f"{self.request.scheme}://{dll_domain}/tools/{self.object.slug}/"
 
         return ctx
+
+    def get_recommended_content(self):
+        if settings.SITE_ID == 2:
+            return more_like_this(self.object, Tool)
+        return super(ToolDetailView, self).get_recommended_content()
 
 
 class TrendDetailView(ContentDetailView):
@@ -611,23 +619,26 @@ class ToolFilterView(BaseFilterView):
                 "value": potential.pk,
                 "name": potential.name,
                 "description": potential.description,
-                "video_embed": potential.video_embed_code,
             }
             for potential in Potential.objects.all()
         ]
-        ctx["potential_filter"] = json.dumps(potential_filter)
+        ctx["potential_videos"] = [
+            {"pk": potential.pk, "embed": potential.video_embed_code}
+            for potential in Potential.objects.all()
+        ]
+        ctx["potential_filter"] = potential_filter
         data_privacy_filter = [
             {
                 "value": DataPrivacyAssessment.COMPLIANT[0],
-                "name": str(DataPrivacyAssessment.COMPLIANT[1]),
+                "name": "DS GVO-Richtlinien werden eingehalten: Nutzung im Unterricht unbedenklich",
             },
             {
                 "value": DataPrivacyAssessment.NOT_COMPLIANT[0],
-                "name": str(DataPrivacyAssessment.NOT_COMPLIANT[1]),
+                "name": "DS GVO-Richtlinien werden nicht eingehalten: Nutzung im Unterricht bedenklich",
             },
             {
                 "value": DataPrivacyAssessment.UNKNOWN[0],
-                "name": str(DataPrivacyAssessment.UNKNOWN[1]),
+                "name": "DS GVO - Richtlinien sind unbekannt: Nutzung im Unterricht nicht beurteilbar",
             },
         ]
         ctx["data_privacy_filter"] = json.dumps(data_privacy_filter)

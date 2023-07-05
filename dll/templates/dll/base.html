@@ -15,6 +15,7 @@
   {% block css %}
   {% render_bundle main_css 'css' %}
   {% endblock %}
+  {% if SITE_ID == 1 %}
   <link rel="apple-touch-icon" sizes="57x57" href="{% static 'img/icons/apple-icon-57x57.png' %}">
   <link rel="apple-touch-icon" sizes="60x60" href="{% static 'img/icons/apple-icon-60x60.png' %}">
   <link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/icons/apple-icon-72x72.png' %}">
@@ -30,25 +31,37 @@
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/icons/favicon-16x16.png' %}">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="msapplication-TileImage" content="{% static 'img/icons/favicon/ms-icon-144x144.png' %}">
+  {% elif SITE_ID == 2 %}
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/icons/dlt/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/icons/dlt/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/icons/dlt/favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'img/icons/dlt/favicon/site.webmanifest' %}">
+    <link rel="mask-icon" href="{% static 'img/icons/dlt/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+  {% endif %}
   {% block meta %}{% endblock %}
   <!-- Matomo -->
-  <script type="text/javascript">
+  <script>
     var _paq = window._paq = window._paq || [];
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-    _paq.push(["setCookieDomain", "*.digitallearninglab.de"]);
+    _paq.push(['disableCookies']);
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
     (function() {
-      var u="https://wanalytics.rz.tuhh.de/";
-      _paq.push(['setTrackerUrl', u+'matomo.php']);
-      _paq.push(['setSiteId', '15']);
-      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-      g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
+      var u="//analytics.digitallearninglab.de/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        if (window.location.hostname === 'digitallearningtools.de') {
+          _paq.push(['setSiteId', '2']);
+        } else {
+          _paq.push(['setSiteId', '1']);
+        }
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
   </script>
-  <noscript><p><img src="https://wanalytics.rz.tuhh.de/matomo.php?idsite=15&amp;rec=1" style="border:0;" alt="" /></p></noscript>
   <!-- End Matomo Code -->
+
   <script type='application/ld+json'>
     {
         "@context": "http://www.schema.org",
@@ -82,6 +95,7 @@
   </script>
 {% endif %}
 {% include 'dll/includes/toast.html' %}
+{% include 'dll/includes/cookie_banner.html' %}
 {% block js %}
 {% render_bundle main_js 'js' %}
 {% endblock %}

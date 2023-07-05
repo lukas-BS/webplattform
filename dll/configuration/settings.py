@@ -16,6 +16,7 @@ from environs import Env
 from django.utils.translation import gettext_lazy as _
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from wagtail.embeds.oembed_providers import youtube
 
 env = Env()
 logger = logging.getLogger("dll.settings")
@@ -452,6 +453,11 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "TESTIMONIAL_REVIEW_EMAIL",
     ),
     "Digtal.Learning.Tools": ("DLL_ENABLE_DLT_FEATURES",),
+    "Cookie Banner": (
+        "MESSAGE",
+        "BUTTON_TEXT",
+        "DURATION",
+    ),
 }
 CONSTANCE_CONFIG = {
     # Content Teaser
@@ -639,6 +645,18 @@ CONSTANCE_CONFIG = {
         "Aktiviert DLT Anzeigen und Features auf digitallearninglab",
         bool,
     ),
+    "MESSAGE": ("", "Cookie Banner Text", "html_input"),
+    "BUTTON_TEXT": ("Akzeptieren", "Text des Akzeptieren-Buttons", str),
+    "DURATION": (12, "Gültigkeitsdauer des Cookies in Monaten", int),
+}
+
+CONSTANCE_ADDITIONAL_FIELDS = {
+    "html_input": [
+        "django.forms.fields.CharField",
+        {
+            "widget": "ckeditor.widgets.CKEditorWidget",
+        },
+    ],
 }
 
 WAGTAIL_SITE_NAME = "digital.learning.lab"
@@ -686,3 +704,9 @@ TOOL_FUNCTION_POTENTIAL_MAPPING = {
 WAGTAILADMIN_BASE_URL = env.str("WAGTAIL_BASE_URL", "https://digitallearninglab.de")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+WAGTAILEMBEDS_FINDERS = [
+    {
+        "class": "dll.general.youtube_embed_provider",
+        "providers": [youtube],
+    },
+]

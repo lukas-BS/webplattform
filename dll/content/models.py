@@ -81,17 +81,33 @@ class VideoEmbedMixin(models.Model):
 
     @property
     def video_embed_code(self):
+        res = ""
+        ctx = {"embed_url": self.video_url}
+        if settings.SITE_ID == 1:
+            ctx.update(
+                {
+                    "logo_mobile_1x": "img/logo/dll_logo_rgb_ohne_claim.png",
+                }
+            )
+        elif settings.SITE_ID == 2:
+            ctx.update(
+                {
+                    "logo_mobile_1x": "img/logo/logo_dlt_mobile.svg",
+                }
+            )
         if not self.video_url:
-            return ""
+            return res
         if "vimeo.com" in self.video_url:
-            return render_to_string(
-                "dll/filter/partials/vimeo_embed.html", {"embed_url": self.video_url}
+            res = render_to_string(
+                "dll/filter/partials/vimeo_embed.html",
+                context=ctx,
             )
         if "youtube.com" in self.video_url:
-            return render_to_string(
-                "dll/filter/partials/youtube_embed.html", {"embed_url": self.video_url}
+            res = render_to_string(
+                "dll/filter/partials/youtube_embed.html",
+                context=ctx,
             )
-        return ""
+        return res.replace("\n", "")
 
     def clean(self):
         """
@@ -757,13 +773,6 @@ class Tool(Content):
         to="content.ToolFunction", verbose_name=_("Tool-Funktionen"), blank=True
     )
 
-    # digital.learning.tools fields
-    disclaimer = models.TextField(
-        verbose_name=_("Disclaimer"),
-        default=config.DISCLAIMER_DEFAULT_TEXT,
-        blank=True,
-        null=True,
-    )
     subjects = models.ManyToManyField(
         "Subject", verbose_name=_("Fächerbezug"), blank=True
     )
@@ -777,6 +786,10 @@ class Tool(Content):
     class Meta(Content.Meta):
         verbose_name = _("Tool")
         verbose_name_plural = _("Tools")
+
+    @property
+    def disclaimer(self):
+        return config.DISCLAIMER_DEFAULT_TEXT
 
     def sync_functions_to_potentials(self):
         self.functions.set([])
@@ -1680,6 +1693,9 @@ class Potential(TimeStampedModel, VideoEmbedMixin):
         on_delete=models.SET_NULL,
         null=True,
     )
+    icon_white = FilerImageField(
+        verbose_name=_("Icon weiß"), on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         return self.name
@@ -2030,6 +2046,8 @@ class DataPrivacyAssessment(TimeStampedModel):
         choices=OVERALL_CHOICES,
         null=True,
     )
+
+    display = models.BooleanField(verbose_name=_("Datenschutz anzeigen"), default=False)
 
     def save(self, **kwargs):
         FIELDS = [

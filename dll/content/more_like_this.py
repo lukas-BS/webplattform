@@ -4,7 +4,7 @@ from constance import config
 from dll.content.models import Content
 
 
-def more_like_this(content):
+def more_like_this(content, content_class=None):
     content_str = f"content.{content.type}.{content.pk}".replace("-", "")
 
     def mlt_append(use: bool, name: str, boost: float, mlt_fl, mlt_qf):
@@ -102,7 +102,10 @@ def more_like_this(content):
             if result["score"] > config.MORE_LIKE_THIS_SCORE_CUTOFF
         ]
         mlt_polymorphic_qs = Content.objects.filter(pk__in=result_score_cutoff)
-        mlt_real_qs = mlt_polymorphic_qs.get_real_instances()
+        if content_class:
+            mlt_real_qs = mlt_polymorphic_qs.instance_of(content_class)
+        else:
+            mlt_real_qs = mlt_polymorphic_qs.get_real_instances()
     except Exception as e:
         print(e)
         return None

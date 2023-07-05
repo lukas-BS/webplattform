@@ -12,7 +12,7 @@
     window.competenceName = '{{ competence.name }}';
     window.competenceTextTitle = '{{ competence.additional_information.title }}';
     window.competenceText = '{{ competence.additional_information.description }}';
-    window.videoEmbed = '{{ competence.additional_information.video_embed_code }}';
+    window.videoEmbed = "{{ competence.additional_information.video_embed_code|safe|escape }}";
     window.competenceSlug = '{{ competence.slug }}';
   </script>
 {% endblock %}

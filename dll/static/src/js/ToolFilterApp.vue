@@ -7,8 +7,17 @@
           <h3 class="form-subhead">Schlagwortsuche</h3>
           <input type="text" v-model="q" name="searchTerm" class="form-control" @keydown="preventEnter">
 
-          <div>
-            <h3 class="form-subhead">Tool-Kategorien</h3>
+          <div v-if="!getDltFeaturesEnabled()">
+            <h3 class="form-subhead">Tool-Funktionen</h3>
+            <ul class="list-unstyled">
+              <li class="form-check" v-for="toolFunction in getToolFunctions()">
+                <input type="checkbox" class="form-check-input" :value="toolFunction.id" name="toolFunction" :id="'toolFunction' + toolFunction.id" v-model="toolFunctions">
+                <label class="form-check-label" :for="'toolFunction' + toolFunction.id">{{ toolFunction.title }}</label>
+              </li>
+            </ul>
+          </div>
+          <div v-if="getDltFeaturesEnabled()">
+            <h3 class="form-subhead">Potentiale</h3>
             <ul class="list-unstyled">
               <li class="form-check" v-for="potential in getPotentials()">
                 <input type="checkbox" class="form-check-input" :value="potential.value" name="potential" :id="'potential' + potential.value" v-model="potentials">
@@ -16,7 +25,7 @@
               </li>
             </ul>
           </div>
-          <div v-if="loggedIn">
+          <div v-if="loggedIn && getDltFeaturesEnabled()">
             <h3 class="form-subhead">Meine favorisierten Tools</h3>
             <ul class="list-unstyled">
               <li class="form-check">
@@ -112,16 +121,16 @@
       </div>
     </div>
     <div class="col col-12 col-lg-7 col-xl-8">
-      <div class="section-info mb-5" v-show="activePotentials.length">
-          <div class="js-potential-slider" ref="potentialSlider">
+      <div class="section-info mb-5" v-show="activePotentials.length" v-if="getDltFeaturesEnabled()">
+          <div class="js-potential-slider potential-slider" ref="potentialSlider">
             <div class="js-potential-slide" v-for="potential in getPotentials()" ref="potentialSlides" :data-ref="potential.value">
               <div class="row">
                 <div class="col-12">
                   <h1 class="d-none d-lg-block text-center mb-5" v-text="potential.name"></h1>
                 </div>
-                <div class="col-lg-12 col-xl-7 mb-4" v-html="potential.video_embed"></div>
+                <div class="col-lg-12 col-xl-7 mb-4" v-html="window['potentialVideo' + potential.value]"></div>
                 <div class="col-lg-12 col-xl-5">
-                  <p class="mb-5 d-none d-lg-block" v-html="potential.description"></p>
+                  <p class="mb-5 d-none d-lg-block mt-3" v-html="potential.description"></p>
                 </div>
               </div>
             </div>
@@ -155,6 +164,7 @@
         applications: [],
         subject: null,
         toolFunctions: [],
+        sorting: 'privacy',
         potentials: [],
         operatingSystems: [],
         dataPrivacy: null,
@@ -171,13 +181,17 @@
           return {
             title: pot.name,
             description: pot.description,
-            videoEmbed: pot.video_embed,
+            videoEmbed: window['potentialVideo' + pot.value],
             value: pot.value
           }
         }).filter(p => p)
+        console.log(123)
       }
     },
     methods: {
+      getDltFeaturesEnabled() {
+        return window.dltFeatures
+      },
       getPotentials () {
         return window.potentialFilter
       },
@@ -236,7 +250,6 @@
             const activeValues = this.activePotentials.map(p => p.value.toString())
             this.slider.slick("slickUnfilter")
             this.slider.slick("slickFilter", (s) => {
-              console.log(activeValues.includes(this.$refs.potentialSlides[s].dataset.ref))
               return activeValues.includes(this.$refs.potentialSlides[s].dataset.ref)
             })
           }

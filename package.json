@@ -41,7 +41,6 @@
     "sass": "^1.63.6",
     "sass-loader": "^13.3.2",
     "style-loader": "^0.23.1",
-    "vue-loader": "^15.7.1",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.10",
     "webpack": "^5.88.1",
@@ -61,7 +60,8 @@
     "popper.js": "^1.15.0",
     "query-string": "^6.12.1",
     "slick-carousel": "^1.8.1",
-    "vue": "^2.6.10",
+    "vue": "^2.7.14",
+    "vue-loader": "^15.10.1",
     "vue-select": "^3.4.0",
     "vue2-dropzone": "^3.6.0"
   }

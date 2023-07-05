@@ -1,3 +1,6 @@
+from django.conf import settings
+
+from constance import config
 from haystack.backends import SQ
 from haystack.inputs import AutoQuery
 from haystack.query import SearchQuerySet
@@ -31,6 +34,14 @@ class SortingFilter(BaseFilterBackend):
         elif sorting == "latest":
             return queryset.order_by("created")
         elif sorting == "-latest":
+            return queryset.order_by("-created")
+        elif (
+            sorting == "privacy"
+        ):  # this is only temporary - remove also in ToolFilterApp.vue
+            if config.DLL_ENABLE_DLT_FEATURES and settings.SITE_ID == 2:
+                return queryset.order_by(
+                    "tool__data_privacy_assessment__display", "-created"
+                )
             return queryset.order_by("-created")
         else:
             return queryset.order_by("-name")
@@ -103,7 +114,7 @@ class ToolSubjectFilter(PolymorphicAttributeFilter):
 class ToolDataPrivacyFilter(PolymorphicAttributeFilter):
     model = "Tool"
     query_parameter_name = "dataPrivacy"
-    field_name = "dataprivacyassessment__overall"
+    field_name = "data_privacy_assessment__overall"
 
 
 class ToolWithCostsFilter(PolymorphicAttributeFilter):
