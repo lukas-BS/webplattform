@@ -4,10 +4,28 @@
 {% block content %}
   <div class="row">
     <div class="col-12 col-md-9">
-      <h1>Bitte bestätige unsere Nutzungsbedingungen</h1>
+      <h1>{{ config.TERMS_HEADLINE }}</h1>
       <form method="post">
         {% crispy form %}
       </form>
+    </div>
+  </div>
+
+  <div class="modal js-deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>{{ config.TERMS_DELETE_TEXT }}</p>
+        </div>
+        <div class="modal-footer">
+          <button class="button button--danger mr-2">
+            Ja, Account löschen
+          </button>
+          <button class="button button--neutral" class="close" data-dismiss="modal">
+            Abbrechen
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}

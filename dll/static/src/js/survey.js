@@ -100,6 +100,7 @@ class Trigger {
 }
 
 function setupTrigger(triggerArray) {
+  if (!triggerArray) return;
   for (let i = 0; i < triggerArray.length; i++) {
     const trigger = triggerArray[i];
     new Trigger(trigger.event, trigger.delay, trigger.survey, trigger.url, trigger.target, trigger.thank_you_headline,

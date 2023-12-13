@@ -1,7 +1,15 @@
 import datetime
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, ButtonHolder, Fieldset, Layout, HTML
+from crispy_forms.layout import (
+    Submit,
+    Layout,
+    ButtonHolder,
+    Fieldset,
+    Layout,
+    HTML,
+    Button,
+)
 
 from django import forms
 from django.contrib.auth.forms import (
@@ -128,10 +136,15 @@ class AcceptTermsForm(UserChangeForm):
             "terms_accepted",
         )
         self.helper.add_input(
-            Submit("submit", "Absenden", css_class="button button--primary")
+            Submit("submit", "Absenden", css_class="button button--primary mr-2")
         )
         self.helper.add_input(
-            Submit("submit", "Account löschen", css_class="button button--danger")
+            Button(
+                "submit",
+                "Account löschen",
+                css_class="button button--danger",
+                onclick="showDeleteModal()",
+            )
         )
         self.fields["first_name"].disabled = True
         self.fields["last_name"].disabled = True

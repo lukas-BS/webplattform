@@ -459,6 +459,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "BUTTON_TEXT",
         "DURATION",
     ),
+    "Nutzungsbedingungen": ("TERMS_HEADLINE", "TERMS_DELETE_TEXT"),
 }
 CONSTANCE_CONFIG = {
     # Content Teaser
@@ -649,6 +650,12 @@ CONSTANCE_CONFIG = {
     "MESSAGE": ("", "Cookie Banner Text", "html_input"),
     "BUTTON_TEXT": ("Akzeptieren", "Text des Akzeptieren-Buttons", str),
     "DURATION": (12, "Gültigkeitsdauer des Cookies in Monaten", int),
+    "TERMS_HEADLINE": (
+        "Bitte bestätigen Sie unsere Nutzungsbedingungen",
+        "Überschrift der Akzeptanzseite",
+        str,
+    ),
+    "TERMS_DELETE_TEXT": ("Ihr Account wird nun gelöscht", "Modal Text", str),
 }
 
 CONSTANCE_ADDITIONAL_FIELDS = {
