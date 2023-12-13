@@ -6,6 +6,7 @@ from dll.user.views import SignUpSuccessfulView, FavoriteLoginRequiredView
 from .forms import DLLPasswordResetForm
 from .views import (
     SignUpView,
+    AcceptTermsView,
     activate_user,
     ProfileViewIndex,
     ProfileViewEmails,
@@ -19,6 +20,7 @@ app_name = "user"
 
 urlpatterns = [
     path("signup/", SignUpView.as_view(), name="signup"),
+    path("terms-check/", AcceptTermsView.as_view(), name="terms-check"),
     path("signup/confirm-email", SignUpSuccessfulView.as_view(), name="signup-success"),
     path(
         "login/",

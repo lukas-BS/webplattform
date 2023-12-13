@@ -67,6 +67,14 @@ class DllUser(TimeStampedModel, AbstractUser):
         through_fields=("user", "content"),
     )
 
+    terms_accepted = models.BooleanField(
+        default=False,
+    )
+
+    personal_data = models.BooleanField(
+        default=False,
+    )
+
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]

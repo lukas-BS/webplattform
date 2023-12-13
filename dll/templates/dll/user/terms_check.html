@@ -1,0 +1,13 @@
+{% extends 'dll/default_page.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 col-md-9">
+      <h1>Bitte bestätige unsere Nutzungsbedingungen</h1>
+      <form method="post">
+        {% crispy form %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

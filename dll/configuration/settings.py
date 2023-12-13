@@ -109,6 +109,7 @@ MIDDLEWARE = [
     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "dll.user.middleware.AcceptedTermsMiddleware",
 ]
 
 TEMPLATES = [

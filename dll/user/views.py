@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -48,7 +49,7 @@ from dll.content.serializers import (
 from dll.content.views import BreadcrumbMixin, SiteRedirectMixin
 from dll.user.models import EmailChangeRequest
 from dll.user.tokens import account_activation_token, email_confirmation_token
-from .forms import SignUpForm
+from .forms import SignUpForm, AcceptTermsForm
 from ..communication.tokens import newsletter_confirm_token
 
 USER_MODEL = get_user_model()
@@ -281,17 +282,20 @@ class ReviewTrendView(CreateEditTrendView):
         return result
 
 
-class SignUpView(FormView):
+class TermsSignUpMixin:
+    def get_form_kwargs(self):
+        kwargs = super(TermsSignUpMixin, self).get_form_kwargs()
+        kwargs["privacy_url"] = slugurl({"request": self.request}, "datenschutz")
+        kwargs["terms"] = slugurl({"request": self.request}, "terms")
+        kwargs["platform_name"] = get_current_site(self.request).name
+        return kwargs
+
+
+class SignUpView(TermsSignUpMixin, FormView):
     template_name = "dll/user/signup.html"
     form_class = SignUpForm
     email_template = "dll/user/email/account_activation_email.html"
     success_url = reverse_lazy("user:signup-success")
-
-    def get_form_kwargs(self):
-        kwargs = super(SignUpView, self).get_form_kwargs()
-        kwargs["privacy_url"] = slugurl({"request": self.request}, "datenschutz")
-        kwargs["terms"] = slugurl({"request": self.request}, "terms")
-        return kwargs
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -329,6 +333,22 @@ class SignUpView(FormView):
                 token = self.request.build_absolute_uri(token)
                 form.send_registration_email(token)
 
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class AcceptTermsView(TermsSignUpMixin, FormView):
+    template_name = "dll/user/terms_check.html"
+    form_class = AcceptTermsForm
+    success_url = "/"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["instance"] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.save()
         return HttpResponseRedirect(self.get_success_url())
 
 

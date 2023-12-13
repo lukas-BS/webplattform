@@ -1,17 +1,18 @@
 import datetime
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, ButtonHolder, Fieldset
+from crispy_forms.layout import Submit, Layout, ButtonHolder, Fieldset, Layout, HTML
 
 from django import forms
 from django.contrib.auth.forms import (
     UserCreationForm,
     PasswordChangeForm,
     PasswordResetForm,
+    UserChangeForm,
 )
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from wagtail.templatetags.wagtailcore_tags import slugurl
+from django.utils.safestring import mark_safe
 
 from .models import DllUser
 
@@ -27,23 +28,50 @@ class EditUserForm(forms.ModelForm):
 class SignUpForm(UserCreationForm):
     terms_accepted = forms.BooleanField(required=True)
     newsletter_registration = forms.BooleanField(
-        label="Ja, ich möchte den Newsletter des digital.learning.labs erhalten.",
+        label="Ja, ich möchte den Newsletter des {platform_name} erhalten und \
+            willige ein, dass meine dafür erforderlichen personenbezogenen Daten verarbeitet werden können.",
         required=False,
+    )
+
+    personal_data = forms.BooleanField(
+        required=True,
+        label="Um mich registrieren zu können, willige ich in die Verarbeitung meiner \
+              personenbezogenen Daten ein, wie oben in den Feldern erforderlich",
     )
 
     def __init__(self, *args, **kwargs):
         data_privacy_url = kwargs.pop("privacy_url")
         terms = kwargs.pop("terms")
+        platform_name = kwargs.pop("platform_name")
         super(SignUpForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+
+        data_privacy_text = mark_safe(
+            f"""<p>Wenn Sie in die Verarbeitung ihrer Daten einwilligen, haben Sie jederzeit die Möglichkeit 
+            die Einwilligung, ohne einen persönlichen Nachteil, zu widerrufen. Weitere Informationen zum
+            Datenschutz finden Sie in unserer <a target="_blank" href="{data_privacy_url}">Datenschutzinformation</a>.</p>"""
+        )
+        self.helper.layout = Layout(
+            "first_name",
+            "last_name",
+            "email",
+            "personal_data",
+            "newsletter_registration",
+            HTML(data_privacy_text),
+            "terms_accepted",
+            "password1",
+            "password2",
+        )
         self.helper.add_input(
             Submit("submit", "Absenden", css_class="button button--primary")
         )
-        self.fields["terms_accepted"].label = (
-            f'Ja, ich stimme den <a href="{terms}">Nutzungsbedingungen</a>- und den '
-            f'<a href="{data_privacy_url}">Datenschutzbestimmungen</a> des digital.learning.lab zu.'
+        self.fields["terms_accepted"].label = mark_safe(
+            f'Ja, ich stimme den <a target="_blank" href="{terms}">Nutzungsbedingungen</a> des {platform_name} zu.'
         )
         self.fields["first_name"].required = True
+        self.fields["newsletter_registration"].label = self.fields[
+            "newsletter_registration"
+        ].label.format(platform_name=platform_name)
         self.fields["last_name"].required = True
         self.fields["email"].required = True
 
@@ -63,12 +91,65 @@ class SignUpForm(UserCreationForm):
             "first_name",
             "last_name",
             "email",
+            "personal_data",
             "newsletter_registration",
             "terms_accepted",
             "password1",
             "password2",
         )
         labels = {"terms_accepted": "Nutzungs- und Datenschutzbestimmungen"}
+
+
+class AcceptTermsForm(UserChangeForm):
+    personal_data = forms.BooleanField(
+        required=True,
+        label="Um mich registrieren zu können, willige ich in die Verarbeitung meiner \
+              personenbezogenen Daten ein, wie oben in den Feldern erforderlich",
+    )
+
+    def __init__(self, *args, **kwargs):
+        data_privacy_url = kwargs.pop("privacy_url")
+        terms = kwargs.pop("terms")
+        platform_name = kwargs.pop("platform_name")
+        super(AcceptTermsForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
+        data_privacy_text = mark_safe(
+            f"""<p>Wenn Sie in die Verarbeitung ihrer Daten einwilligen, haben Sie jederzeit die Möglichkeit 
+            die Einwilligung, ohne einen persönlichen Nachteil, zu widerrufen. Weitere Informationen zum
+            Datenschutz finden Sie in unserer <a target="_blank" href="{data_privacy_url}">Datenschutzinformation</a>.</p>"""
+        )
+        self.helper.layout = Layout(
+            "first_name",
+            "last_name",
+            "email",
+            "personal_data",
+            HTML(data_privacy_text),
+            "terms_accepted",
+        )
+        self.helper.add_input(
+            Submit("submit", "Absenden", css_class="button button--primary")
+        )
+        self.helper.add_input(
+            Submit("submit", "Account löschen", css_class="button button--danger")
+        )
+        self.fields["first_name"].disabled = True
+        self.fields["last_name"].disabled = True
+        self.fields["email"].disabled = True
+
+        self.fields["terms_accepted"].label = mark_safe(
+            f'Ja, ich stimme den <a target="_blank" href="{terms}">Nutzungsbedingungen</a> des {platform_name} zu.'
+        )
+
+    class Meta:
+        model = DllUser
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "personal_data",
+            "terms_accepted",
+        )
 
 
 class UserProfileForm(forms.ModelForm):
