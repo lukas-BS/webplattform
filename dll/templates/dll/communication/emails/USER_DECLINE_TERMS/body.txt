@@ -1,0 +1,1 @@
+Nutzer {{ user_email }} - {{ username }} hat Löschung beantragt. Das Konto wurde deaktiviert.

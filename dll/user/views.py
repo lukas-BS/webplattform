@@ -358,6 +358,8 @@ class DeclineTermsView(View):
         user.is_active = False
         user.save()
         context = {
+            "username": user.username,
+            "user_email": user.email,
             "email": settings.DEFAULT_FROM_EMAIL,
             "subject": "Nutzer löschen",
             "message": f"Nutzer {user.email} - {user.username} hat Löschung beantragt. Das Konto wurde deaktiviert.",
