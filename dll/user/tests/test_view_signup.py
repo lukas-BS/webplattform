@@ -45,6 +45,7 @@ class SuccessfulSignupTests(TestCase):
             "password1": "@%$hnsd345",
             "password2": "@%$hnsd345",
             "terms_accepted": True,
+            "personal_data": True,
         }
         self.response = self.client.post(url, data)
         self.success_url = reverse("user:signup-success")

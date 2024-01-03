@@ -22,6 +22,7 @@ class SuccessfulLoginTests(TestCase):
             "password1": "@%$hnsd345",
             "password2": "@%$hnsd345",
             "terms_accepted": True,
+            "personal_data": True,
         }
         self.response = self.client.post(signup_url, data)
 
