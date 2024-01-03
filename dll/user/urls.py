@@ -13,6 +13,7 @@ from .views import (
     ProfileViewChangePassword,
     ProfileViewDelete,
     ProfileViewDeleteSuccess,
+    DeclineTermsView,
     confirm_email,
 )
 
@@ -21,6 +22,7 @@ app_name = "user"
 urlpatterns = [
     path("signup/", SignUpView.as_view(), name="signup"),
     path("terms-check/", AcceptTermsView.as_view(), name="terms-check"),
+    path("terms-decline/", DeclineTermsView.as_view(), name="terms-decline"),
     path("signup/confirm-email", SignUpSuccessfulView.as_view(), name="signup-success"),
     path(
         "login/",

@@ -11,7 +11,8 @@ class AcceptedTermsMiddleware:
         if user.is_authenticated:
             if not user.terms_accepted or not user.personal_data:
                 terms_check_url = reverse("user:terms-check")
-                if request.path != terms_check_url:
+                terms_decline_url = reverse("user:terms-decline")
+                if request.path not in [terms_check_url, terms_decline_url]:
                     return redirect(terms_check_url)
         response = self.get_response(request)
         return response

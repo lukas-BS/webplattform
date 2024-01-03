@@ -15,6 +15,7 @@ COMMUNICATION_EVENT_TYPES = (
     ("REVIEW_ACCEPTED", "Inhalt freigegeben"),
     ("REVIEW_DECLINED", "Inhalt abgelehnt"),
     ("USER_SIGNUP", "Nutzer registriert"),
+    ("USER_DECLINE_TERMS", "Nutzer löschen"),
 )
 
 

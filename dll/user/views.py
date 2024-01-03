@@ -1,7 +1,7 @@
 import json
 
 from django.contrib import messages
-from django.contrib.auth import login, get_user_model
+from django.contrib.auth import login, get_user_model, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -350,6 +350,27 @@ class AcceptTermsView(TermsSignUpMixin, FormView):
         user = form.save(commit=False)
         user.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class DeclineTermsView(View):
+    def post(self, *args, **kwargs):
+        user = self.request.user
+        user.is_active = False
+        user.save()
+        context = {
+            "email": settings.DEFAULT_FROM_EMAIL,
+            "subject": "Nutzer löschen",
+            "message": f"Nutzer {user.email} - {user.username} hat Löschung beantragt. Das Konto wurde deaktiviert.",
+        }
+        email = config.TESTIMONIAL_REVIEW_EMAIL or settings.REVIEW_MAIL
+        send_mail.delay(
+            event_type_code="USER_DECLINE_TERMS",
+            ctx=context,
+            email=email,
+            bcc=settings.EMAIL_SENDER,
+        )
+        logout(self.request)
+        return HttpResponseRedirect("/")
 
 
 class SignUpSuccessfulView(TemplateView):

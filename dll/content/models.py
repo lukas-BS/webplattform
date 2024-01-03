@@ -492,7 +492,6 @@ class Content(ModelMeta, RulesModelMixin, PublisherModel, PolymorphicModel):
             "content_title": instance.name,
         }
         email_list = instance._get_review_email()
-        print(email_list)
         if len(email_list):
             for email in email_list:
                 if email and "@" in email:
