@@ -365,12 +365,22 @@ class DeclineTermsView(View):
             "message": f"Nutzer {user.email} - {user.username} hat Löschung beantragt. Das Konto wurde deaktiviert.",
         }
         email = config.TESTIMONIAL_REVIEW_EMAIL or settings.REVIEW_MAIL
-        send_mail.delay(
-            event_type_code="USER_DECLINE_TERMS",
-            ctx=context,
-            email=email,
-            bcc=settings.EMAIL_SENDER,
-        )
+        if "," in email:
+            emails = email.split(",")
+            for email in emails:
+                send_mail.delay(
+                    event_type_code="USER_DECLINE_TERMS",
+                    ctx=context,
+                    email=email,
+                    bcc=settings.EMAIL_SENDER,
+                )
+        else:
+            send_mail.delay(
+                event_type_code="USER_DECLINE_TERMS",
+                ctx=context,
+                email=email,
+                bcc=settings.EMAIL_SENDER,
+            )
         logout(self.request)
         return HttpResponseRedirect("/")
 
