@@ -230,9 +230,9 @@ class TeachingModuleAdmin(ImportExportMixin, ContentAdmin):
             output,
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
-        response[
-            "Content-Disposition"
-        ] = "attachment; filename=unterrichtsbausteine.xlsx"
+        response["Content-Disposition"] = (
+            "attachment; filename=unterrichtsbausteine.xlsx"
+        )
 
         return response
 

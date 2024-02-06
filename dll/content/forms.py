@@ -58,9 +58,7 @@ class HelpTextFieldForm(forms.ModelForm):
             kwargs["initial"] = {"name": instance.name}
         super(HelpTextFieldForm, self).__init__(*args, **kwargs)
         if instance:
-            self.fields[
-                "name"
-            ].widget.choices = (
+            self.fields["name"].widget.choices = (
                 instance.help_text.get_help_text_fields_for_content_type()
             )
 

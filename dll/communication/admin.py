@@ -51,9 +51,9 @@ class NewsletterSubscriptionAdmin(admin.ModelAdmin):
 
     def export_subscriptions(self, request):
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment; filename="newsletter_subscriptions.csv"'
+        response["Content-Disposition"] = (
+            'attachment; filename="newsletter_subscriptions.csv"'
+        )
         writer = csv.writer(response)
         writer.writerow(["id", "email", "confirmation_date"])
         for sub in self.get_queryset(request).filter(doi_confirmed=True):

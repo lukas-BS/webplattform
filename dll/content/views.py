@@ -250,14 +250,14 @@ class ToolDetailView(ContentDetailView):
         ctx["show_banner"] = True
         if settings.SITE_ID == 1:
             dlt_domain = Site.objects.get(pk=2).domain
-            ctx[
-                "dlt_tool_url"
-            ] = f"{self.request.scheme}://{dlt_domain}/tools/{self.object.slug}"
+            ctx["dlt_tool_url"] = (
+                f"{self.request.scheme}://{dlt_domain}/tools/{self.object.slug}"
+            )
         if settings.SITE_ID == 2:
             dll_domain = Site.objects.get(pk=1).domain
-            ctx[
-                "canonical"
-            ] = f"{self.request.scheme}://{dll_domain}/tools/{self.object.slug}/"
+            ctx["canonical"] = (
+                f"{self.request.scheme}://{dll_domain}/tools/{self.object.slug}/"
+            )
 
         return ctx
 
@@ -529,9 +529,9 @@ class BaseFilterView(TemplateView):
         ctx = super(BaseFilterView, self).get_context_data(**kwargs)
         if self.rss_feed_url:
             site = get_current_site(self.request)
-            ctx[
-                "rss_feed_url"
-            ] = f"{self.request.scheme}://{site.domain}{self.rss_feed_url}"
+            ctx["rss_feed_url"] = (
+                f"{self.request.scheme}://{site.domain}{self.rss_feed_url}"
+            )
         return ctx
 
 
