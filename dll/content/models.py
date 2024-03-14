@@ -428,13 +428,14 @@ class Content(ModelMeta, RulesModelMixin, PublisherModel, PolymorphicModel):
         if self.image:
             self.image.delete()
         base_folder, created = Folder.objects.get_or_create(
-            name=self.__class__._meta.verbose_name_plural, level=0
+            name=self.__class__._meta.verbose_name_plural,
         )
         sub_folder, created = Folder.objects.get_or_create(
-            name=base, level=1, parent=base_folder
+            name=base, parent=base_folder
         )
         images_folder, created = Folder.objects.get_or_create(
-            name="Images", parent=sub_folder, level=2
+            name="Images",
+            parent=sub_folder,
         )
         if image_name is None:
             image_name = str(os.path.dirname(path).split(os.sep)[-1]) + str(
@@ -453,13 +454,13 @@ class Content(ModelMeta, RulesModelMixin, PublisherModel, PolymorphicModel):
     def get_folder(self):
         base = self.base_folder or custom_slugify(self.name)
         base_folder, created = Folder.objects.get_or_create(
-            name=self.__class__._meta.verbose_name_plural, level=0
+            name=self.__class__._meta.verbose_name_plural
         )
         sub_folder, created = Folder.objects.get_or_create(
-            name=base, level=1, parent=base_folder
+            name=base, parent=base_folder
         )
         files_folder, created = Folder.objects.get_or_create(
-            name="Files", parent=sub_folder, level=2
+            name="Files", parent=sub_folder
         )
         return files_folder
 

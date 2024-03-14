@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 
 from constance import config
 from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.generic import TemplateView, FormView, RedirectView
 from django.views.generic.base import View
 from rest_framework.generics import ListAPIView

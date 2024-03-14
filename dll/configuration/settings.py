@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     "easy_thumbnails",
     "easy_thumbnails.optimize",
     "filer",
-    "mptt",
     "meta",
     "taggit",
     "polymorphic",
@@ -88,7 +87,6 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
-    "wagtail.contrib.modeladmin",
     "wagtailmenus",
     "wagtail",
     "nested_admin",
@@ -200,7 +198,9 @@ if env.bool("DJANGO_USE_S3", False):
     # s3 public media settings
     PUBLIC_MEDIA_LOCATION = "media"
     MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/"
-    DEFAULT_FILE_STORAGE = "dll.general.storage_backends.PublicMediaStorage"
+    STORAGES = {
+        "default": {"BACKEND": "dll.general.storage_backends.PublicMediaStorage"}
+    }
 else:
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/2.2/howto/static-files/

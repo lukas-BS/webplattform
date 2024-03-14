@@ -60,7 +60,10 @@ database dump into the database container and restore it:
 ```bash
 docker exec [db-container-name] psql -U postgres -c "CREATE ROLE dll_admin;"
 docker cp ./local_path/to/db/dump [db-container-name]:/db_dump.bin
+# for bin
 docker exec [db-container-name] pg_restore -U postgres -d postgres /db_dump.bin
+# for sql
+docker exec [db-container-name] psql -U postgres -d postgres < /db_dump.sql
 ```
 
 The database container name can be retrieved by runnning `docker ps`.
