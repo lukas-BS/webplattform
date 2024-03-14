@@ -194,12 +194,12 @@ if env.bool("DJANGO_USE_S3", False):
     # s3 static settings
     STATIC_LOCATION = "static"
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
-    STATICFILES_STORAGE = "dll.general.storage_backends.StaticStorage"
     # s3 public media settings
     PUBLIC_MEDIA_LOCATION = "media"
     MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/"
     STORAGES = {
-        "default": {"BACKEND": "dll.general.storage_backends.PublicMediaStorage"}
+        "default": {"BACKEND": "dll.general.storage_backends.PublicMediaStorage"},
+        "staticfiles": {"BACKEND": "dll.general.storage_backends.StaticStorage"},
     }
 else:
     # Static files (CSS, JavaScript, Images)
