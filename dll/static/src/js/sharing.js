@@ -2,7 +2,7 @@ import $ from 'jquery';
 import Popover from 'bootstrap/js/dist/popover';
 
 $(function () {
-  $('.js-share-content').map(ele => {new Popover(ele, {
+  $('.js-share-content').map((idx, ele) => {new Popover(ele, {
       html: true,
       sanitize: false,
       trigger: 'focus'
