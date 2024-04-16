@@ -93,9 +93,9 @@
   import vSelect from 'vue-select'
   import debounce from 'lodash/debounce'
   import axios from 'axios'
-  import Pagination from './components/Pagination.vue'
-  import { paginationMixin } from './mixins/paginationMixin'
-  import { axiosMixin } from './mixins/axiosMixin'
+  import Pagination from '../components/Pagination.vue'
+  import { paginationMixin } from '../mixins/paginationMixin'
+  import { axiosMixin } from '../mixins/axiosMixin'
 
   export default {
     name: 'OverviewApp',

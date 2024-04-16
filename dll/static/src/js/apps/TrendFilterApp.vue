@@ -70,8 +70,8 @@
 
 <script>
 
-  import { contentFilter } from './mixins/contentFilterMixin'
-  import { queryMixin } from './mixins/queryMixin'
+  import { contentFilter } from '../mixins/contentFilterMixin'
+  import { queryMixin } from '../mixins/queryMixin'
 
   export default {
     name: 'TrendsFilterApp',

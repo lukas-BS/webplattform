@@ -35,7 +35,7 @@
 </template>
 
 <script>
-  import { submissionMixin } from './mixins/submissionMixin'
+  import { submissionMixin } from '../mixins/submissionMixin'
   import ContentSubmissionForm from './ContentSubmissionForm.vue'
 
   export default {

@@ -69,10 +69,10 @@
 </template>
 
 <script>
-  import { submissionMixin } from './mixins/submissionMixin'
+  import { submissionMixin } from '../mixins/submissionMixin'
   import ContentSubmissionForm from './ContentSubmissionForm.vue'
-  import Dropzone from './components/Dropzone.vue'
-  import FormProgress from './components/FormProgress.vue'
+  import Dropzone from '../components/Dropzone.vue'
+  import FormProgress from '../components/FormProgress.vue'
 
   export default {
     name: 'TeachingModuleSubmissionApp',

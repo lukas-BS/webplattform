@@ -48,9 +48,9 @@
 </template>
 
 <script>
-  import { submissionMixin } from './mixins/submissionMixin'
+  import { submissionMixin } from '../mixins/submissionMixin'
   import ContentSubmissionForm from './ContentSubmissionForm.vue'
-  import DataProtectionInput from './components/DataProtectionInput.vue'
+  import DataProtectionInput from '../components/DataProtectionInput.vue'
 
   export default {
     name: 'ToolSubmissionApp',

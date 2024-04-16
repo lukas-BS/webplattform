@@ -74,7 +74,7 @@
 </template>
 
 <script>
-  import { contentFilter } from './mixins/contentFilterMixin'
+  import { contentFilter } from '../mixins/contentFilterMixin'
 
   export default {
     name: 'TeachingModulesFilterApp',

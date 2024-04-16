@@ -76,8 +76,8 @@ module.exports = {
   entry: {
     main_dll: path.join(__dirname, './static/src/js/index_dll.js'),
     main_dlt: path.join(__dirname, './static/src/js/index_dlt.js'),
-    flower: path.join(__dirname, './static/src/js/flower.js'),
-    filter: path.join(__dirname, './static/src/js/filter.js')
+    flower: path.join(__dirname, './static/src/js/django/flower.js'),
+    filter: path.join(__dirname, './static/src/js/apps/filter.js')
   },
   output: {
     path: path.resolve(__dirname, './static/dist/'),

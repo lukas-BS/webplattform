@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import { tooltipDirective } from '../tooltips'
+  import { tooltipDirective } from '../directives/tooltip'
 
   export default {
     name: 'ContentTeaser',
