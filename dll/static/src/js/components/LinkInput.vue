@@ -1,12 +1,12 @@
 <template>
   <div class="form-group">
       <label  :for="id" class="mb-2 w-100">{{ label }}:<span v-if="required">*</span></label>
-      <button class="button--neutral button--smallSquare button--help ml-1 float-right" type="button" data-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+      <button class="button--neutral button--smallSquare button--help ms-1 float-end" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
     <div class="form__links-input">
       <div class="d-flex align-items-baseline ">
-        <input type="text" class="form-control mr-3" :class="{'form__field--error': error}" :id="id" placeholder="Linktext" v-model="internalLink.url_name" :readonly="readonly">
-        <input type="text" class="form-control mr-3" :class="{'form__field--error': !internalLink.validUrl || error}" :id="id" placeholder="https://example.org" v-model="internalLink.url" :readonly="readonly" @blur="checkLinkValid(internalLink)">
-        <select class="form-control mr-3" name="types" v-model="internalLink.type" v-if="types">
+        <input type="text" class="form-control me-3" :class="{'form__field--error': error}" :id="id" placeholder="Linktext" v-model="internalLink.url_name" :readonly="readonly">
+        <input type="text" class="form-control me-3" :class="{'form__field--error': !internalLink.validUrl || error}" :id="id" placeholder="https://example.org" v-model="internalLink.url" :readonly="readonly" @blur="checkLinkValid(internalLink)">
+        <select class="form-control me-3" name="types" v-model="internalLink.type" v-if="types">
           <option value="video">Video / Audio</option>
           <option value="href">Text</option>
         </select>

@@ -17,7 +17,7 @@
         {% csrf_token %}
         {{ form|crispy }}
         <input type="hidden" name="next" value="{{ next }}">
-        <button class="button button--primary mr-2" type="submit">Einloggen</button>
+        <button class="button button--primary me-2" type="submit">Einloggen</button>
         <a class="button button--submit" href="{% url 'user:signup' %}">Registrieren</a>
       </form>
       <a href="{% url 'user:password_reset' %}">Passwort vergessen?</a>
@@ -25,7 +25,7 @@
     {% if DLT_FEATURES_ENABLED %}
     <div class="col-12 col-lg-4 offset-lg-1 text-center text-lg-left">
         <img src="{% static 'img/content/dll_dlt_login.svg' %}" alt="Login digital.learning.lab und digital.learning.tools" style="max-width: 300px;">
-        <p class="ml-md-5 h5 font-weight-light">
+        <p class="ms-md-5 h5 font-weight-light">
             Loggen Sie sich einmalig ein, <br>
             um beide Portale zu nutzen.
         </p>

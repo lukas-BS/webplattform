@@ -45,7 +45,7 @@
           </div>
         </form>
         <div class="text-center">
-          <button class="button button--primary d-lg-none" type="button" data-toggle="collapse" data-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
+          <button class="button button--primary d-lg-none" type="button" data-bs-toggle="collapse" data-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
             Filter ausklappen <span class="fas fa-chevron-circle-down"></span>
           </button>
         </div>

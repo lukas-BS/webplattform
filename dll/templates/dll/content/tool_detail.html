@@ -92,14 +92,14 @@
 
 {% block sidebar_navigation_items %}
     <li class="sidebar__nav-item">
-        <a class="sidebar__nav-link nav-link js-sidebar-nav-item active" id="overview-tab" data-toggle="pill"
+        <a class="sidebar__nav-link nav-link js-sidebar-nav-item active" id="overview-tab" data-bs-toggle="pill"
            href="#overview" role="tab" aria-controls="overview" aria-selected="true">
             Überblick
             <span class="sidebar__nav-link-item fas fa-angle-right fa-2x"></span>
         </a>
     </li>
     <li class="sidebar__nav-item">
-        <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="hints-tab" data-toggle="pill"
+        <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="hints-tab" data-bs-toggle="pill"
            href="#hints" role="tab" aria-controls="hints" aria-selected="false">
             Hinweise und Tutorials
             <span class="sidebar__nav-link-item fas fa-angle-right fa-2x"></span>
@@ -107,7 +107,7 @@
     </li>
     {% if SITE_ID == 2 and DLT_FEATURES_ENABLED %}
     <li class="sidebar__nav-item">
-        <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="data-protection-tab" data-toggle="pill" href="#data-protection"
+        <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="data-protection-tab" data-bs-toggle="pill" href="#data-protection"
            role="tab" aria-controls="data-protection" aria-selected="false">
             Datenschutz
             <span class="sidebar__nav-link-item fas fa-angle-right fa-2x"></span>
@@ -116,7 +116,7 @@
     {% endif %}
     {% if object.related_teaching_modules %}
         <li class="sidebar__nav-item">
-            <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="modules-tab" data-toggle="pill"
+            <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="modules-tab" data-bs-toggle="pill"
                href="#modules" role="tab" aria-controls="modules" aria-selected="false">
                 Bausteine
                 <span class="sidebar__nav-link-item fas fa-angle-right fa-2x"></span>
@@ -125,7 +125,7 @@
     {% endif %}
     {% if object.related_tools %}
         <li class="sidebar__nav-item">
-            <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="similar-tools-tab" data-toggle="pill"
+            <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="similar-tools-tab" data-bs-toggle="pill"
                href="#similar-tools" role="tab" aria-controls="similar-tools" aria-selected="false">
                 Ähnliche Tools
                 <span class="sidebar__nav-link-item fas fa-angle-right fa-2x"></span>
@@ -134,7 +134,7 @@
     {% endif %}
     {% if object.related_trends %}
         <li class="sidebar__nav-item">
-            <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="trends-tab" data-toggle="pill" href="#trends"
+            <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="trends-tab" data-bs-toggle="pill" href="#trends"
                role="tab" aria-controls="trends" aria-selected="false">
                 Trends
                 <span class="sidebar__nav-link-item fas fa-angle-right fa-2x"></span>
@@ -144,7 +144,7 @@
 
     {% if DLT_FEATURES_ENABLED %}
         <li class="sidebar__nav-item">
-            <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="more-tab" data-toggle="pill" href="#more"
+            <a class="sidebar__nav-link nav-link js-sidebar-nav-item" id="more-tab" data-bs-toggle="pill" href="#more"
                role="tab" aria-controls="more" aria-selected="false">
                 Mehr entdecken
                 <span class="sidebar__nav-link-item fas fa-angle-right fa-2x"></span>

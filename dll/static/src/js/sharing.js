@@ -1,10 +1,12 @@
 import $ from 'jquery';
+import Popover from 'bootstrap/js/dist/popover';
 
 $(function () {
-  $('.js-share-content').popover({
-    html: true,
-    sanitize: false,
-    trigger: 'focus'
+  $('.js-share-content').map(ele => {new Popover(ele, {
+      html: true,
+      sanitize: false,
+      trigger: 'focus'
+    });
   });
   $("body").on("click", "[data-share]", (e) => {
     var value = $(e.target).closest("[data-share]").data("share");

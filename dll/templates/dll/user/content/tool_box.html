@@ -8,7 +8,7 @@
       <div class="col-6 col-md-4 col-xl-3 mb-3">
         <a class="toolbox-tile" href="{% url 'tools-filter' %}?potentials={{ info.pk }}&favorites=true">
           <div class="toolbox-tile-counter">{{ info.count }}</div>
-          <div class="toolbox-icon icon--dlt icon-{{ slug }}--white" data-toggle="tooltip" title="{{ info.name }}"></div>
+          <div class="toolbox-icon icon--dlt icon-{{ slug }}--white" data-bs-toggle="tooltip" title="{{ info.name }}"></div>
           <div>
             {{ info.name }}
           </div>

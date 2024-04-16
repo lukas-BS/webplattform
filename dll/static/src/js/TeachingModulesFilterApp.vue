@@ -40,17 +40,17 @@
             <h3 class="form-subhead">Jahrgangsstufe von / bis:</h3>
               <div class="row">
                 <div class="col">
-                  <input type="text" name="schoolClassFrom" v-model="schoolClassFrom" class="form-control mr-2">
+                  <input type="text" name="schoolClassFrom" v-model="schoolClassFrom" class="form-control me-2">
                 </div>
                 <div class="col-1 text-center"> - </div>
                 <div class="col">
-                  <input type="text" name="schoolClassTo" v-model="schoolClassTo" class="form-control ml-2">
+                  <input type="text" name="schoolClassTo" v-model="schoolClassTo" class="form-control ms-2">
                 </div>
               </div>
           </div>
         </form>
         <div class="text-center">
-          <button class="button button--primary d-lg-none" type="button" data-toggle="collapse" data-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
+          <button class="button button--primary d-lg-none" type="button" data-bs-toggle="collapse" data-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
             Filter ausklappen <span class="fas fa-chevron-circle-down"></span>
           </button>
         </div>

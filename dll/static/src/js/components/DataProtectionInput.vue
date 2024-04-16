@@ -1,15 +1,15 @@
 <template>
   <div class="form-group">
-      <label  :for="id" class="mb-2 w-100"><span class="icon--dlt mr-3" :class="iconClass" v-if="icon"></span> {{ label }}:<span v-if="required">*</span></label>
-      <button class="button--neutral button--smallSquare button--help ml-1 float-right" type="button" data-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+      <label  :for="id" class="mb-2 w-100"><span class="icon--dlt me-3" :class="iconClass" v-if="icon"></span> {{ label }}:<span v-if="required">*</span></label>
+      <button class="button--neutral button--smallSquare button--help ms-1 float-end" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
     <div class="form__links-input">
       <div class="d-flex align-items-baseline ">
-        <select class="form-control mr-3" name="types" v-model="complianceLevel" @change="updateText">
+        <select class="form-control me-3" name="types" v-model="complianceLevel" @change="updateText">
           <option value="compliant">Erfüllt</option>
           <option value="not_compliant">Nicht erfüllt</option>
           <option value="unknown">Unbekannt</option>
         </select>
-        <input type="text" class="form-control mr-3" :class="{'form__field--error': error}" :id="id" placeholder="Anmerkungen" v-model="complianceTextInternal" :readonly="readonly">
+        <input type="text" class="form-control me-3" :class="{'form__field--error': error}" :id="id" placeholder="Anmerkungen" v-model="complianceTextInternal" :readonly="readonly">
       </div>
     </div>
     <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>

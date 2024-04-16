@@ -3,9 +3,9 @@
     <label :for="id">{{ label }}:<span v-if="required">*</span></label>
     <div class="d-flex">
     <input :type="type" class="form-control" :class="{'form__field--error': error}" :id="id" :placeholder="placeholder" v-model="inputValue" :readonly="readonly" :maxlength="maximalChars">
-    <button class="button--neutral button--smallSquare button--help ml-1" type="button" data-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+    <button class="button--neutral button--smallSquare button--help ms-1" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
     </div>
-    <small v-if="characterCounter" class="form-text text-muted float-right">{{ charactersLeft }} Zeichen verbleibend</small>
+    <small v-if="characterCounter" class="form-text text-muted float-end">{{ charactersLeft }} Zeichen verbleibend</small>
     <div class="clearfix"></div>
     <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>
   </div>

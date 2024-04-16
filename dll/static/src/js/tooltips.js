@@ -1,13 +1,21 @@
 import $ from 'jquery'
 import Vue from 'vue'
+import Tooltip from 'bootstrap/js/dist/tooltip'
 
-$('.content-teaser__competence, .information-area__icon').tooltip({
-  trigger: 'hover'
-})
+const elements = $('.content-teaser__competence, .information-area__icon');
+if (elements) {
+  elements.map(ele => {
+    new Tooltip(ele, {
+      trigger: 'hover'
+    })
+  })
+}
+
 
 export const tooltipDirective = Vue.directive('tooltip', function(el, binding){
-    $(el).tooltip({
-             title: binding.value,
-             trigger: 'hover'
-         })
+  if (!el) return;
+  new Tooltip($(el), {
+    title: binding.value,
+    trigger: 'hover'
+  })
 })

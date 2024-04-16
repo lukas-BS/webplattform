@@ -40,10 +40,10 @@
       {% endfor %}
     </ul>
     {% for competence in competences %}
-      <span class="information-area__icon {{ competence.icon_class }}{% if competence in object.competences.all %} information-area__icon--active{% endif %}" data-toggle="tooltip" title="{{ competence.name }}"></span>
+      <span class="information-area__icon {{ competence.icon_class }}{% if competence in object.competences.all %} information-area__icon--active{% endif %}" data-bs-toggle="tooltip" title="{{ competence.name }}"></span>
     {% endfor %}
     {% if object.sub_competences.count > 0 %}
-    <a class="information-area__title d-block pt-3" href="#subcompetence-collapse" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="subcompetence-collapse">
+    <a class="information-area__title d-block pt-3" href="#subcompetence-collapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="subcompetence-collapse">
         Detaillierte Teilkompetenzbeschreibungen
     </a>
     <div class="collapse" id="subcompetence-collapse">

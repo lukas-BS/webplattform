@@ -63,12 +63,12 @@ export const submissionMixin = {
   },
   methods: {
     initToolTips () {
-      $('[data-toggle="tooltip"]').tooltip({
+      $('[data-bs-toggle="tooltip"]').tooltip({
         trigger: 'manual'
       }).click(e => {
         $(e.target).tooltip('toggle')
       }).on('show.bs.tooltip', () => {
-        $('[data-toggle="tooltip"]').tooltip('hide')
+        $('[data-bs-toggle="tooltip"]').tooltip('hide')
       })
     },
     updateReview () {

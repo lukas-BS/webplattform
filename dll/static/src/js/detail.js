@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import axios from 'axios'
+import Toast from 'bootstrap/js/dist/toast'
 
 function getCookie(name) {
    var cookieValue = null;
@@ -16,6 +17,7 @@ function getCookie(name) {
    }
    return cookieValue;
 }
+
 window.getCookie = getCookie;
 $('.js-sidebar-nav-item').click(function (e) {
   $('html, body').animate({scrollTop: $('.js-tab-content').offset().top - $('.js-header').height() - 40}, 400)
@@ -38,7 +40,8 @@ $('.js-favor, .js-unfavor').click(function (e) {
         $(e.target).addClass('d-none')
         $('.js-favor').removeClass('d-none')
       }
-      $('.js-toast').toast('show')
+      const t = new Toast($('.js-toast'))
+      t.show();
     })
     .catch(err => {
       console.log(err)
@@ -47,6 +50,6 @@ $('.js-favor, .js-unfavor').click(function (e) {
   return false;
 })
 
-$('.js-toast').toast({
+new Toast($('.js-toast'), {
   delay: 3000
 })

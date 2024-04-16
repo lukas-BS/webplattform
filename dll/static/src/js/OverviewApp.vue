@@ -14,7 +14,7 @@
           <div class="col" v-if="content.co_authors.length">
             <div class="content-box__coauthors">
               <span class="fas fa-users align-top"></span>
-              <ul class="list-unstyled d-inline-block ml-1">
+              <ul class="list-unstyled d-inline-block ms-1">
                 <li v-for="author in content.co_authors">{{ author }}</li>
               </ul>
             </div>
@@ -78,7 +78,7 @@
         <div class="col" v-if="content.co_authors.length">
           <div class="content-box__coauthors">
             <span class="fas fa-users align-top"></span>
-            <ul class="list-unstyled d-inline-block ml-1">
+            <ul class="list-unstyled d-inline-block ms-1">
               <li v-for="author in content.co_authors">{{ author }}</li>
             </ul>
           </div>

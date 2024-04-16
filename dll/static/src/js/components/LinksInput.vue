@@ -1,13 +1,13 @@
 <template>
   <div class="form-group">
     <label  :for="id" class="mb-2 w-100">{{ label }}:<span v-if="required">*</span></label>
-    <button class="button--neutral button--smallSquare button--help ml-1 float-right" type="button" data-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+    <button class="button--neutral button--smallSquare button--help ms-1 float-end" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
     <div class="form__list-inputs">
       <div class="mb-2" v-for="link in internalLinks">
         <div class="d-flex align-items-baseline ">
-          <input type="text" class="form-control mr-3" :id="id" :placeholder="namePlaceholder" v-model="link.name" :readonly="readonly">
-          <input type="text" class="form-control mr-3" :class="{'form__field--error': !link.validUrl}" :id="id" :placeholder="linkPlaceholder" v-model="link.url" :readonly="readonly" @blur="checkLinkValid(link)">
-          <select class="form-control mr-3" name="types" v-model="link.type" v-if="types">
+          <input type="text" class="form-control me-3" :id="id" :placeholder="namePlaceholder" v-model="link.name" :readonly="readonly">
+          <input type="text" class="form-control me-3" :class="{'form__field--error': !link.validUrl}" :id="id" :placeholder="linkPlaceholder" v-model="link.url" :readonly="readonly" @blur="checkLinkValid(link)">
+          <select class="form-control me-3" name="types" v-model="link.type" v-if="types">
             <option value="video">Video / Audio</option>
             <option value="href">Text</option>
           </select>

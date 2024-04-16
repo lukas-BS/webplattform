@@ -136,7 +136,7 @@ class AcceptTermsForm(UserChangeForm):
             "terms_accepted",
         )
         self.helper.add_input(
-            Submit("submit", "Absenden", css_class="button button--primary mr-2")
+            Submit("submit", "Absenden", css_class="button button--primary me-2")
         )
         self.helper.add_input(
             Button(

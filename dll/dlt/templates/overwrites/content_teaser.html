@@ -13,8 +13,8 @@
       <div class="content-teaser__competences">
 
         {% for potential in content.potentials.all %}
-          <span class="content-teaser__competence icon--dlt icon-{{ potential.slug }}--blue" data-toggle="tooltip" title="{{ potential.name }}"></span>
-          <span class="content-teaser__competence icon--dlt icon-{{ potential.slug }}--white" data-toggle="tooltip" title="{{ potential.name }}"></span>
+          <span class="content-teaser__competence icon--dlt icon-{{ potential.slug }}--blue" data-bs-toggle="tooltip" title="{{ potential.name }}"></span>
+          <span class="content-teaser__competence icon--dlt icon-{{ potential.slug }}--white" data-bs-toggle="tooltip" title="{{ potential.name }}"></span>
         {% endfor %}
 
       </div>

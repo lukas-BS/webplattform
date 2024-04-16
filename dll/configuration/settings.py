@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     "polymorphic",
     "django_extensions",
     "crispy_forms",
-    "crispy_bootstrap4",
+    "crispy_bootstrap5",
     "ckeditor",
     "import_export",
     "dll.content",
@@ -279,8 +279,8 @@ LOGIN_URL = "user:login"
 LOGIN_REDIRECT_URL = "user-content-overview"
 LOGOUT_REDIRECT_URL = "/"
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",

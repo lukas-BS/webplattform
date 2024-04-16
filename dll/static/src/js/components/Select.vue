@@ -5,7 +5,7 @@
       <select :name="id" :id="id" class="form-control" :class="{'form__field--error': error}" v-model="inputValue" :disabled="readonly">
         <option v-for="option in options" :value="option.value" :selected="option.value === defaultVal">{{ option.label }}</option>
       </select>
-      <button class="button--neutral button--smallSquare button--help ml-1" type="button" data-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+      <button class="button--neutral button--smallSquare button--help ms-1" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
     </div>
     <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>
   </div>

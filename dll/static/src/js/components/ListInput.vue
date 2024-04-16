@@ -1,11 +1,11 @@
 <template>
   <div class="form-group">
     <label :for="id" class="mb-2 w-100">{{ label }}:<span v-if="required">*</span></label>
-    <button class="button--neutral button--smallSquare button--help ml-1 float-right" type="button" data-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+    <button class="button--neutral button--smallSquare button--help ms-1 float-end" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
     <div class="form__list-inputs">
       <div class="d-flex align-items-baseline mb-2" v-for="item in list">
-        <input type="text" class="form-control mr-3 form__list-input" :id="id" :placeholder="placeholder" v-model="item.text" @input="emitUpdate" :readonly="readonly" v-if="!textarea">
-        <textarea type="text" class="form-control mr-3" :id="id" :placeholder="placeholder" v-model="item.text" @input="emitUpdate" :readonly="readonly" v-else></textarea>
+        <input type="text" class="form-control me-3 form__list-input" :id="id" :placeholder="placeholder" v-model="item.text" @input="emitUpdate" :readonly="readonly" v-if="!textarea">
+        <textarea type="text" class="form-control me-3" :id="id" :placeholder="placeholder" v-model="item.text" @input="emitUpdate" :readonly="readonly" v-else></textarea>
         <button class="button--danger button--smallSquare" @click="removeItem(item)" type="button" v-if="!readonly">
           <span class="fas fa-times"></span>
         </button>

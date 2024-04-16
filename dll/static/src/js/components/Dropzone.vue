@@ -5,7 +5,7 @@
     <ul class="list-unstyled">
       <li v-for="file in fileList" class="file-list__item">
         <a :href="file.url">{{ file.title }}</a>
-        <a href="#" @click="removeFile($event, file)" class="float-right">Löschen</a>
+        <a href="#" @click="removeFile($event, file)" class="float-end">Löschen</a>
       </li>
     </ul>
   </div>

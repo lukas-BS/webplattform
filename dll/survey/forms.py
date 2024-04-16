@@ -39,7 +39,7 @@ class SurveyResultForm(forms.ModelForm):
         self.helper.error_text_inline = True
         self.helper.layout = Layout()
         self._generate_fields()
-        self.helper.layout.append(Submit("submit", "Absenden", css_class="float-right"))
+        self.helper.layout.append(Submit("submit", "Absenden", css_class="float-end"))
 
     def _generate_fields(self):
         self.fields = {}

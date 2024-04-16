@@ -6,7 +6,7 @@
       </button>
       <div class="form-group mt-4" v-if="inputValue || show">
         <div class="d-flex">
-          <input type="text" class="form-control mr-2" :id="id" v-model="inputValue" :placeholder="'Kommentar zum Feld \'' + name + '\''">
+          <input type="text" class="form-control me-2" :id="id" v-model="inputValue" :placeholder="'Kommentar zum Feld \'' + name + '\''">
           <button class="button--danger button--smallSquare" @click="remove" type="button">
             <span class="fas fa-times"></span>
           </button>

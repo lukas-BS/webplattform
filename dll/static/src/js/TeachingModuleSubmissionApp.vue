@@ -61,7 +61,7 @@
     </div>
     <template v-slot:extra-buttons>
       <div class="text-right"  v-if="mode === 'edit' || mode === 'review'">
-        <button class="button button--primary mr-3" type="button" @click="setIndex(stepIndex - 1)" v-if="stepIndex > 0">Vorheriger Schritt</button>
+        <button class="button button--primary me-3" type="button" @click="setIndex(stepIndex - 1)" v-if="stepIndex > 0">Vorheriger Schritt</button>
         <button class="button button--primary" type="button" @click="setIndex(stepIndex + 1)" v-if="stepIndex < steps.length - 1">Nächster Schritt</button>
       </div>
     </template>

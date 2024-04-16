@@ -3,11 +3,11 @@
     <label :for="id">{{ label }}:<span v-if="required">*</span></label>
     <div class="row">
       <div class="col d-flex align-items-baseline">
-        <label class="mr-3" :for="id + 'from'">{{ labelFrom }}:</label>
+        <label class="me-3" :for="id + 'from'">{{ labelFrom }}:</label>
         <input :type="type" class="form-control" :id="id + '-from'" v-model="from" :min="min" :max="max" :readonly="readonly" @blur="validateFrom">
       </div>
       <div class="col d-flex align-items-baseline">
-        <label class="mr-3" :for="id + 'to'">{{ labelTo }}:</label>
+        <label class="me-3" :for="id + 'to'">{{ labelTo }}:</label>
         <input :type="type" class="form-control" :id="id + '-to'" v-model="to" :min="min" :max="max" :readonly="readonly" @blur="validateTo">
       </div>
     </div>
