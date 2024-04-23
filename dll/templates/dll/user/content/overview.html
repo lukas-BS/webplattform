@@ -1,4 +1,5 @@
 {% extends 'dll/default_page.html' %}
+{% load render_bundle from webpack_loader %}
 
 {% block content %}
     <h4>Herzlich Willkommen im Autor_innen-Bereich des digital.learning.lab</h4>
@@ -13,12 +14,14 @@
   <div id="overview-app"></div>
 {% endblock %}
 
-{% block extra_scripts %}
+{% block js %}
   {{ block.super }}
   <script>
-  window.dllData = {
-    retrieveUrl: '/api/meine-inhalte',
-    mode: 'overview',
-  }
+    window.dllData = {
+      retrieveUrl: '/api/meine-inhalte',
+      mode: 'overview',
+      csrfToken: '{{ csrf_token }}'
+    }
   </script>
+  {% render_bundle 'overview' 'js' %}
 {% endblock %}

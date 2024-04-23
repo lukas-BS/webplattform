@@ -5,7 +5,7 @@ RUN mkdir /node_deps
 COPY package.json /node_deps/
 COPY package-lock.json /node_deps/
 WORKDIR /node_deps
-RUN npm install
+RUN npm ci
 COPY webpack.config.js /node_deps/
 
 

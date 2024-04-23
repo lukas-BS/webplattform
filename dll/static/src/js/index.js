@@ -20,8 +20,6 @@ import './django/video'
 import './django/cookies'
 import './django/terms'
 
-import './apps/filter'
-import './apps/overview'
 import './apps/teachingModulesFilter'
 import './apps/testimonialOverview'
 import './apps/trendFilter'

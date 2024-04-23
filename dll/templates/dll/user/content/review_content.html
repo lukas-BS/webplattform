@@ -1,4 +1,5 @@
 {% extends 'dll/default_page.html' %}
+{% load render_bundle from webpack_loader %}
 
 {% block content %}
   <div>
@@ -20,5 +21,6 @@
     csrfToken: '{{ csrf_token }}'
   }
   </script>
+  {% render_bundle 'overview' 'js' %}
 {% endblock %}
 

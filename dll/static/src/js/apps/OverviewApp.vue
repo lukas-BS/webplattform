@@ -40,7 +40,7 @@
           <option value="">Alle</option>
           <option value="trend">Trend</option>
           <option value="tool">Tool</option>
-          <option value="teaching-module">Unterrichtsbaustein</option>    
+          <option value="teaching-module">Unterrichtsbaustein</option>
         </select>
       </div>
       <div class="col" v-if="mode === 'overview'">
@@ -85,14 +85,16 @@
         </div>
         <div class="col" v-if="mode === 'review' && content.reviewer">
           <span class="font-weight-bold">Reviewer:</span> {{ content.reviewer }} <br>
-          <a v-if="content.can_unassign || content.can_assign" href="#" @click="unassign(content)">Reviewer entfernen</a>
+          <a v-if="content.can_unassign || content.can_assign" href="#" @click="unassign(content)">Reviewer
+            entfernen</a>
         </div>
         <div class="col">
           <ul class="content-box__actions">
             <li class="content-box__action" v-if="mode === 'review' && content.can_assign && !content.reviewer">
               <div style="width: 250px;">
                 Reviewer zuweisen:
-                <v-select :options="reviewers" label="username" :multiple="false" @input="claimReview(content)" v-model="content.reviewer_pk" :reduce="reduceReviewer"/>
+                <v-select :options="reviewers" label="username" :multiple="false" @input="claimReview(content)"
+                  v-model="content.reviewer_pk" :reduce="reduceReviewer" />
               </div>
             </li>
             <li class="content-box__action" v-if="mode === 'review' && !content.has_assigned_reviewer">
@@ -119,120 +121,117 @@
         </div>
       </div>
     </div>
-    <app-pagination :current-page="currentPage" :pagination="pagination" @prev="previousPage" @next="nextPage" @jump="jumpTo"></app-pagination>
+    <app-pagination :current-page="currentPage" :pagination="pagination" @prev="previousPage" @next="nextPage"
+      @jump="jumpTo"></app-pagination>
     <div v-if="contents.length === 0" class="text-center">
       Es stehen keine Inhalte zur Verfügung.
     </div>
   </div>
 </template>
 
-<script>
-  import vSelect from 'vue-select'
-  import debounce from 'lodash/debounce'
-  import axios from 'axios'
-  import Pagination from '../components/Pagination.vue'
-  import { paginationMixin } from '../mixins/paginationMixin'
-  import { axiosMixin } from '../mixins/axiosMixin'
+<script setup>
+import debounce from 'lodash/debounce'
+import { ref, computed } from 'vue'
+import { usePagination } from '../composables/pagination'
+import { useAxios } from '../composables/axios'
+import { onBeforeMount } from 'vue'
 
-  export default {
-    name: 'OverviewApp',
-    data () {
-      return {
-        contents: [],
-        type: null,
-        searchTerm: null,
-        status: null,
-        retrieveUrl: null,
-        mode: null,
-        invitationContents: [],
-        reviewers: []
-      }
-    },
-    components: {
-      'AppPagination': Pagination,
-      'v-select': vSelect,
-    },
-    mixins: [paginationMixin, axiosMixin],
-    computed: {
-      params () {
-        const params = {
-          type: this.type,
-          q: this.searchTerm,
-          status: this.status
-        };
-        if (window.dllData.type) {
-          params.type = window.dllData.type;
-        }
-        return params;
-      }
-    },
-    methods: {
-      updateContents (page) {
-        axios.get(this.retrieveUrl, {
-          params: {
-            ...this.params,
-            page: Number.isInteger(page) ? page : 1,
-          }
-        })
-        .then(res => {
-          this.contents = res.data.results
-          this.updatePagination(res)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-      },
-      reduceReviewer (option) {
-        return option.pk
-      },
-      claimReview (content) {
-        let data = {}
-        if (content.reviewer_pk) {
-          data['user'] = content.reviewer_pk
-        }
-        this.getAxiosInstance().post(content.assign_reviewer_url, data)
-        .then(res => {
-          this.updateContents(this.currentPage)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-      },
-      unassign (content) {
-        this.getAxiosInstance().post(content.unassign_reviewer_url, {})
-        .then(res => {
-          this.updateContents(this.currentPage)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-      }
-    },
-    created () {
-      if (!window.dllData.retrieveUrl) {
-        throw Error('Retrieve URL is not defined.')
-      }
-      this.retrieveUrl = window.dllData.retrieveUrl
-      this.mode = window.dllData.mode || 'overview'
-      this.updateContents()
-      this.debouncedUpdate = debounce(this.updateContents, 500)
-      if (this.mode === 'overview') {
-        axios.get('/api/meine-einladungen')
-          .then(res => {
-            this.invitationContents = res.data.results
-          })
-      }
-      axios.get('/api/reviewers')
-        .then(res => {
-          this.reviewers = res.data.results
-        })
-    }
+
+const { pagination,
+  currentPage,
+  jumpTo,
+  previousPage,
+  nextPage,
+  updatePagination
+} = usePagination();
+
+const { axios } = useAxios();
+
+const contents = ref([]);
+const type = ref('');
+const searchTerm = ref(null);
+const status = ref('');
+const retrieveUrl = ref(window.dllData.retrieveUrl);
+const mode = ref(window.dllData.mode || 'overview');
+const invitationContents = ref([]);
+const reviewers = ref([]);
+
+const params = computed(() => {
+  const res = {
+    type: type.value,
+    q: searchTerm.value,
+    status: status.value
+  };
+  if (window.dllData.type) {
+    res.type = window.dllData.type;
   }
+  console.log(res)
+  return res;
+});
+
+
+const updateContents = function (page) {
+  console.log(page)
+  axios.get(retrieveUrl.value, {
+    params: {
+      ...params.value,
+      page: Number.isInteger(page) ? page : 1,
+    }
+  })
+    .then(res => {
+      contents.value = res.data.results
+      updatePagination(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+};
+const debouncedUpdate = debounce(updateContents, 500);
+
+const reduceReviewer = (option) => {
+  return option.pk
+};
+
+const claimReview = (content) => {
+  let data = {}
+  if (content.reviewer_pk) {
+    data['user'] = content.reviewer_pk
+  }
+  axios.post(content.assign_reviewer_url, data)
+    .then(res => {
+      updateContents(currentPage)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+};
+
+const unassign = (content) => {
+  axios.post(content.unassign_reviewer_url, {})
+    .then(res => {
+      updateContents(currentPage)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+};
+
+onBeforeMount(() => {
+  if (!window.dllData.retrieveUrl) {
+    throw Error('Retrieve URL is not defined.')
+  }
+  updateContents()
+  if (mode.value === 'overview') {
+    axios.get('/api/meine-einladungen')
+      .then(res => {
+        invitationContents.value = res.data.results
+      })
+  }
+  axios.get('/api/reviewers')
+    .then(res => {
+      reviewers.value = res.data.results
+    })
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
