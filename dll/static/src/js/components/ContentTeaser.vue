@@ -23,7 +23,8 @@
           <span
             v-for="competence in props.content.competences"
             class="content-teaser__competence"
-            :class="competence.icon"></span>
+            :class="competence.icon"
+            v-tooltip="competence.name"></span>
         </div>
       </div>
     </div>
@@ -31,6 +32,11 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  models + props
+//  --------------------------------------------------------------------------------------------------------------------
 const props = defineProps({
   content: {
     type: Object,
@@ -40,13 +46,12 @@ const props = defineProps({
   },
 });
 
-import { computed } from 'vue';
-
+//  --------------------------------------------------------------------------------------------------------------------
+//  computed
+//  --------------------------------------------------------------------------------------------------------------------
 const contentClass = computed(() => {
   return props.content.type ? `content-teaser--${props.content.type}` : '';
 });
-
-// TODO: tooltip missing
 </script>
 
 <style scoped></style>

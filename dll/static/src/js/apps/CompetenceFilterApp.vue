@@ -121,7 +121,7 @@ import ContentTeaser from '../components/ContentTeaser.vue';
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
-const { pagination, currentPage, jumpTo, previousPage, nextPage, updatePagination } = usePagination();
+const { pagination, currentPage, updatePagination } = usePagination();
 const { preventEnter } = usePreventEnter();
 
 const contents = ref([]);
@@ -162,6 +162,15 @@ const getParams = (page) => {
     page: Number.isInteger(page) ? page : 1,
   };
 };
+
+const jumpTo = (event, page) => {
+  currentPage.value = page;
+  updateContents(page);
+};
+
+const previousPage = () => updateContents(--currentPage.value);
+
+const nextPage = () => updateContents(++currentPage.value);
 
 const updateContents = (page) => {
   loading.value = true;

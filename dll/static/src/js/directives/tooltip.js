@@ -1,12 +1,10 @@
-import $ from 'jquery'
-import Tooltip from 'bootstrap/js/dist/tooltip'
+import { Tooltip } from 'bootstrap';
 
-export const tooltipDirective = {
-  mounted() {
-    if (!el) return;
-    new Tooltip($(el), {
+export const tooltip = {
+  mounted(el, binding) {
+    return new Tooltip(el, {
       title: binding.value,
-      trigger: 'hover'
-    })
-  }
+      trigger: 'hover',
+    });
+  },
 };
