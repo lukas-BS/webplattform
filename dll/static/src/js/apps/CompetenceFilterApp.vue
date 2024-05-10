@@ -14,7 +14,7 @@
             <p class="mb-5 d-lg-none" v-html="windowCom.competenceText"></p>
           </div>
         </div>
-        <form method="get" :action="resource" class="collapse d-lg-block" id="filterForm">
+        <form method="get" :action="dataUrl" class="collapse d-lg-block" id="filterForm">
           <h2>Filtern nach</h2>
 
           <h3 class="form-subhead">Sortierung</h3>
@@ -23,7 +23,7 @@
             <option value="za">Z-A</option>
           </select>
           <h3 class="form-subhead">Schlagwortsuche</h3>
-          <input type="text" v-model="searchTerm" name="searchTerm" class="form-control" @keydown="preventEnter" />
+          <input type="text" v-model="q" name="searchTerm" class="form-control" @keydown="preventEnter" />
           <h3 class="form-subhead">Auswahl</h3>
           <ul class="list-unstyled">
             <li class="form-check">
@@ -87,12 +87,7 @@
         <div class="col col-12 col-xl-6 mb-4" v-for="content in contents">
           <ContentTeaser :content="content" />
         </div>
-        <Pagination
-          :current-page="currentPage"
-          :pagination="pagination"
-          @prev="previousPage"
-          @next="nextPage"
-          @jump="jumpTo" />
+        <Pagination />
       </div>
       <div class="row" v-else>
         <div class="col">
@@ -109,25 +104,19 @@
 </template>
 
 <script setup>
-import debounce from 'lodash/debounce';
-import { ref, watch, onMounted, onBeforeUnmount, nextTick, computed } from 'vue';
-import { usePagination } from '../composables/pagination';
-import { usePreventEnter } from '../composables/preventEnter';
-import axios from 'axios';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 
-import Pagination from '../components/Pagination.vue';
 import ContentTeaser from '../components/ContentTeaser.vue';
+import Pagination from '../components/Pagination.vue';
+import { useContentFilter } from '../composables/contentFilter';
+import { usePreventEnter } from '../composables/preventEnter';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
-const { pagination, currentPage, updatePagination } = usePagination();
+const { dataUrl, queryParams, sorting, contents, loading, q, updateContents } = useContentFilter();
 const { preventEnter } = usePreventEnter();
 
-const contents = ref([]);
-const loading = ref(true);
-const sorting = ref('az');
-const searchTerm = ref('');
 const teachingModules = ref(true);
 const trends = ref(true);
 const tools = ref(true);
@@ -139,7 +128,8 @@ const windowWidth = ref(0);
 //     'Um im digitalen Raum adäquat KOMMUNIZIEREN & KOOPERIEREN zu können, braucht es entsprechende Kompetenzen, digitale Werkzeuge zur angemessenen und effektiven Kommunikation einsetzen und in digitalen Umgebungen zielgerichtet kooperieren zu können. Dabei geht es vor allem darum, entsprechend der jeweiligen Situation und ausgerichtet an den Kommunikations- bzw. Kooperationspartnern die passenden Werkzeuge auszuwählen und entsprechende Umgangsregeln einzuhalten.',
 // });
 
-const resource = '/api/inhalte';
+sorting.value = 'az';
+dataUrl.value = '/api/inhalte';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
@@ -148,60 +138,30 @@ const windowCom = computed(() => {
   return window;
 });
 
-//  --------------------------------------------------------------------------------------------------------------------
-//  component logic
-//  --------------------------------------------------------------------------------------------------------------------
-const getParams = (page) => {
+const competenceFilterQueryParams = computed(() => {
   return {
-    q: searchTerm.value,
-    sorting: sorting.value,
     teachingModules: teachingModules.value,
     trends: trends.value,
     tools: tools.value,
-    competence: window.competenceSlug,
-    page: Number.isInteger(page) ? page : 1,
   };
-};
+});
 
-const jumpTo = (event, page) => {
-  currentPage.value = page;
-  updateContents(page);
-};
-
-const previousPage = () => updateContents(--currentPage.value);
-
-const nextPage = () => updateContents(++currentPage.value);
-
-const updateContents = (page) => {
-  loading.value = true;
-  axios
-    .get(resource, {
-      params: getParams(page),
-    })
-    .then((response) => {
-      window.scroll(0, 0);
-      contents.value = response.data.results;
-      updatePagination(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-};
-
+//  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
 const onResize = () => {
   windowWidth.value = window.innerWidth;
 };
 
-const debouncedUpdate = debounce(updateContents, 500);
-
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
-watch(searchTerm, () => {
-  debouncedUpdate();
+// watch(competenceFilterQueryParams, (newQueryParams) => {
+//   queryParams.value = newQueryParams;
+// });
+
+watchEffect(() => {
+  queryParams.value = competenceFilterQueryParams.value;
 });
 
 //  --------------------------------------------------------------------------------------------------------------------
@@ -217,7 +177,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize);
 });
 
-updateContents();
+// updateContents();
 </script>
 
 <style scoped></style>

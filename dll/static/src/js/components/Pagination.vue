@@ -1,9 +1,9 @@
 <template>
-  <div class="pagination" v-if="props.pagination && props.pagination.count > 0">
+  <div class="pagination" v-if="pagination && pagination.count > 0">
     <button
       class="pagination__button pagination__previous"
-      @click="emitOnPrevClick"
-      :disabled="props.pagination.prev === null">
+      @click="previousPage()"
+      :disabled="pagination.prev === null">
       <span><</span>
     </button>
     <div v-for="(page, index) in pages" class="pagination__number">
@@ -11,8 +11,8 @@
       <button
         class="pagination__button"
         :disabled="page === '...'"
-        :class="{ 'pagination__button--active': page === props.currentPage }"
-        @click="emitOnJumpClick($event, page)">
+        :class="{ 'pagination__button--active': page === currentPage }"
+        @click="jumpTo($event, page)">
         {{ page }}
       </button>
       <button
@@ -22,10 +22,7 @@
         ...
       </button>
     </div>
-    <button
-      class="pagination__button pagination__next"
-      @click="emitOnNextClick"
-      :disabled="props.pagination.next === null">
+    <button class="pagination__button pagination__next" @click="nextPage()" :disabled="pagination.next === null">
       <span>></span>
     </button>
   </div>
@@ -34,17 +31,11 @@
 <script setup>
 import { computed } from 'vue';
 
+import { usePagination } from '../composables/pagination';
+
+const { pagination, currentPage, jumpTo, previousPage, nextPage } = usePagination();
+
 const props = defineProps({
-  currentPage: {
-    type: Number,
-    default: 1,
-  },
-  pagination: {
-    type: Object,
-    default() {
-      return {};
-    },
-  },
   paginateBy: {
     type: Number,
     default: 20,
@@ -58,8 +49,9 @@ const props = defineProps({
 });
 
 const pages = computed(() => {
-  if (props.pagination.count) {
-    let counter = props.pagination.count;
+  console.log(pagination.value);
+  if (pagination.value.count) {
+    let counter = pagination.value.count;
     let pages = [];
     let page = 1;
 
@@ -67,7 +59,7 @@ const pages = computed(() => {
       if (
         page === 1 ||
         page === Math.ceil(counter / props.paginateBy) ||
-        (page >= props.currentPage - props.margin && page <= props.currentPage + props.margin)
+        (page >= currentPage.value - props.margin && page <= currentPage.value + props.margin)
       ) {
         pages.push(page);
       }
@@ -77,23 +69,6 @@ const pages = computed(() => {
     return pages;
   }
 });
-
-//  --------------------------------------------------------------------------------------------------------------------
-//  emits
-//  --------------------------------------------------------------------------------------------------------------------
-const emits = defineEmits(['next', 'prev', 'jump']);
-
-const emitOnPrevClick = () => {
-  emits('prev');
-};
-
-const emitOnNextClick = () => {
-  emits('next');
-};
-
-const emitOnJumpClick = (event, page) => {
-  emits('jump', event, page);
-};
 </script>
 
 <style scoped></style>

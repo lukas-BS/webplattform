@@ -1,5 +1,10 @@
-import { onBeforeMount, ref } from 'vue';
-const queryString = require('query-string');
+import { ref } from 'vue';
+
+import queryString from 'query-string';
+
+import { useContentFilter } from './contentFilter';
+
+const { updateContents } = useContentFilter();
 
 export function usePagination() {
   const pagination = ref({
@@ -11,43 +16,46 @@ export function usePagination() {
 
   const currentPage = ref(1);
 
-  // function jumpTo (event, page) {
-  //     currentPage.value = page
-  //     updateContents(page)
-  // };
-
-  // function previousPage () {
-  //     updateContents(--currentPage.value)
-  // };
-
-  // function nextPage () {
-  //     updateContents(++currentPage.value)
-  // };
-
-  function updatePagination(response) {
+  //  --------------------------------------------------------------------------
+  //  logic
+  //  --------------------------------------------------------------------------
+  const updatePagination = (response) => {
+    console.log('update pagination', response);
     pagination.value = {
       count: response.data.count,
       perPage: 20,
       next: response.data.next,
       prev: response.data.previous,
     };
-  }
+  };
 
-  onBeforeMount(() => {
-    const query = queryString.parse(location.search, {
-      parseBooleans: true,
-    });
-    if (query.page) {
-      currentPage.value = parseInt(query.page);
-    }
+  const jumpTo = (event, page) => {
+    currentPage.value = page;
+    updateContents(page);
+  };
+
+  const previousPage = () => {
+    updateContents(--currentPage.value);
+  };
+
+  const nextPage = () => {
+    updateContents(++currentPage.value);
+  };
+
+  const query = queryString.parse(location.search, {
+    parseBooleans: true,
   });
+
+  if (query.page) {
+    currentPage.value = parseInt(query.page);
+  }
 
   return {
     pagination,
     currentPage,
-    // jumpTo,
-    // previousPage,
-    // nextPage,
+    jumpTo,
+    previousPage,
+    nextPage,
     updatePagination,
   };
 }
