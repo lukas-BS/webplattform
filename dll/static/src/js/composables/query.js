@@ -1,5 +1,4 @@
 import queryString from 'query-string';
-
 import { useContentFilter } from './contentFilter';
 import { usePagination } from './pagination';
 
@@ -9,10 +8,7 @@ export function useQuery() {
   //  --------------------------------------------------------------------------
   //  logic
   //  --------------------------------------------------------------------------
-  const updateQueryString = () => {
-    let params = getParams(currentPage.value);
-    console.log('update query params', params);
-
+  const updateQueryString = (params) => {
     Object.keys(params).forEach((key) => (params[key] === null || params[key] === '') && delete params[key]);
 
     if (params) {
@@ -28,25 +24,21 @@ const query = queryString.parse(location.search, {
 });
 
 let keys = Object.keys(query);
-console.log(keys);
 
-// for (let i = 0; i < keys.length; i++) {
-//   const value = query[keys[i]];
-//   console.log('value', value);
+for (let i = 0; i < keys.length; i++) {
+  const value = query[keys[i]];
 
-//   if (value) {
-//     console.log('query', query);
-
-//     if (query[keys[i]] === 'false') {
-//       query[keys[i]] = false;
-//     }
-//     if (query[keys[i]] === 'true') {
-//       query[keys[i]] = true;
-//     }
-//     if (this[keys[i]] && Array.isArray(this[keys[i]]) && !Array.isArray(query[keys[i]])) {
-//       this[keys[i]] = [query[keys[i]]];
-//     } else {
-//       this[keys[i]] = query[keys[i]];
-//     }
-//   }
-// }
+  if (value) {
+    if (query[keys[i]] === 'false') {
+      query[keys[i]] = false;
+    }
+    if (query[keys[i]] === 'true') {
+      query[keys[i]] = true;
+    }
+    if ([keys[i]] && Array.isArray([keys[i]]) && !Array.isArray(query[keys[i]])) {
+      [keys[i]] = [query[keys[i]]];
+    } else {
+      [keys[i]] = query[keys[i]];
+    }
+  }
+}

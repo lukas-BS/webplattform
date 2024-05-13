@@ -177,7 +177,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize);
 });
 
-// updateContents();
+updateContents();
 </script>
 
 <style scoped></style>

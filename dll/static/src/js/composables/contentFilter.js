@@ -2,7 +2,6 @@ import { computed, ref, watch } from 'vue';
 
 import axios from 'axios';
 import { debounce } from 'lodash';
-
 import { usePagination } from './pagination';
 import { useQuery } from './query';
 
@@ -41,17 +40,20 @@ export function useContentFilter() {
 
   const updateContents = (page) => {
     loading.value = true;
+    const params = getParams(page);
+
     if (!page || typeof page === 'object') {
       // Reset page to 1 if there is no page given or page object is an event (object)
       currentPage.value = 1;
     }
+
     axios
       .get(dataUrl.value, {
-        params: getParams(page),
+        params,
       })
       .then((response) => {
         window.scroll(0, 0);
-        updateQueryString();
+        updateQueryString(params);
         contents.value = response.data.results;
         updatePagination(response);
       })
