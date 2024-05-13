@@ -16,17 +16,14 @@ export function usePagination() {
 
   const currentPage = ref(1);
 
-  //  --------------------------------------------------------------------------
-  //  logic
-  //  --------------------------------------------------------------------------
   const updatePagination = (response) => {
-    console.log('update pagination', response);
     pagination.value = {
       count: response.data.count,
       perPage: 20,
       next: response.data.next,
       prev: response.data.previous,
     };
+    console.log('update pagination', pagination.value);
   };
 
   const jumpTo = (event, page) => {

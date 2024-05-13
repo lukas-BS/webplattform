@@ -1,13 +1,6 @@
 import queryString from 'query-string';
-import { useContentFilter } from './contentFilter';
-import { usePagination } from './pagination';
 
 export function useQuery() {
-  const { getParams } = useContentFilter();
-  const { currentPage } = usePagination();
-  //  --------------------------------------------------------------------------
-  //  logic
-  //  --------------------------------------------------------------------------
   const updateQueryString = (params) => {
     Object.keys(params).forEach((key) => (params[key] === null || params[key] === '') && delete params[key]);
 

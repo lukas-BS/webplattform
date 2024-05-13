@@ -78,5 +78,17 @@ export function useContentFilter() {
 
   const debouncedUpdate = debounce(updateContents, 500);
 
-  return { dataUrl, queryParams, contents, loading, sorting, q, competences, getSubjects, getParams, updateContents };
+  return {
+    dataUrl,
+    queryParams,
+    contents,
+    loading,
+    sorting,
+    q,
+    competences,
+    debouncedUpdate,
+    getSubjects,
+    getParams,
+    updateContents,
+  };
 }

@@ -104,7 +104,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';

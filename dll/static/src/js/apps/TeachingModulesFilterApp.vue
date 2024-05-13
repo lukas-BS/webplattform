@@ -16,11 +16,17 @@
           <input type="text" v-model="q" name="searchTerm" class="form-control" @keydown="preventEnter" />
 
           <div class="form-check mt-3">
-            <input type="checkbox" name="hybrid" id="input-hybrid" v-model="hybrid" class="form-check-input" />
+            <input
+              type="checkbox"
+              name="hybrid"
+              id="input-hybrid"
+              v-model="hybrid"
+              class="form-check-input"
+              @change="updateContents" />
             <label for="input-hybrid" class="form-check-label">Grundsätzlich geeignet für den Hybridunterricht</label>
           </div>
 
-          <app-competence-filter :competences.sync="competences"></app-competence-filter>
+          <CompetenceFilter v-model="competences" />
           <div>
             <h3 class="form-subhead">Unterrichtsfach</h3>
             <ul class="list-unstyled">
@@ -31,14 +37,15 @@
                   name="subjects"
                   :id="'subject-' + subject.value"
                   v-model="subjects"
-                  class="form-check-input" />
+                  class="form-check-input"
+                  @change="updateContents" />
                 <label :for="'subject-' + subject.value" class="form-check-label">{{ subject.name }}</label>
               </li>
             </ul>
           </div>
           <div>
             <h3 class="form-subhead">Schulform</h3>
-            <select v-model="schoolType" class="form-control">
+            <select v-model="schoolType" class="form-control" @change="updateContents">
               <option v-for="schoolType in getSchoolTypes()" :value="schoolType.value">{{ schoolType.name }}</option>
             </select>
           </div>
@@ -46,11 +53,21 @@
             <h3 class="form-subhead">Jahrgangsstufe von / bis:</h3>
             <div class="row">
               <div class="col">
-                <input type="text" name="schoolClassFrom" v-model="schoolClassFrom" class="form-control me-2" />
+                <input
+                  type="text"
+                  name="schoolClassFrom"
+                  v-model="schoolClassFrom"
+                  class="form-control me-2"
+                  @change="debouncedUpdate" />
               </div>
               <div class="col-1 text-center">-</div>
               <div class="col">
-                <input type="text" name="schoolClassTo" v-model="schoolClassTo" class="form-control ms-2" />
+                <input
+                  type="text"
+                  name="schoolClassTo"
+                  v-model="schoolClassTo"
+                  class="form-control ms-2"
+                  @change="debouncedUpdate" />
               </div>
             </div>
           </div>
@@ -71,14 +88,9 @@
     <div class="col col-12 col-lg-7 col-xl-8">
       <div class="row" v-if="contents.length > 0 || loading">
         <div class="col col-12 col-xl-6 mb-4" v-for="content in contents">
-          <ContentTeaser :content="content"></ContentTeaser>
+          <ContentTeaser :content="content" />
         </div>
-        <Pagination
-          :current-page="currentPage"
-          :pagination="pagination"
-          @prev="previousPage"
-          @next="nextPage"
-          @jump="jumpTo"></Pagination>
+        <Pagination />
       </div>
       <div class="row" v-else>
         <div class="col">
@@ -95,25 +107,39 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
+
+import CompetenceFilter from '../components/CompetenceFilter.vue';
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';
-import { usePagination } from '../composables/pagination';
-import axios from 'axios';
+import { useContentFilter } from '../composables/contentFilter';
+import { usePreventEnter } from '../composables/preventEnter';
 
-const { pagination, currentPage, updatePagination } = usePagination();
+const {
+  dataUrl,
+  queryParams,
+  sorting,
+  contents,
+  loading,
+  q,
+  competences,
+  debouncedUpdate,
+  updateContents,
+  getSubjects,
+} = useContentFilter();
+const { preventEnter } = usePreventEnter();
 
-const dataUrl = '/api/unterrichtsbausteine';
 const subjects = ref([]);
 const schoolClassFrom = ref(null);
 const schoolClassTo = ref(null);
 const schoolType = ref(null);
 const hybrid = ref(false);
-const loading = ref(false);
+
+dataUrl.value = '/api/unterrichtsbausteine';
 
 const getSchoolTypes = () => window.schoolFilter;
 
-const getQueryParams = () => {
+const teachingModulesQueryParams = computed(() => {
   return {
     subjects: subjects.value,
     schoolClassFrom: schoolClassFrom.value,
@@ -121,66 +147,16 @@ const getQueryParams = () => {
     schoolType: schoolType.value,
     hybrid: hybrid.value,
   };
-};
-
-lr
-
-const updateContents = (page) => {
-  loading.value = true;
-  if (!page || typeof page === 'object') {
-    // Reset page to 1 if there is no page given or page object is an event (object)
-    currentPage.value = 1;
-  }
-  axios
-    .get(dataUrl, {
-      params: this.getParams(page),
-    })
-    .then((response) => {
-      window.scroll(0, 0);
-      this.updateQueryString();
-      this.contents = response.data.results;
-      updatePagination(response);
-      this.loading = false;
-    })
-    .catch((error) => {
-      console.log(error);
-      this.loading = false;
-    });
-};
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
-watch(subjects, () => {
-  updateContents();
+watchEffect(() => {
+  queryParams.value = teachingModulesQueryParams.value;
 });
-</script>
 
-<script>
-import { contentFilter } from '../mixins/contentFilterMixin';
-
-export default {
-  watch: {
-    subjects() {
-      this.updateContents();
-    },
-    state() {
-      this.updateContents();
-    },
-    schoolClassFrom() {
-      this.debouncedUpdate();
-    },
-    schoolClassTo() {
-      this.debouncedUpdate();
-    },
-    schoolType() {
-      this.updateContents();
-    },
-    hybrid() {
-      this.updateContents();
-    },
-  },
-};
+updateContents();
 </script>
 
 <style scoped></style>
