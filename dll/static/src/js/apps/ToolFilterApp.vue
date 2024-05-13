@@ -263,6 +263,9 @@ import Pagination from '../components/Pagination.vue';
 import { useContentFilter } from '../composables/contentFilter';
 import { usePreventEnter } from '../composables/preventEnter';
 
+//  --------------------------------------------------------------------------------------------------------------------
+//  component variables
+//  --------------------------------------------------------------------------------------------------------------------
 const { dataUrl, q, queryParams, sorting, contents, loading, loggedIn, debouncedUpdate, updateContents, getSubjects } =
   useContentFilter();
 const { preventEnter } = usePreventEnter();

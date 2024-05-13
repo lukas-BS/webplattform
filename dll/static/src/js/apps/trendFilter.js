@@ -1,10 +1,9 @@
-import Vue from 'vue'
-import TrendFilterApp from './TrendFilterApp.vue'
+import TrendFilterApp from './TrendFilterApp.vue';
+import { createApp } from 'vue';
+import { tooltip } from '../directives/tooltip';
 
 if (document.getElementById('trends-app')) {
-  new Vue({
-    components: {TrendFilterApp},
-    template: '<TrendFilterApp/>',
-    render: h => h(TrendFilterApp)
-  }).$mount('#trends-app')
+  const app = createApp(TrendFilterApp);
+  app.directive('tooltip', tooltip);
+  app.mount('#trends-app');
 }
