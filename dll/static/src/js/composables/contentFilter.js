@@ -87,6 +87,7 @@ export function useContentFilter() {
     q,
     competences,
     debouncedUpdate,
+    loggedIn,
     getSubjects,
     getParams,
     updateContents,

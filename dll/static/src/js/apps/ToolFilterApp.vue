@@ -5,31 +5,50 @@
         <form action="" id="filterForm" class="collapse d-lg-block">
           <h2>Filtern nach</h2>
           <h3 class="form-subhead">Schlagwortsuche</h3>
-          <input type="text" v-model="q" name="searchTerm" class="form-control" @keydown="preventEnter">
+          <input type="text" v-model="q" name="searchTerm" class="form-control" @keydown="preventEnter" />
 
-          <div v-if="!getDltFeaturesEnabled()">
+          <div v-if="!dltFeaturesEnabled">
             <h3 class="form-subhead">Tool-Funktionen</h3>
             <ul class="list-unstyled">
-              <li class="form-check" v-for="toolFunction in getToolFunctions()">
-                <input type="checkbox" class="form-check-input" :value="toolFunction.id" name="toolFunction" :id="'toolFunction' + toolFunction.id" v-model="toolFunctions">
+              <li class="form-check" v-for="toolFunction in functionsFilter">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  v-model="toolFunctions"
+                  :value="toolFunction.id"
+                  name="toolFunction"
+                  :id="'toolFunction' + toolFunction.id"
+                  @change="debouncedUpdate" />
                 <label class="form-check-label" :for="'toolFunction' + toolFunction.id">{{ toolFunction.title }}</label>
               </li>
             </ul>
           </div>
-          <div v-if="getDltFeaturesEnabled()">
+          <div v-if="dltFeaturesEnabled">
             <h3 class="form-subhead">Potentiale</h3>
             <ul class="list-unstyled">
-              <li class="form-check" v-for="potential in getPotentials()">
-                <input type="checkbox" class="form-check-input" :value="potential.value" name="potential" :id="'potential' + potential.value" v-model="potentials">
+              <li class="form-check" v-for="potential in potentialFilter">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  :value="potential.value"
+                  name="potential"
+                  :id="'potential' + potential.value"
+                  v-model="potentials" />
                 <label class="form-check-label" :for="'potential' + potential.value">{{ potential.name }}</label>
               </li>
             </ul>
           </div>
-          <div v-if="loggedIn && getDltFeaturesEnabled()">
+          <div v-if="loggedIn && dltFeaturesEnabled">
             <h3 class="form-subhead">Meine favorisierten Tools</h3>
             <ul class="list-unstyled">
               <li class="form-check">
-                <input type="checkbox" class="form-check-input" name="favorites" v-model="favorites" id="favorites-checkbox">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  name="favorites"
+                  v-model="favorites"
+                  @change="debouncedUpdate"
+                  id="favorites-checkbox" />
                 <label class="form-check-label" for="favorites-checkbox">Anzeigen</label>
               </li>
             </ul>
@@ -43,63 +62,134 @@
           </div>
           <div>
             <h3 class="form-subhead">Datenschutz</h3>
-            <select name="dataPrivacy" id="dataPrivacy" v-model="dataPrivacy" @change="updateContents" class="form-control">
+            <select
+              name="dataPrivacy"
+              id="dataPrivacy"
+              v-model="dataPrivacy"
+              @change="updateContents"
+              class="form-control">
               <option value="" selected>--------</option>
-              <option v-for="privacy in getDataPrivacyOptions()" :value="privacy.value">{{ privacy.name }}</option>
+              <option v-for="privacy in dataPrivacyOptions" :value="privacy.value">{{ privacy.name }}</option>
             </select>
           </div>
-           <div>
+          <div>
             <h3 class="form-subhead">Anwendung:</h3>
             <ul class="list-unstyled">
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="App" name="application" id="application-1" v-model="applications">
-                  <label class="form-check-label" for="application-1">App</label>
-                </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="Website" name="application" id="application-2" v-model="applications">
-                  <label class="form-check-label" for="application-2">Website</label>
-                </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="Programm" name="application" id="application-3" v-model="applications">
-                  <label class="form-check-label" for="application-3">Programm</label>
-                </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="Browser-Add-on" name="application" id="application-4" v-model="applications">
-                  <label class="form-check-label" for="application-4">Browser-Add-on</label>
-                </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="App"
+                  name="application"
+                  id="application-1"
+                  v-model="applications" />
+                <label class="form-check-label" for="application-1">App</label>
+              </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="Website"
+                  name="application"
+                  id="application-2"
+                  v-model="applications" />
+                <label class="form-check-label" for="application-2">Website</label>
+              </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="Programm"
+                  name="application"
+                  id="application-3"
+                  v-model="applications" />
+                <label class="form-check-label" for="application-3">Programm</label>
+              </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="Browser-Add-on"
+                  name="application"
+                  id="application-4"
+                  v-model="applications" />
+                <label class="form-check-label" for="application-4">Browser-Add-on</label>
+              </li>
             </ul>
           </div>
-           <div>
+          <div>
             <h3 class="form-subhead">Betriebssystem:</h3>
             <ul class="list-unstyled">
               <li class="form-check">
-                <input type="checkbox" class="form-check-input" value="1" name="os" id="os-1" v-model="operatingSystems">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="1"
+                  name="os"
+                  id="os-1"
+                  v-model="operatingSystems" />
                 <label class="form-check-label" for="os-1">Android</label>
               </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="7" name="os" id="os-2" v-model="operatingSystems">
-                  <label class="form-check-label" for="os-2">BlackBerry OS</label>
-                </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="2" name="os" id="os-3" v-model="operatingSystems">
-                  <label class="form-check-label" for="os-3">iOS</label>
-                </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="5" name="os" id="os-4" v-model="operatingSystems">
-                  <label class="form-check-label" for="os-4">Linux</label>
-                </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="3" name="os" id="os-5" v-model="operatingSystems">
-                  <label class="form-check-label" for="os-5">macOS</label>
-                </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="4" name="os" id="os-6" v-model="operatingSystems">
-                  <label class="form-check-label" for="os-6">Windows</label>
-                </li>
-                <li class="form-check">
-                  <input type="checkbox" class="form-check-input" value="6" name="os" id="os-7" v-model="operatingSystems">
-                  <label class="form-check-label" for="os-7">Windows Phone</label>
-                </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="7"
+                  name="os"
+                  id="os-2"
+                  v-model="operatingSystems" />
+                <label class="form-check-label" for="os-2">BlackBerry OS</label>
+              </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="2"
+                  name="os"
+                  id="os-3"
+                  v-model="operatingSystems" />
+                <label class="form-check-label" for="os-3">iOS</label>
+              </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="5"
+                  name="os"
+                  id="os-4"
+                  v-model="operatingSystems" />
+                <label class="form-check-label" for="os-4">Linux</label>
+              </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="3"
+                  name="os"
+                  id="os-5"
+                  v-model="operatingSystems" />
+                <label class="form-check-label" for="os-5">macOS</label>
+              </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="4"
+                  name="os"
+                  id="os-6"
+                  v-model="operatingSystems" />
+                <label class="form-check-label" for="os-6">Windows</label>
+              </li>
+              <li class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  value="6"
+                  name="os"
+                  id="os-7"
+                  v-model="operatingSystems" />
+                <label class="form-check-label" for="os-7">Windows Phone</label>
+              </li>
             </ul>
           </div>
 
@@ -111,154 +201,175 @@
               <option value="1" selected>Ja</option>
             </select>
           </div>
-
         </form>
         <div class="text-center">
-          <button class="button button--primary d-lg-none" type="button" data-bs-toggle="collapse" data-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
+          <button
+            class="button button--primary d-lg-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-target="#filterForm"
+            aria-expanded="false"
+            aria-controls="filterForm">
             Filter ausklappen <span class="fas fa-chevron-circle-down"></span>
           </button>
         </div>
       </div>
     </div>
     <div class="col col-12 col-lg-7 col-xl-8">
-      <div class="section-info mb-5" v-show="activePotentials.length" v-if="getDltFeaturesEnabled()">
-          <div class="js-potential-slider potential-slider" ref="potentialSlider">
-            <div class="js-potential-slide" v-for="potential in getPotentials()" ref="potentialSlides" :data-ref="potential.value">
-              <div class="row">
-                <div class="col-12">
-                  <h1 class="d-none d-lg-block text-center mb-5" v-text="potential.name"></h1>
-                </div>
-                <div class="col-lg-12 col-xl-7 mb-4" v-html="window['potentialVideo' + potential.value]"></div>
-                <div class="col-lg-12 col-xl-5">
-                  <p class="mb-5 d-none d-lg-block mt-3" v-html="potential.description"></p>
-                </div>
+      <div class="section-info mb-5" v-show="activePotentials.length" v-if="dltFeaturesEnabled">
+        <div class="js-potential-slider potential-slider" ref="potentialSlider">
+          <div
+            class="js-potential-slide"
+            v-for="potential in potentialFilter"
+            ref="potentialSlides"
+            :data-ref="potential.value">
+            <div class="row">
+              <div class="col-12">
+                <h1 class="d-none d-lg-block text-center mb-5" v-text="potential.name"></h1>
+              </div>
+              <div class="col-lg-12 col-xl-7 mb-4" v-html="windowCom['potentialVideo' + potential.value]"></div>
+              <div class="col-lg-12 col-xl-5">
+                <p class="mb-5 d-none d-lg-block mt-3" v-html="potential.description"></p>
               </div>
             </div>
           </div>
         </div>
+      </div>
       <div class="row" v-if="contents.length > 0 || loading">
         <div class="col col-12 col-xl-6 mb-4" v-for="content in contents">
-          <app-content-teaser :content="content"></app-content-teaser>
+          <ContentTeaser :content="content" />
         </div>
-        <app-pagination :current-page="currentPage" :pagination="pagination" @prev="previousPage" @next="nextPage" @jump="jumpTo"></app-pagination>
+        <Pagination />
       </div>
       <div class="row" v-else>
         <div class="col">
           <h2>Ihre Suchanfrage ergab keine Treffer.</h2>
-          <p>Bitte versuchen Sie es mit anderen Suchbegriffen oder schauen Sie gern auf anderen Datenbanken für freie Unterrichtsmaterialien wie <a href="https://oerhoernchen.de/suche" target="_blank" rel="noopener noreferrer">OERhörchen</a>.</p>
+          <p>
+            Bitte versuchen Sie es mit anderen Suchbegriffen oder schauen Sie gern auf anderen Datenbanken für freie
+            Unterrichtsmaterialien wie
+            <a href="https://oerhoernchen.de/suche" target="_blank" rel="noopener noreferrer">OERhörchen</a>.
+          </p>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-  import { contentFilter } from '../mixins/contentFilterMixin'
+<script setup>
+import { computed, nextTick, ref, watch, watchEffect } from 'vue';
 
-  export default {
-    name: 'ToolsFilterApp',
-    mixins: [contentFilter],
-    data () {
+import ContentTeaser from '../components/ContentTeaser.vue';
+import Pagination from '../components/Pagination.vue';
+import { useContentFilter } from '../composables/contentFilter';
+import { usePreventEnter } from '../composables/preventEnter';
+
+const { dataUrl, q, queryParams, sorting, contents, loading, loggedIn, debouncedUpdate, updateContents, getSubjects } =
+  useContentFilter();
+const { preventEnter } = usePreventEnter();
+
+const applications = ref([]);
+const subject = ref(null);
+const toolFunctions = ref([]);
+const potentials = ref([]);
+const operatingSystems = ref([]);
+const dataPrivacy = ref(null);
+const withCosts = ref(null);
+const slider = ref(null);
+const favorites = ref(false);
+
+const potentialSlider = ref();
+const potentialSlides = ref();
+
+dataUrl.value = '/api/tools';
+sorting.value = 'privacy';
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  computed
+//  --------------------------------------------------------------------------------------------------------------------
+const windowCom = computed(() => {
+  return window;
+});
+
+//  ----------------------------------------------------------------------------
+//  TODO: check if working
+//  ----------------------------------------------------------------------------
+const activePotentials = computed(() => {
+  return potentials.value
+    .map((activePotential) => {
+      const pot = potentialFilter.value.find((p) => p.value.toString() === activePotential.toString());
+      if (!pot) return;
+
       return {
-        dataUrl: '/api/tools',
-        applications: [],
-        subject: null,
-        toolFunctions: [],
-        sorting: 'privacy',
-        potentials: [],
-        operatingSystems: [],
-        dataPrivacy: null,
-        withCosts: null,
-        slider: null,
-        favorites: false
-      }
-    },
-    computed: {
-      activePotentials () {
-        return this.potentials.map(activePotential => {
-          const pot = this.getPotentials().find(p => p.value.toString() === activePotential.toString())
-          if (!pot) return
-          return {
-            title: pot.name,
-            description: pot.description,
-            videoEmbed: window['potentialVideo' + pot.value],
-            value: pot.value
-          }
-        }).filter(p => p)
-        console.log(123)
-      }
-    },
-    methods: {
-      getDltFeaturesEnabled() {
-        return window.dltFeatures
-      },
-      getPotentials () {
-        return window.potentialFilter
-      },
-      getDataPrivacyOptions () {
-        return window.dataPrivacyFilter
-      },
-      getQueryParams () {
-        const res = {
-          dataPrivacy: this.dataPrivacy,
-          applications: this.applications,
-          operatingSystems: this.operatingSystems,
-          toolFunctions: this.toolFunctions,
-          withCosts: this.withCosts,
-          potentials: this.potentials,
-          subject: this.subject,
-        }
-        if (this.loggedIn) {
-          res['favorites'] = this.favorites
-        }
-        return res;
-      },
-      getToolFunctions () {
-        return window.functionsFilter
-      }
-    },
-    watch: {
-      toolFunctions () {
-        this.debouncedUpdate()
-      },
-      dataPrivacy () {
-        this.debouncedUpdate()
-      },
-      applications () {
-        this.debouncedUpdate()
-      },
-      operatingSystems () {
-        this.debouncedUpdate()
-      },
-      subject () {
-        this.debouncedUpdate()
-      },
-      potentials () {
-        this.debouncedUpdate()
-      },
-      favorites () {
-        this.debouncedUpdate()
-      },
-      activePotentials (newVal) {
-        this.$nextTick(() => {
-          if (!this.slider) {
-            console.log("slider inited")
-            this.slider = $(this.$refs.potentialSlider).slick()
-          }
-          if (this.slider) {
-            this.slider.slick("resize")
-            const activeValues = this.activePotentials.map(p => p.value.toString())
-            this.slider.slick("slickUnfilter")
-            this.slider.slick("slickFilter", (s) => {
-              return activeValues.includes(this.$refs.potentialSlides[s].dataset.ref)
-            })
-          }
-        })
-      },
-    }
+        title: pot.name,
+        description: pot.description,
+        videoEmbed: window['potentialVideo' + pot.value],
+        value: pot.value,
+      };
+    })
+    .filter((p) => p);
+});
+
+const toolFilterQueryParams = computed(() => {
+  const res = {
+    dataPrivacy: dataPrivacy.value,
+    applications: applications.value,
+    operatingSystems: operatingSystems.value,
+    toolFunctions: toolFunctions.value,
+    withCosts: withCosts.value,
+    potentials: potentials.value,
+    subject: subject.value,
+  };
+  if (loggedIn.value) {
+    res['favorites'] = favorites.value;
   }
+  return res;
+});
+
+const dltFeaturesEnabled = computed(() => {
+  return window.dltFeatures;
+});
+
+const potentialFilter = computed(() => {
+  return window.potentialFilter;
+});
+
+const dataPrivacyOptions = computed(() => {
+  return window.dataPrivacyFilter;
+});
+
+const functionsFilter = computed(() => {
+  return window.functionsFilter;
+});
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  watchers
+//  --------------------------------------------------------------------------------------------------------------------
+watchEffect(() => {
+  queryParams.value = toolFilterQueryParams.value;
+});
+
+watch([toolFunctions, applications, operatingSystems, potentials], () => {
+  debouncedUpdate();
+});
+
+watch(activePotentials, () => {
+  nextTick(() => {
+    const activeValues = activePotentials.value.map((p) => p.value.toString());
+
+    if (!slider.value) {
+      console.log('slider inited');
+      slider.value = $(potentialSlider.value).slick();
+    }
+
+    slider.value.slick('refresh');
+    slider.value.slick('slickUnfilter');
+    slider.value.slick('slickFilter', (s) => {
+      return activeValues.includes(potentialSlides.value[s].dataset.ref);
+    });
+  });
+});
+
+updateContents();
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

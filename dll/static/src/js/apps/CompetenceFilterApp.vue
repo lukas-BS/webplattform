@@ -156,10 +156,6 @@ const onResize = () => {
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
-// watch(competenceFilterQueryParams, (newQueryParams) => {
-//   queryParams.value = newQueryParams;
-// });
-
 watchEffect(() => {
   queryParams.value = competenceFilterQueryParams.value;
 });
