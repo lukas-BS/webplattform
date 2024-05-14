@@ -260,14 +260,16 @@ import { computed, nextTick, ref, watch, watchEffect } from 'vue';
 
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';
+import { useAxios } from '../composables/axios';
 import { useContentFilter } from '../composables/contentFilter';
 import { usePreventEnter } from '../composables/preventEnter';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
+const { axios } = useAxios();
 const { dataUrl, q, queryParams, sorting, contents, loading, loggedIn, debouncedUpdate, updateContents, getSubjects } =
-  useContentFilter();
+  useContentFilter(axios);
 const { preventEnter } = usePreventEnter();
 
 const applications = ref([]);

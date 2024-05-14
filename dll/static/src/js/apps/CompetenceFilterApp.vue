@@ -108,13 +108,15 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watchEffect } from
 
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';
+import { useAxios } from '../composables/axios';
 import { useContentFilter } from '../composables/contentFilter';
 import { usePreventEnter } from '../composables/preventEnter';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
-const { dataUrl, queryParams, sorting, contents, loading, q, updateContents } = useContentFilter();
+const { axios } = useAxios();
+const { dataUrl, queryParams, sorting, contents, loading, q, updateContents } = useContentFilter(axios);
 const { preventEnter } = usePreventEnter();
 
 const teachingModules = ref(true);

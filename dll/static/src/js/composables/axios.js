@@ -1,14 +1,15 @@
-
-import axios from 'axios'
+import axios from 'axios';
 
 export function useAxios() {
-      const axiosInstance = axios.create({
-        headers: {
-          'X-CSRFToken': window.dllData.csrfToken
-        }
-      })
-    
-    return {
-        axios: axiosInstance
-    }
+  const token = window.dllData?.csrfToken || null;
+
+  const axiosInstance = axios.create({
+    headers: {
+      'X-CSRFToken': token,
+    },
+  });
+
+  return {
+    axios: axiosInstance,
+  };
 }

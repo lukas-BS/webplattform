@@ -7,9 +7,7 @@
           <div class="col">
             <div class="content-box__type">{{ content.type_verbose }} ({{ content.status }})</div>
             <div class="content-box__title">{{ content.name }}</div>
-            <div class="content-box__author">
-              <span class="fas fa-user"></span> {{ content.author }}
-            </div>
+            <div class="content-box__author"><span class="fas fa-user"></span> {{ content.author }}</div>
           </div>
           <div class="col" v-if="content.co_authors.length">
             <div class="content-box__coauthors">
@@ -22,9 +20,7 @@
           <div class="col">
             <ul class="content-box__actions">
               <li class="content-box__action">
-                <a class="content-box__link" :href="content.invitation_url">
-                  Einladung beantworten
-                </a>
+                <a class="content-box__link" :href="content.invitation_url"> Einladung beantworten </a>
               </li>
             </ul>
           </div>
@@ -36,7 +32,7 @@
         <div>
           <label for="type">Elemente:</label>
         </div>
-        <select name="type" id="type" v-model="type" @change="updateContents">
+        <select class="form-control" name="type" id="type" v-model="type" @change="updateContents">
           <option value="">Alle</option>
           <option value="trend">Trend</option>
           <option value="tool">Tool</option>
@@ -47,7 +43,7 @@
         <div>
           <label for="status">Status:</label>
         </div>
-        <select name="status" id="status" v-model="status" @change="updateContents">
+        <select class="form-control" name="status" id="status" v-model="status" @change="updateContents">
           <option value="">Alle</option>
           <option value="draft">Entwurf</option>
           <option value="submitted">Eingereicht</option>
@@ -59,7 +55,7 @@
         <div>
           <label for="contentSearch">Suche:</label>
         </div>
-        <input type="text" name="q" v-model="searchTerm" id="contentSearch" @input="debouncedUpdate">
+        <input class="form-control" type="text" name="q" v-model="q" id="contentSearch" @input="debouncedUpdate" />
       </div>
     </div>
 
@@ -68,9 +64,7 @@
         <div class="col-sm-6">
           <div class="content-box__type">{{ content.type_verbose }} ({{ content.status }})</div>
           <div class="content-box__title">{{ content.name }}</div>
-          <div class="content-box__author">
-            <span class="fas fa-user"></span> {{ content.author }}
-          </div>
+          <div class="content-box__author"><span class="fas fa-user"></span> {{ content.author }}</div>
           <div class="content-box__date" v-if="content.submitted">
             <span>Einreichungsdatum: {{ content.submitted }}</span>
           </div>
@@ -84,17 +78,23 @@
           </div>
         </div>
         <div class="col" v-if="mode === 'review' && content.reviewer">
-          <span class="font-weight-bold">Reviewer:</span> {{ content.reviewer }} <br>
-          <a v-if="content.can_unassign || content.can_assign" href="#" @click="unassign(content)">Reviewer
-            entfernen</a>
+          <span class="font-weight-bold">Reviewer:</span> {{ content.reviewer }} <br />
+          <a v-if="content.can_unassign || content.can_assign" href="#" @click="unassign(content)"
+            >Reviewer entfernen</a
+          >
         </div>
         <div class="col">
           <ul class="content-box__actions">
             <li class="content-box__action" v-if="mode === 'review' && content.can_assign && !content.reviewer">
-              <div style="width: 250px;">
+              <div style="width: 250px">
                 Reviewer zuweisen:
-                <v-select :options="reviewers" label="username" :multiple="false" @input="claimReview(content)"
-                  v-model="content.reviewer_pk" :reduce="reduceReviewer" />
+                <v-select
+                  :options="reviewers"
+                  label="username"
+                  :multiple="false"
+                  @input="claimReview(content)"
+                  v-model="content.reviewer_pk"
+                  :reduce="reduceReviewer" />
               </div>
             </li>
             <li class="content-box__action" v-if="mode === 'review' && !content.has_assigned_reviewer">
@@ -121,116 +121,94 @@
         </div>
       </div>
     </div>
-    <app-pagination :current-page="currentPage" :pagination="pagination" @prev="previousPage" @next="nextPage"
-      @jump="jumpTo"></app-pagination>
-    <div v-if="contents.length === 0" class="text-center">
-      Es stehen keine Inhalte zur Verfügung.
-    </div>
+    <Pagination />
+    <div v-if="contents.length === 0" class="text-center">Es stehen keine Inhalte zur Verfügung.</div>
   </div>
 </template>
 
 <script setup>
-import debounce from 'lodash/debounce'
-import { ref, computed } from 'vue'
-import { usePagination } from '../composables/pagination'
-import { useAxios } from '../composables/axios'
-import { onBeforeMount } from 'vue'
+import { computed, onBeforeMount, ref, watchEffect } from 'vue';
 
-
-const { pagination,
-  currentPage,
-  jumpTo,
-  previousPage,
-  nextPage,
-  updatePagination
-} = usePagination();
+import Pagination from '../components/Pagination.vue';
+import { useAxios } from '../composables/axios';
+import { useContentFilter } from '../composables/contentFilter';
 
 const { axios } = useAxios();
+const { dataUrl, queryParams, contents, q, updateContents } = useContentFilter(axios);
 
-const contents = ref([]);
 const type = ref('');
-const searchTerm = ref(null);
 const status = ref('');
-const retrieveUrl = ref(window.dllData.retrieveUrl);
 const mode = ref(window.dllData.mode || 'overview');
 const invitationContents = ref([]);
 const reviewers = ref([]);
 
-const params = computed(() => {
-  const res = {
-    type: type.value,
-    q: searchTerm.value,
-    status: status.value
+dataUrl.value = window.dllData.retrieveUrl;
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  computed
+//  --------------------------------------------------------------------------------------------------------------------
+const overviewQueryParams = computed(() => {
+  const params = {
+    type: window.dllData.type ?? type.value,
+    status: status.value,
   };
-  if (window.dllData.type) {
-    res.type = window.dllData.type;
-  }
-  console.log(res)
-  return res;
+
+  return params;
 });
 
-
-const updateContents = function (page) {
-  console.log(page)
-  axios.get(retrieveUrl.value, {
-    params: {
-      ...params.value,
-      page: Number.isInteger(page) ? page : 1,
-    }
-  })
-    .then(res => {
-      contents.value = res.data.results
-      updatePagination(res)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-};
-const debouncedUpdate = debounce(updateContents, 500);
-
 const reduceReviewer = (option) => {
-  return option.pk
+  return option.pk;
 };
 
 const claimReview = (content) => {
-  let data = {}
+  let data = {};
   if (content.reviewer_pk) {
-    data['user'] = content.reviewer_pk
+    data['user'] = content.reviewer_pk;
   }
-  axios.post(content.assign_reviewer_url, data)
-    .then(res => {
-      updateContents(currentPage)
+  axios
+    .post(content.assign_reviewer_url, data)
+    .then((res) => {
+      updateContents(currentPage);
     })
-    .catch(err => {
-      console.log(err)
-    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 const unassign = (content) => {
-  axios.post(content.unassign_reviewer_url, {})
-    .then(res => {
-      updateContents(currentPage)
+  axios
+    .post(content.unassign_reviewer_url, {})
+    .then((res) => {
+      updateContents(currentPage);
     })
-    .catch(err => {
-      console.log(err)
-    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  watchers
+//  --------------------------------------------------------------------------------------------------------------------
+watchEffect(() => {
+  queryParams.value = overviewQueryParams.value;
+});
 
 onBeforeMount(() => {
   if (!window.dllData.retrieveUrl) {
-    throw Error('Retrieve URL is not defined.')
+    throw Error('Retrieve URL is not defined.');
   }
-  updateContents()
+
   if (mode.value === 'overview') {
-    axios.get('/api/meine-einladungen')
-      .then(res => {
-        invitationContents.value = res.data.results
-      })
+    axios.get('/api/meine-einladungen').then((res) => {
+      invitationContents.value = res.data.results;
+    });
   }
-  axios.get('/api/reviewers')
-    .then(res => {
-      reviewers.value = res.data.results
-    })
+
+  axios.get('/api/reviewers').then((res) => {
+    reviewers.value = res.data.results;
+  });
+
+  updateContents();
 });
 </script>
 

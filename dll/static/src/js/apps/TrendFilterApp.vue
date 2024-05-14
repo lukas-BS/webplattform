@@ -114,14 +114,16 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import CompetenceFilter from '../components/CompetenceFilter.vue';
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';
+import { useAxios } from '../composables/axios';
 import { useContentFilter } from '../composables/contentFilter';
 import { usePreventEnter } from '../composables/preventEnter';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
+const { axios } = useAxios();
 const { dataUrl, q, queryParams, sorting, contents, loading, competences, updateContents, debouncedUpdate } =
-  useContentFilter();
+  useContentFilter(axios);
 const { preventEnter } = usePreventEnter();
 
 const language = ref(null);
