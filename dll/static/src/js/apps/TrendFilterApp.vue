@@ -79,7 +79,7 @@
             class="button button--primary d-lg-none"
             type="button"
             data-bs-toggle="collapse"
-            data-target="#filterForm"
+            data-bs-target="#filterForm"
             aria-expanded="false"
             aria-controls="filterForm">
             Filter ausklappen <span class="fas fa-chevron-circle-down"></span>

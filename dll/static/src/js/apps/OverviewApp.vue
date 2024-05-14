@@ -88,13 +88,14 @@
             <li class="content-box__action" v-if="mode === 'review' && content.can_assign && !content.reviewer">
               <div style="width: 250px">
                 Reviewer zuweisen:
-                <v-select
+                <!-- TODO: VSelect -->
+                <!-- <v-select
                   :options="reviewers"
                   label="username"
                   :multiple="false"
                   @input="claimReview(content)"
                   v-model="content.reviewer_pk"
-                  :reduce="reduceReviewer" />
+                  :reduce="reduceReviewer" /> -->
               </div>
             </li>
             <li class="content-box__action" v-if="mode === 'review' && !content.has_assigned_reviewer">
@@ -156,6 +157,9 @@ const overviewQueryParams = computed(() => {
   return params;
 });
 
+//  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
 const reduceReviewer = (option) => {
   return option.pk;
 };
@@ -167,7 +171,7 @@ const claimReview = (content) => {
   }
   axios
     .post(content.assign_reviewer_url, data)
-    .then((res) => {
+    .then(() => {
       updateContents(currentPage);
     })
     .catch((err) => {
@@ -178,7 +182,7 @@ const claimReview = (content) => {
 const unassign = (content) => {
   axios
     .post(content.unassign_reviewer_url, {})
-    .then((res) => {
+    .then(() => {
       updateContents(currentPage);
     })
     .catch((err) => {
@@ -193,6 +197,9 @@ watchEffect(() => {
   queryParams.value = overviewQueryParams.value;
 });
 
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
 onBeforeMount(() => {
   if (!window.dllData.retrieveUrl) {
     throw Error('Retrieve URL is not defined.');
@@ -207,9 +214,9 @@ onBeforeMount(() => {
   axios.get('/api/reviewers').then((res) => {
     reviewers.value = res.data.results;
   });
-
-  updateContents();
 });
+
+updateContents();
 </script>
 
 <style scoped></style>
