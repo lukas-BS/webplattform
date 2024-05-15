@@ -1,109 +1,101 @@
 <template>
   <div class="form-group">
-    <label :for="id">{{ label }}:<span v-if="required">*</span></label>
+    <label :for="props.id">{{ props.label }}:<span v-if="props.required">*</span></label>
     <div class="d-flex">
-      <textarea :type="type" class="form-control" :class="{'form__field--error': error}" :id="id" :placeholder="placeholder" v-model="inputValue" :readonly="readonly" :maxlength="maximalChars" :rows="rows"></textarea>
-      <button class="button--neutral button--smallSquare button--help ms-1" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+      <textarea
+        class="form-control"
+        :class="{ 'form__field--error': props.error }"
+        :id="props.id"
+        :placeholder="props.placeholder"
+        :readonly="props.readonly"
+        :maxlength="props.maximalChars"
+        :rows="props.rows"
+        v-model="textAreaValue" />
+      <!-- TODO: Tooltip -->
+      <button
+        v-if="props.helpText"
+        class="button--neutral button--smallSquare button--help ms-1"
+        type="button"
+        data-bs-toggle="tooltip"
+        data-placement="top"
+        :title="props.helpText"></button>
     </div>
-    <small v-if="characterCounter" class="form-text text-muted float-end">{{ charactersLeft }} Zeichen verbleibend</small>
+    <small v-if="props.characterCounter" class="form-text text-muted float-end">
+      {{ charactersLeft }} Zeichen verbleibend
+    </small>
     <div class="clearfix"></div>
-    <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>
+    <ReviewInput
+      :mode="props.review ? 'review' : 'edit'"
+      :id="'id' + -props.review"
+      :name="props.label"
+      v-model="reviewValue" />
   </div>
 </template>
 
-<script>
-  import ReviewInput from './ReviewInput.vue'
-  import { reviewMixin } from '../mixins/reviewMixin'
+<script setup>
+import { computed } from 'vue';
 
-  export default {
-    name: 'TextInput',
-    components: {
-      'AppReviewInput': ReviewInput
-    },
-    mixins: [reviewMixin],
-    props: {
-      id: {
-        type: String,
-        default: '',
-        required: true
-      },
-      type: {
-        type: String,
-        default: 'text',
-        required: false
-      },
-      readonly: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      placeholder:{
-        type: String,
-        default: '',
-        required: false
-      },
-      characterCounter: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      maximalChars: {
-        type: Number,
-        default: null,
-        required: false
-      },
-      required: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      label: {
-        type: String,
-        default: '',
-        required: true
-      },
-      value: {
-        // type: String,
-        default: '',
-        required: false
-      },
-      rows: {
-        type: Number,
-        default: 10,
-        required: false
-      },
-      helpText: {
-        type: String,
-        default: '',
-        required: false
-      },
-      error: {
-        type: Boolean,
-        default: false,
-        required: false
-      }
-    },
-    computed: {
-      charactersLeft () {
-        return this.maximalChars - (this.value ? this.value.length : 0)
-      }
-    },
-    data () {
-      return {
-        inputValue: ''
-      }
-    },
-    created () {
-      this.inputValue = this.value
-    },
-    watch: {
-      inputValue (newValue) {
-        this.$emit('update:value', newValue)
-      }
-    }
-  }
+import ReviewInput from './ReviewInput.vue';
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  models + props
+//  --------------------------------------------------------------------------------------------------------------------
+const textAreaValue = defineModel('inputValue', { default: '' });
+const reviewValue = defineModel('reviewValue', { default: '' });
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  placeholder: {
+    type: String,
+    default: '',
+  },
+  characterCounter: {
+    type: Boolean,
+    default: false,
+  },
+  maximalChars: {
+    type: Number,
+    default: null,
+  },
+  required: {
+    type: Boolean,
+    default: false,
+  },
+  rows: {
+    type: Number,
+    default: 10,
+  },
+  helpText: {
+    type: String,
+    default: '',
+  },
+  error: {
+    type: Boolean,
+    default: false,
+  },
+  review: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  computed
+//  --------------------------------------------------------------------------------------------------------------------
+const charactersLeft = computed(() => {
+  return textAreaValue.value ? props.maximalChars - textAreaValue.value.length : props.maximalChars;
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

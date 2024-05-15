@@ -300,21 +300,20 @@ export function useSubmission(axios) {
   onMounted(() => {
     //TODO: Check if tooltip init needed
     // initTooltip();
-  });
+    if (window.dllData) {
+      mode.value = window.dllData.mode || 'create';
+      canDelete.value = window.dllData.canDelete || false;
 
-  if (window.dllData) {
-    mode.value = window.dllData.mode || 'create';
-    canDelete.value = window.dllData.canDelete || false;
-
-    if (mode.value === 'edit' || mode.value === 'review') {
-      setContent(window.dllData.module);
-      if (window.dllData.module.review) {
-        reviewValue.value = window.dllData.module.review.json_data;
+      if (mode.value === 'edit' || mode.value === 'review') {
+        setContent(window.dllData.module);
+        if (window.dllData.module.review) {
+          reviewValue.value = window.dllData.module.review.json_data;
+        }
       }
-    }
 
-    data.value.author = window.dllData.authorName;
-  }
+      data.value.author = window.dllData.authorName;
+    }
+  });
 
   return {
     mode,

@@ -1,122 +1,156 @@
 <template>
   <div class="form-group">
-    <label :for="id" class="mb-2 w-100">{{ label }}:<span v-if="required">*</span></label>
-    <button class="button--neutral button--smallSquare button--help ms-1 float-end" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+    <label :for="props.id" class="mb-2 w-100">{{ props.label }}:<span v-if="props.required">*</span></label>
+    <!-- TODO: Tooltip -->
+    <button
+      v-if="props.helpText"
+      class="button--neutral button--smallSquare button--help ms-1 float-end"
+      type="button"
+      data-bs-toggle="tooltip"
+      data-placement="top"
+      :title="props.helpText"></button>
     <div class="form__list-inputs">
-      <div class="d-flex align-items-baseline mb-2" v-for="item in list">
-        <input type="text" class="form-control me-3 form__list-input" :id="id" :placeholder="placeholder" v-model="item.text" @input="emitUpdate" :readonly="readonly" v-if="!textarea">
-        <textarea type="text" class="form-control me-3" :id="id" :placeholder="placeholder" v-model="item.text" @input="emitUpdate" :readonly="readonly" v-else></textarea>
-        <button class="button--danger button--smallSquare" @click="removeItem(item)" type="button" v-if="!readonly">
+      <div class="d-flex align-items-baseline mb-2" v-for="(item, index) in listValue" :key="index">
+        <input
+          v-if="!props.textarea"
+          type="text"
+          class="form-control me-3 form__list-input"
+          :id="props.id"
+          :placeholder="props.placeholder"
+          :readonly="props.readonly"
+          v-model="item.text" />
+        <textarea
+          v-else
+          type="text"
+          class="form-control me-3"
+          :id="props.id"
+          :placeholder="props.placeholder"
+          :readonly="props.readonly"
+          v-model="item.text" />
+        <button
+          v-if="!props.readonly"
+          class="button--danger button--smallSquare"
+          @click="removeItem(item)"
+          type="button">
           <span class="fas fa-times"></span>
         </button>
       </div>
     </div>
     <div>
-      <button class="button--neutral button--smallSquare" @click="addItem" type="button" v-if="!readonly">
+      <button v-if="!props.readonly" class="button--neutral button--smallSquare" @click="addItem()" type="button">
         <span class="fas fa-plus"></span>
       </button>
     </div>
-    <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>
+    <ReviewInput
+      :mode="props.review ? 'review' : 'edit'"
+      :id="'id' + -props.review"
+      :name="props.label"
+      v-model="reviewValue" />
   </div>
 </template>
 
-<script>
-  import ReviewInput from './ReviewInput.vue'
-  import { reviewMixin } from '../mixins/reviewMixin'
+<script setup>
+import { watch } from 'vue';
 
-  export default {
-    name: 'ListInput',
-    components: {
-      'AppReviewInput': ReviewInput
-    },
-    mixins: [reviewMixin],
-    props: {
-      id: {
-        type: String,
-        default: '',
-        required: true
-      },
-      required: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      label: {
-        type: String,
-        default: '',
-        required: true
-      },
-      placeholder: {
-        type: String,
-        default: '',
-        required: false
-      },
-      initial: {
-        type: Array,
-        default: () => {
-          return []
-        },
-        required: false
-      },
-      helpText: {
-        type: String,
-        default: '',
-        required: false
-      },
-      readonly: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      min: {
-        type: Number,
-        default: 0,
-        required: false
-      },
-      textarea: {
-        type: Boolean,
-        default: false,
-        required: false
-      }
-    },
-    data () {
-      return {
-        list: []
-      }
-    },
-    created () {
-      this.list = this.initial ? this.initial.map(x => { return {text: x}}) : []
-      if (!this.list.length) {
-        let i = 0;
-        while (i < this.min) {
-          this.addItem()
-          i++
-        }
-      }
-    },
-    methods: {
-      addItem () {
-        this.list.push({text: ''})
-      },
-      removeItem (text) {
-        this.list.splice(this.list.indexOf(text), 1)
-      },
-      emitUpdate () {
-        const result = this.list.map(x => x.text)
-        this.$emit('update:list', result)
-      }
-    },
-    watch: {
-      list (newValue) {
-        const tempResult = newValue.map(x => x.text)
-        // Remove empty fields
-        const result = tempResult.filter(input => input.length !== 0)
-        this.$emit('update:list', result)
-      }
-    }
-  }
+import ReviewInput from './ReviewInput.vue';
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  models + props
+//  --------------------------------------------------------------------------------------------------------------------
+const listValue = defineModel('listValue', { default: [] });
+const reviewValue = defineModel('reviewValue', { default: '' });
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+  required: {
+    type: Boolean,
+    default: false,
+  },
+  placeholder: {
+    type: String,
+    default: '',
+  },
+  initial: {
+    type: Array,
+    default: () => [],
+  },
+  helpText: {
+    type: String,
+    default: '',
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  min: {
+    type: Number,
+    default: 0,
+  },
+  textarea: {
+    type: Boolean,
+    default: false,
+  },
+  review: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
+const addItem = () => {
+  listValue.value.push({ text: '' });
+};
+
+const removeItem = (text) => {
+  listValue.value.splice(listValue.value.indexOf(text), 1);
+};
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  watchers
+//  --------------------------------------------------------------------------------------------------------------------
+// watch(listValue, (newListValue) => {
+//   const tempResult = newListValue.map((x) => x.text);
+
+//   const result = tempResult.filter((input) => input.length !== 0);
+//   listValue.value = result;
+// });
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+listValue.value = props.initial ? props.initial.map((x) => x) : [];
+
+for (let i = listValue.value.length; i < props.min; i++) {
+  addItem();
+}
 </script>
 
-<style scoped>
+<!-- <script>
+export default {
+  methods: {
+    emitUpdate() {
+      const result = this.list.map((x) => x.text);
+      this.$emit('update:list', result);
+    },
+  },
+  watch: {
+    list(newValue) {
+      const tempResult = newValue.map((x) => x.text);
+      // Remove empty fields
+      const result = tempResult.filter((input) => input.length !== 0);
+      this.$emit('update:list', result);
+    },
+  },
+};
+</script> -->
 
-</style>
+<style scoped></style>

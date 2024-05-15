@@ -1,85 +1,86 @@
 <template>
   <div class="form-group">
-    <label :for="id">{{ label }}</label>
+    <label :for="props.id" v-text="props.label" />
     <div class="d-flex">
-      <select :name="id" :id="id" class="form-control" :class="{'form__field--error': error}" v-model="inputValue" :disabled="readonly">
-        <option v-for="option in options" :value="option.value" :selected="option.value === defaultVal">{{ option.label }}</option>
+      <select
+        :name="props.id"
+        :id="props.id"
+        class="form-control"
+        :class="{ 'form__field--error': props.error }"
+        v-model="selectValue"
+        :disabled="props.readonly">
+        <option
+          v-for="(option, index) in props.options"
+          :key="index"
+          :value="option.value"
+          :selected="option.value === defaultVal"
+          v-text="option.label" />
       </select>
-      <button class="button--neutral button--smallSquare button--help ms-1" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+      <!-- TODO: Tooltip -->
+      <button
+        v-if="props.helpText"
+        class="button--neutral button--smallSquare button--help ms-1"
+        type="button"
+        data-bs-toggle="tooltip"
+        data-placement="top"
+        :title="props.helpText"></button>
     </div>
-    <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>
+    <ReviewInput
+      :mode="props.review ? 'review' : 'edit'"
+      :id="'id' + -props.review"
+      :name="props.label"
+      v-model="reviewValue" />
   </div>
 </template>
 
-<script>
-  import { reviewMixin } from '../mixins/reviewMixin'
-  import ReviewInput from './ReviewInput.vue'
+<script setup>
+import ReviewInput from './ReviewInput.vue';
 
-  export default {
-    name: 'Select',
-    components: {
-      'AppReviewInput': ReviewInput
-    },
-    mixins: [reviewMixin],
-    props: {
-      id: {
-        type: String,
-        default: '',
-        required: true
-      },
-      required: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      label: {
-        type: String,
-        default: '',
-        required: true
-      },
-      options: {
-        type: Array,
-        default: [],
-        required: true
-      },
-      defaultVal: {
-        default: '',
-        required: false
-      },
-      helpText: {
-        type: String,
-        default: '',
-        required: false
-      },
-      readonly: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      error: {
-        type: Boolean,
-        default: false,
-        required: false
-      }
-    },
-    data () {
-      return {
-        inputValue: null
-      }
-    },
-    created () {
-      if (this.defaultVal !== undefined) {
-        this.inputValue = this.defaultVal
-      }
-    },
-    watch: {
-      inputValue (newValue) {
-        this.$emit('update:value', newValue)
-      }
-    }
-  }
+//  --------------------------------------------------------------------------------------------------------------------
+//  models + props
+//  --------------------------------------------------------------------------------------------------------------------
+const selectValue = defineModel('inputValue', { default: '' });
+const reviewValue = defineModel('reviewValue', { default: '' });
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+  options: {
+    type: Array,
+    required: true,
+  },
+  defaultVal: {
+    type: String,
+    default: '',
+  },
+  helpText: {
+    type: String,
+    default: '',
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  error: {
+    type: Boolean,
+    default: false,
+  },
+  review: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+selectValue.value = props.defaultVal;
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

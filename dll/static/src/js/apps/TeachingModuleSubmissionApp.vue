@@ -28,35 +28,30 @@
       <label>Feedback:</label> <br />
       {{ reviewValue.feedback }}
     </div>
-    <app-text-area
-      id="feedback"
+    <TextArea
       v-if="review"
-      :review="false"
+      id="feedback"
       label="Feedback"
+      :review="false"
       :required="false"
-      :value.sync="reviewValue.feedback"
       :rows="3"
-      :help-text="getHelpText('feedback')"></app-text-area>
+      :help-text="getHelpText('feedback')"
+      v-model:review-value="reviewValue.feedback" />
 
     <div v-show="stepIndex === 0">
-      <app-text-input
-        id="author"
-        :readonly="true"
-        label="Autor_in"
-        :value.sync="data.author"
-        :required="true"></app-text-input>
-      <app-text-input
+      <TextInput id="author" label="Autor_in" required readonly v-model:input-value="data.author" />
+      <TextInput
         id="title"
+        label="Titel des Unterrichtbausteins"
+        required
+        character-counter
         :readonly="readonly"
         :review="review"
-        label="Titel des Unterrichtbausteins"
-        :value.sync="data.name"
-        :review-value.sync="reviewValue.name"
         :error="errorFields.includes('name')"
-        :required="true"
-        :character-counter="true"
         :maximal-chars="140"
-        :help-text="getHelpText('name')"></app-text-input>
+        :help-text="getHelpText('name')"
+        v-model:input-value="data.name"
+        v-model:review-value="reviewValue.name" />
     </div>
     <div v-if="mode === 'edit' || mode === 'review'">
       <div v-show="stepIndex === 0">
@@ -71,67 +66,67 @@
           fetch-url="/api/authors"
           :multiple="true"
           :help-text="getHelpText('co_authors')"></app-dropdown>
-        <app-pending-co-authors :pending_co_authors="data.pending_co_authors"></app-pending-co-authors>
-        <app-file-input
+        <PendingCoAuthors :pending-co-authors="data.pending_co_authors" />
+        <FileInput
           id="image"
-          :readonly="readonly"
-          :review="review"
-          :required="true"
           label="Anzeigebild"
           file-label="Bild wählen"
-          :value.sync="previewImage"
-          :review-value.sync="reviewValue.image"
+          required
+          :readonly="readonly"
+          :review="review"
           :error="errorFields.includes('image')"
           :image="data.image"
           :help-text="getHelpText('image')"
-          :hintText="imageHintText"></app-file-input>
-        <app-text-area
+          :hintText="imageHintText"
+          v-model:file-value="previewImage"
+          v-model:review-value="reviewValue.image" />
+        <TextArea
           id="teaser"
+          label="Kurzzusammenfassung"
+          required
+          character-counter
           :readonly="readonly"
           :review="review"
-          label="Kurzzusammenfassung"
-          :required="true"
-          :value.sync="data.teaser"
-          :review-value.sync="reviewValue.teaser"
           :error="errorFields.includes('teaser')"
           :rows="3"
           :help-text="getHelpText('teaser')"
-          :character-counter="true"
-          :maximal-chars="140"></app-text-area>
-        <app-text-area
+          :maximal-chars="140"
+          v-model:input-value="data.teaser"
+          v-model:review-value="reviewValue.teaser" />
+        <TextArea
           id="description"
+          label="Detaillierte Beschreibung"
+          required
+          character-counter
           :readonly="readonly"
           :review="review"
-          label="Detaillierte Beschreibung"
-          :required="true"
-          :value.sync="data.description"
-          :review-value.sync="reviewValue.description"
           :error="errorFields.includes('description')"
-          :character-counter="true"
           :maximal-chars="1800"
           :rows="10"
-          :help-text="getHelpText('description')"></app-text-area>
-        <app-text-area
+          :help-text="getHelpText('description')"
+          v-model:input-value="data.description"
+          v-model:review-value="reviewValue.description" />
+        <TextArea
           id="subject-of-tuition"
+          label="Informationen zum Unterrichtsgegenstand"
           :readonly="readonly"
           :review="review"
-          label="Informationen zum Unterrichtsgegenstand"
-          :value.sync="data.subject_of_tuition"
-          :review-value.sync="reviewValue.subject_of_tuition"
           :error="errorFields.includes('subject_of_tuition')"
           :initial="data.subject_of_tuition"
-          :help-text="getHelpText('subject_of_tuition')"></app-text-area>
-        <app-select
+          :help-text="getHelpText('subject_of_tuition')"
+          v-model:input-value="data.subject_of_tuition"
+          v-model:review-value="reviewValue.subject_of_tuition" />
+        <Select
           id="license"
+          label="Lizenz"
           :readonly="readonly"
           :review="review"
-          label="Lizenz"
           :options="licenseOptions"
           :default-val="data.licence"
-          :value.sync="data.licence"
-          :review-value.sync="reviewValue.licence"
           :error="errorFields.includes('licence')"
-          :help-text="getHelpText('licence')"></app-select>
+          :help-text="getHelpText('licence')"
+          v-model:input-value="data.licence"
+          v-model:review-value="reviewValue.licence" />
       </div>
       <div v-show="stepIndex === 1">
         <app-dropdown
@@ -160,90 +155,90 @@
           :multiple="true"
           :prefetch="true"
           :help-text="getHelpText('school_types')"></app-dropdown>
-        <app-range-input
+        <RangeInput
           id="classes"
-          :readonly="readonly"
-          :review="review"
           label="Jahrgangsstufe"
           label-from="Von"
           label-to="Bis"
           type="number"
-          :range.sync="data.school_class"
-          :review-value.sync="reviewValue.school_class"
+          :readonly="readonly"
+          :review="review"
           :error="errorFields.includes('school_class')"
           :min="1"
           :max="13"
-          :help-text="getHelpText('school_class')"></app-range-input>
-        <app-select
+          :help-text="getHelpText('school_class')"
+          v-model:range-value="data.school_class"
+          v-model:review-value="reviewValue.school_class" />
+        <Select
           id="state"
+          label="Bundesland"
           :readonly="readonly"
           :review="review"
-          label="Bundesland"
-          :value.sync="data.state"
-          :review-value.sync="reviewValue.state"
           :error="errorFields.includes('state')"
           :default-val="data.state"
           :options="germanStateOptions"
-          :help-text="getHelpText('state')"></app-select>
-        <app-text-input
+          :help-text="getHelpText('state')"
+          v-model:input-value="data.state"
+          v-model:review-value="reviewValue.state" />
+        <TextInput
           id="estimatedTime"
+          label="Zeitumfang der Durchführung"
+          character-counter
           :readonly="readonly"
           :review="review"
-          label="Zeitumfang der Durchführung"
-          :value.sync="data.estimated_time"
-          :review-value.sync="reviewValue.estimated_time"
           :error="errorFields.includes('estimated_time')"
           :initial="data.estimated_time"
           :help-text="getHelpText('estimated_time')"
-          :character-counter="true"
-          :maximal-chars="200"></app-text-input>
-        <app-text-area
+          :maximal-chars="200"
+          v-model:input-value="data.estimated_time"
+          v-model:review-value="reviewValue.estimated_time" />
+        <TextArea
           id="educationalPlanReference"
+          label="Bildungsplanbezug"
+          character-counter
           :readonly="readonly"
           :review="review"
-          label="Bildungsplanbezug"
-          :value.sync="data.educational_plan_reference"
-          :review-value.sync="reviewValue.educational_plan_reference"
           :error="errorFields.includes('educational_plan_reference')"
-          :character-counter="true"
           :maximal-chars="1300"
-          :help-text="getHelpText('educational_plan_reference')"></app-text-area>
+          :help-text="getHelpText('educational_plan_reference')"
+          v-model:input-value="data.educational_plan_reference"
+          v-model:review-value="reviewValue.educational_plan_reference" />
       </div>
       <div v-show="stepIndex === 2">
-        <app-list-input
+        <ListInput
           id="goals"
+          label="Ziele"
+          textarea
           :min="1"
           :readonly="readonly"
           :review="review"
-          label="Ziele"
-          :list.sync="data.learning_goals"
-          :review-value.sync="reviewValue.learning_goals"
           :error="errorFields.includes('learning_goals')"
           :initial="data.learning_goals"
           :help-text="getHelpText('learning_goals')"
-          :textarea="true"></app-list-input>
-        <app-list-input
+          v-model:list-value="data.learning_goals"
+          v-model:review-value="reviewValue.learning_goals" />
+        <ListInput
           id="expertise"
+          label="Fachkompetenzen"
           :min="1"
           :readonly="readonly"
           :review="review"
-          label="Fachkompetenzen"
-          :list.sync="data.expertise"
-          :review-value.sync="reviewValue.expertise"
           :error="errorFields.includes('expertise')"
           :initial="data.expertise"
-          :help-text="getHelpText('expertise')"></app-list-input>
-        <app-text-area
+          :help-text="getHelpText('expertise')"
+          v-model:list-value="data.expertise"
+          v-model:review-value="reviewValue.expertise" />
+        <TextArea
           id="differentiatingAttributes"
+          label="Möglichkeiten der Differenzierung/Individualisierung"
+          character-counter
           :readonly="readonly"
           :review="review"
-          label="Möglichkeiten der Differenzierung/Individualisierung"
-          :value.sync="data.differentiating_attribute"
-          :review-value.sync="reviewValue.differentiating_attribute"
           :error="errorFields.includes('differentiating_attribute')"
-          :character-counter="true"
           :maximal-chars="700"
-          :help-text="getHelpText('differentiating_attribute')"></app-text-area>
+          :help-text="getHelpText('differentiating_attribute')"
+          v-model:input-value="data.differentiating_attribute"
+          v-model:review-value="reviewValue.differentiating_attribute" />
         <app-dropdown
           id="competences"
           :readonly="readonly"
@@ -273,39 +268,40 @@
           :help-text="getHelpText('sub_competences')"></app-dropdown>
       </div>
       <div v-show="stepIndex === 3">
-        <app-list-input
+        <ListInput
           id="equipment"
+          label="Medienausstattung"
           :min="1"
           :readonly="readonly"
           :review="review"
-          label="Medienausstattung"
-          :list.sync="data.equipment"
-          :review-value.sync="reviewValue.equipment"
           :error="errorFields.includes('equipment')"
           :initial="data.equipment"
-          :help-text="getHelpText('equipment')"></app-list-input>
-        <app-text-area
+          :help-text="getHelpText('equipment')"
+          v-model:list-value="data.equipment"
+          v-model:review-value="reviewValue.equipment" />
+        <TextArea
           id="hints"
-          :readonly="readonly"
-          :review="review"
           label="Hinweise"
-          :value.sync="data.additional_info"
-          :review-value.sync="reviewValue.additional_info"
-          :error="errorFields.includes('additional_info')"
-          :character-counter="true"
-          :maximal-chars="1000"
-          :help-text="getHelpText('additional_info')"></app-text-area>
-        <app-links-input
-          id="mediaLinks"
+          character-counter
           :readonly="readonly"
           :review="review"
-          :links.sync="data.mediaLinks"
-          :review-value.sync="reviewValue.mediaLinks"
-          :error="errorFields.includes('mediaLinks')"
+          :error="errorFields.includes('additional_info')"
+          :maximal-chars="1000"
+          :help-text="getHelpText('additional_info')"
+          v-model:input-value="data.additional_info"
+          v-model:review-value="reviewValue.additional_info" />
+        <LinksInput
+          id="mediaLinks"
           label="Links zu Audio- und Videomedien"
+          types
+          :readonly="readonly"
+          :review="review"
+          :error="errorFields.includes('mediaLinks')"
           :type="'video'"
           :help-text="getHelpText('contentlink')"
-          :types="true"></app-links-input>
+          v-model:links-value="data.mediaLinks"
+          v-model:review-value="reviewValue.mediaLinks" />
+
         <app-dropzone
           :slug="data.slug"
           label="Dateiupload"
@@ -313,16 +309,16 @@
           :help-text="getHelpText('contentfile')"></app-dropzone>
       </div>
       <div v-show="stepIndex === 4">
-        <app-links-input
+        <LinksInput
           id="literatureLinks"
+          label="Weiterführende Literatur und Links"
+          types
           :readonly="readonly"
           :review="review"
-          :links.sync="data.literatureLinks"
-          :review-value.sync="reviewValue.literatureLinks"
           :error="errorFields.includes('literatureLinks')"
-          label="Weiterführende Literatur und Links"
           :help-text="getHelpText('contentlink')"
-          :types="true"></app-links-input>
+          v-model:links-value="data.literatureLinks"
+          v-model:review-value="reviewValue.literatureLinks" />
         <app-dropdown
           id="teaching-modules"
           :readonly="readonly"
@@ -347,17 +343,17 @@
           :multiple="true"
           :help-text="getHelpText('tools')"
           :prefetch="true"></app-dropdown>
-        <app-links-input
+        <LinksInput
           id="additional_tools"
+          label="Andere Tools"
+          link-placeholder="Link zum Tool"
+          name-placeholder="Name des Tools"
           :readonly="readonly"
           :review="review"
-          :links.sync="data.additional_tools"
-          :review-value.sync="reviewValue.additional_tools"
           :error="errorFields.includes('additional_tools')"
-          label="Andere Tools"
           :help-text="getHelpText('additional_tools')"
-          link-placeholder="Link zum Tool"
-          name-placeholder="Name des Tools"></app-links-input>
+          v-model:links-value="data.additional_tools"
+          v-model:review-value="reviewValue.additional_tools" />
         <app-dropdown
           id="trends"
           :readonly="readonly"
@@ -393,12 +389,21 @@
 import { computed, ref } from 'vue';
 
 import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
+import FileInput from '../components/FileInput.vue';
 import FormProgress from '../components/FormProgress.vue';
+import LinksInput from '../components/LinksInput.vue';
+import ListInput from '../components/ListInput.vue';
+import PendingCoAuthors from '../components/PendingCoAuthors.vue';
+import RangeInput from '../components/RangeInput.vue';
+import Select from '../components/Select.vue';
+import TextArea from '../components/TextArea.vue';
+import TextInput from '../components/TextInput.vue';
 import { useAxios } from '../composables/axios';
 import { useSubmission } from '../composables/submission';
 
 const { axios } = useAxios();
 const {
+  data,
   requiredFields,
   resourceType,
   errors,
@@ -410,6 +415,9 @@ const {
   review,
   readonly,
   errorFields,
+  previewImage,
+  imageHintText,
+  licenseOptions,
   updateContent,
   updateReview,
   createContent,
@@ -422,10 +430,53 @@ const {
   getHelpText,
 } = useSubmission(axios);
 
-const data = ref({
+const steps = ref([
+  {
+    short: 'Allgemeine Informationen',
+    long: 'Allgemeine Informationen zum Unterrichtsbaustein',
+  },
+  {
+    short: 'Informationen zum schulischen Kontext',
+    long: 'Allgemeine Informationen zum schulischen Kontext des Unterrichtsbausteins',
+  },
+  {
+    short: 'Zielsetzungen',
+    long: 'Zielsetzungen des Unterrichtsbausteins',
+  },
+  {
+    short: 'Voraussetzungen zum Einsatz',
+    long: 'Voraussetzungen zum Einsatz des Unterrichtsbausteins im Unterricht',
+  },
+  {
+    short: 'Weiterführende Informationen',
+    long: 'Weiterführende Informationen zum Unterrichtsbaustein',
+  },
+]);
+const stepIndex = ref(0);
+const germanStateOptions = ref([
+  { value: 'nordrhein-westfalen', label: 'Nordrhein-Westfalen' },
+  { value: 'niedersachsen', label: 'Niedersachsen' },
+  { value: 'bayern', label: 'Bayern' },
+  { value: 'rheinland-pfalz', label: 'Rheinland-Pfalz' },
+  { value: 'hessen', label: 'Hessen' },
+  { value: 'saarland', label: 'Saarland' },
+  { value: 'berlin', label: 'Berlin' },
+  { value: 'brandenburg', label: 'Brandenburg' },
+  { value: 'schleswig-holstein', label: 'Schleswig-Holstein' },
+  { value: 'mecklenburg-vorpommern', label: 'Mecklenburg-Vorpommern' },
+  { value: 'thueringen', label: 'Thüringen' },
+  { value: 'sachsen', label: 'Sachsen' },
+  { value: 'sachsen-anhalt', label: 'Sachsen-Anhalt' },
+  { value: 'bremen', label: 'Bremen' },
+  { value: 'baden-wuerttemberg', label: 'Baden-Württemberg' },
+  { value: 'hamburg', label: 'Hamburg' },
+]);
+
+data.value = {
   author: '',
   name: '',
   contentlink_set: [],
+  pending_co_authors: [],
   teaser: '',
   image: null,
   imageRights: null,
@@ -454,51 +505,7 @@ const data = ref({
   mediaLinks: [],
   literatureLinks: [],
   license: null,
-});
-
-const steps = ref([
-  {
-    short: 'Allgemeine Informationen',
-    long: 'Allgemeine Informationen zum Unterrichtsbaustein',
-  },
-  {
-    short: 'Informationen zum schulischen Kontext',
-    long: 'Allgemeine Informationen zum schulischen Kontext des Unterrichtsbausteins',
-  },
-  {
-    short: 'Zielsetzungen',
-    long: 'Zielsetzungen des Unterrichtsbausteins',
-  },
-  {
-    short: 'Voraussetzungen zum Einsatz',
-    long: 'Voraussetzungen zum Einsatz des Unterrichtsbausteins im Unterricht',
-  },
-  {
-    short: 'Weiterführende Informationen',
-    long: 'Weiterführende Informationen zum Unterrichtsbaustein',
-  },
-]);
-
-const stepIndex = ref(0);
-const germanStateOptions = ref([
-  { value: 'nordrhein-westfalen', label: 'Nordrhein-Westfalen' },
-  { value: 'niedersachsen', label: 'Niedersachsen' },
-  { value: 'bayern', label: 'Bayern' },
-  { value: 'rheinland-pfalz', label: 'Rheinland-Pfalz' },
-  { value: 'hessen', label: 'Hessen' },
-  { value: 'saarland', label: 'Saarland' },
-  { value: 'berlin', label: 'Berlin' },
-  { value: 'brandenburg', label: 'Brandenburg' },
-  { value: 'schleswig-holstein', label: 'Schleswig-Holstein' },
-  { value: 'mecklenburg-vorpommern', label: 'Mecklenburg-Vorpommern' },
-  { value: 'thueringen', label: 'Thüringen' },
-  { value: 'sachsen', label: 'Sachsen' },
-  { value: 'sachsen-anhalt', label: 'Sachsen-Anhalt' },
-  { value: 'bremen', label: 'Bremen' },
-  { value: 'baden-wuerttemberg', label: 'Baden-Württemberg' },
-  { value: 'hamburg', label: 'Hamburg' },
-]);
-
+};
 resourceType.value = 'TeachingModule';
 requiredFields.value = [
   { field: 'name', title: 'Titel' },

@@ -164,6 +164,18 @@ const submit = () => {
 //  --------------------------------------------------------------------------------------------------------------------
 //  emits
 //  --------------------------------------------------------------------------------------------------------------------
+const emits = defineEmits([
+  'update',
+  'preview',
+  'submit',
+  'create',
+  'deleteWarning',
+  'approveReview',
+  'declineReview',
+  'updateReview',
+  'delete',
+]);
+
 const emitUpdate = () => {
   emits('update');
 };

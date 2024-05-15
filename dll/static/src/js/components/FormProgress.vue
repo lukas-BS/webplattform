@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-content-between steps">
     <div
-      v-for="(step, index) in steps"
+      v-for="(step, index) in props.steps"
       :key="index"
       class="step"
       :class="{ 'step--is-active': stepIsActive(index + 1) }"
@@ -33,7 +33,7 @@ const props = defineProps({
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const getStepImage = (index) => {
-  if (props.stepIsActive(index)) {
+  if (stepIsActive(index)) {
     return `https://dll-production.s3-de-central.profitbricks.com/static/img/forms/step_${index}_black.svg`;
   }
 
@@ -47,8 +47,10 @@ const stepIsActive = (index) => {
 //  --------------------------------------------------------------------------------------------------------------------
 //  emits
 //  --------------------------------------------------------------------------------------------------------------------
+const emits = defineEmits(['setIndex']);
+
 const emitSetIndex = (index) => {
-  emitSetIndex('setIndex', index);
+  emits('setIndex', index);
 };
 </script>
 

@@ -1,17 +1,42 @@
 <template>
   <div class="form-group">
-    <label  :for="id" class="mb-2 w-100">{{ label }}:<span v-if="required">*</span></label>
-    <button class="button--neutral button--smallSquare button--help ms-1 float-end" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+    <label :for="props.id" class="mb-2 w-100">{{ props.label }}:<span v-if="props.required">*</span></label>
+    <!-- TODO: Tooltip -->
+    <button
+      v-if="props.helpText"
+      class="button--neutral button--smallSquare button--help ms-1 float-end"
+      type="button"
+      data-bs-toggle="tooltip"
+      data-placement="top"
+      :title="props.helpText"></button>
     <div class="form__list-inputs">
-      <div class="mb-2" v-for="link in internalLinks">
-        <div class="d-flex align-items-baseline ">
-          <input type="text" class="form-control me-3" :id="id" :placeholder="namePlaceholder" v-model="link.name" :readonly="readonly">
-          <input type="text" class="form-control me-3" :class="{'form__field--error': !link.validUrl}" :id="id" :placeholder="linkPlaceholder" v-model="link.url" :readonly="readonly" @blur="checkLinkValid(link)">
-          <select class="form-control me-3" name="types" v-model="link.type" v-if="types">
+      <div class="mb-2" v-for="(link, index) in linksValue" :key="index">
+        <div class="d-flex align-items-baseline">
+          <input
+            type="text"
+            class="form-control me-3"
+            :id="props.id"
+            :placeholder="props.namePlaceholder"
+            :readonly="props.readonly"
+            v-model="link.name" />
+          <input
+            type="text"
+            class="form-control me-3"
+            :class="{ 'form__field--error': !link.validUrl }"
+            :id="props.id"
+            :placeholder="props.linkPlaceholder"
+            :readonly="props.readonly"
+            v-model="link.url"
+            @blur="checkLinkValid(link)" />
+          <select v-if="props.types" class="form-control me-3" name="types" v-model="link.type">
             <option value="video">Video / Audio</option>
             <option value="href">Text</option>
           </select>
-          <button class="button--danger button--smallSquare" @click="removeLink(link)" type="button" v-if="!readonly">
+          <button
+            v-if="!props.readonly"
+            class="button--danger button--smallSquare"
+            type="button"
+            @click="removeLink(link)">
             <span class="fas fa-times"></span>
           </button>
         </div>
@@ -20,145 +45,125 @@
         </div>
       </div>
     </div>
-    <div v-if="!readonly">
-      <button class="button--neutral button--smallSquare" @click="addLink" type="button">
+    <div v-if="!props.readonly">
+      <button class="button--neutral button--smallSquare" @click="addLink()" type="button">
         <span class="fas fa-plus"></span>
       </button>
     </div>
-    <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>
+    <ReviewInput
+      :mode="props.review ? 'review' : 'edit'"
+      :id="'id' + -props.review"
+      :name="props.label"
+      v-model="reviewValue" />
   </div>
 </template>
 
-<script>
-  import ReviewInput from './ReviewInput.vue'
-  import { reviewMixin } from '../mixins/reviewMixin'
+<script setup>
+import { watch } from 'vue';
 
-  export default {
-    name: 'LinksInput',
-    components: {
-      'AppReviewInput': ReviewInput
-    },
-    mixins: [reviewMixin],
-    props: {
-      id: {
-        type: String,
-        default: '',
-        required: true
-      },
-      error: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      required: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      namePlaceholder: {
-        type: String,
-        default: 'Linktext',
-        required: false
-      },
-      linkPlaceholder: {
-        type: String,
-        default: 'https://example.org',
-        required: false
-      },
-      label: {
-        type: String,
-        default: '',
-        required: true
-      },
-      type: {
-        type: String,
-        default: 'href',
-        required: false
-      },
-      links: {
-        type: Array,
-        default: () => {
-          return []
-        },
-        required: false
-      },
-      helpText: {
-        type: String,
-        default: '',
-        required: false
-      },
-      readonly: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      types: {
-        type: Boolean,
-        default: false,
-        required: false
-      }
-    },
-    data () {
-      return {
-        internalLinks: []
-      }
-    },
-    methods: {
-      addLink () {
-        this.internalLinks.push({name: '', url: '', type: this.type, validUrl: true})
-      },
-      removeLink (link) {
-        this.internalLinks.splice(this.internalLinks.indexOf(link), 1)
-      },
-      isValidUrl (url) {
-        // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
-        var pattern = new RegExp('^(https?:\\/\\/)'+
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+
-          '((\\d{1,3}\\.){3}\\d{1,3}))'+
-          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
-          '(\\?[;&a-z\\d%_.~+=-]*)?'+
-          '(\\#[-a-z\\d_]*)?$','i');
-        return !!pattern.test(url)
-      },
-      checkLinkValid (link) {
-        link.validUrl = this.isValidUrl(link.url)
-        this.$forceUpdate()
-      }
-    },
-    created () {
-      if (this.links) {
-        this.internalLinks = this.links
-        for (let i = 0; i < this.internalLinks.length; i++) {
-          this.internalLinks[i].validUrl = true
-        }
-      }
-    },
-    watch: {
-      internalLinks: {
-        handler: function (newValue) {
-          this.$emit('update:links', newValue)
-        },
-        deep: true
-      },
-      links (newValue) {
-        if (newValue) {
-          this.internalLinks = this.links
-          for (let i = 0; i < this.internalLinks.length; i++) {
-            this.internalLinks[i].validUrl = true
-          }
-        } else {
-          this.internalLinks = []
-        }
-      },
-      error () {
-        for (let i = 0; i < this.internalLinks.length; i++) {
-          console.log('checking link')
-          this.checkLinkValid(this.internalLinks[i])
-        }
-      }
+import ReviewInput from './ReviewInput.vue';
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  models + props
+//  --------------------------------------------------------------------------------------------------------------------
+const linksValue = defineModel('linksValue', { default: [] });
+const reviewValue = defineModel('reviewValue', { default: '' });
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+  error: {
+    type: Boolean,
+    default: false,
+  },
+  required: {
+    type: Boolean,
+    default: false,
+  },
+  namePlaceholder: {
+    type: String,
+    default: 'Linktext',
+  },
+  linkPlaceholder: {
+    type: String,
+    default: 'https://example.org',
+  },
+  type: {
+    type: String,
+    default: 'href',
+  },
+  helpText: {
+    type: String,
+    default: '',
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  types: {
+    type: Boolean,
+    default: false,
+  },
+  review: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
+const addLink = () => {
+  linksValue.value.push({ name: '', url: '', type: props.type, validUrl: true });
+};
+
+const removeLink = (link) => {
+  linksValue.value.splice(linksValue.value.indexOf(link), 1);
+};
+
+const isValidUrl = (url) => {
+  // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
+  var pattern = new RegExp(
+    '^(https?:\\/\\/)' +
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+      '((\\d{1,3}\\.){3}\\d{1,3}))' +
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+      '(\\?[;&a-z\\d%_.~+=-]*)?' +
+      '(\\#[-a-z\\d_]*)?$',
+    'i',
+  );
+  return !!pattern.test(url);
+};
+
+const checkLinkValid = (link) => {
+  link.validUrl = isValidUrl(link.url);
+};
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  watchers
+//  --------------------------------------------------------------------------------------------------------------------
+watch(
+  () => props.error,
+  () => {
+    for (let i = 0; i < linksValue.value.length; i++) {
+      console.log('checking link');
+      checkLinkValid(linksValue.value[i]);
     }
-  }
+  },
+);
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+for (let i = 0; i < linksValue.value.length; i++) {
+  linksValue.value[i].validUrl = true;
+}
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
