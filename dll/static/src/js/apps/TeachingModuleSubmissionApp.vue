@@ -55,6 +55,17 @@
     </div>
     <div v-if="mode === 'edit' || mode === 'review'">
       <div v-show="stepIndex === 0">
+        <Dropdown
+          id="co_authors"
+          :readonly="readonly"
+          :review="review"
+          label="Co-Autor_innen"
+          :error="errorFields.includes('co_authors')"
+          fetch-url="/api/authors"
+          :multiple="true"
+          :help-text="getHelpText('co_authors')"
+          v-model:dropdown-value="data.co_authors"
+          v-model:review-value="reviewValue.co_authors"></Dropdown>
         <app-dropdown
           id="co_authors"
           :readonly="readonly"
@@ -389,6 +400,7 @@
 import { computed, ref } from 'vue';
 
 import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
+import Dropdown from '../components/Dropdown.vue';
 import FileInput from '../components/FileInput.vue';
 import FormProgress from '../components/FormProgress.vue';
 import LinksInput from '../components/LinksInput.vue';

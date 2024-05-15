@@ -1,154 +1,202 @@
 <template>
   <div class="form-group">
-    <label :for="id">{{ label }}:<span v-if="required">*</span></label>
+    <label :for="props.id">{{ props.label }}:<span v-if="props.required">*</span></label>
     <div class="d-flex">
-    <v-select v-model="inputValue" :options="calcOptions" :class="{'form__field--error': error}" @search="fetchOptions" :multiple="multiple" :disabled="disabled || readonly" :filterable="false"></v-select>
-      <button class="button--neutral button--smallSquare button--help ms-1" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+      <Multiselect
+        ref="multiselect"
+        :class="{ 'form__field--error': props.error }"
+        searchable
+        :mode="selectMode"
+        :close-on-select="closeOnSelect"
+        :min-chars="1"
+        :delay="0"
+        :options="
+          async function (query) {
+            return await fetchOptions(query);
+          }
+        "
+        :disabled="props.disabled || props.readonly"
+        :filter-results="false"
+        :resolve-on-load="props.prefetch"
+        v-model="dropdownValue"
+        @open="
+          (select$) => {
+            if (select$.noOptions) {
+              select$.resolveOptions();
+            }
+          }
+        ">
+      </Multiselect>
+      <button
+        v-if="props.helpText"
+        class="button--neutral button--smallSquare button--help ms-1"
+        type="button"
+        v-tooltip="props.helpText" />
     </div>
-    <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>
+    <ReviewInput
+      :mode="props.review ? 'review' : 'edit'"
+      :id="'id' + -props.review"
+      :name="props.label"
+      v-model="reviewValue" />
   </div>
 </template>
 
-<script>
-  import vSelect from 'vue-select'
-  import axios from 'axios'
-  import ReviewInput from './ReviewInput.vue'
-  import { reviewMixin } from '../mixins/reviewMixin'
+<script setup>
+import { computed, ref, watch } from 'vue';
 
-  export default {
-    name: 'Dropdown',
-    components: {
-      'v-select': vSelect,
-      'AppReviewInput': ReviewInput
-    },
-    mixins: [reviewMixin],
-    props: {
-      prefetch: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      id: {
-        type: String,
-        default: '',
-        required: true
-      },
-      type: {
-        type: String,
-        default: 'text',
-        required: false
-      },
-      multiple: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      fetchUrl:  {
-        type: String,
-        default: '',
-        required: false
-      },
-      required: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      label: {
-        type: String,
-        default: '',
-        required: true
-      },
-      value: {
-        required: false
-      },
+import Multiselect from '@vueform/multiselect';
+
+import { useAxios } from '../composables/axios';
+import ReviewInput from './ReviewInput.vue';
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  models + props
+//  --------------------------------------------------------------------------------------------------------------------
+const dropdownValue = defineModel('dropdownValue', { default: () => {} });
+const reviewValue = defineModel('reviewValue', { default: '' });
+
+const props = defineProps({
+  id: {
+    type: String,
+    default: '',
+    required: true,
+  },
+  label: {
+    type: String,
+    default: '',
+    required: true,
+  },
+  prefetch: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  multiple: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  fetchUrl: {
+    type: String,
+    default: '',
+    required: false,
+  },
+  required: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  params: {
+    type: Object,
+    default: () => {},
+    required: false,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  error: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  helpText: {
+    type: String,
+    default: '',
+    required: false,
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  review: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  component variables
+//  --------------------------------------------------------------------------------------------------------------------
+const { axios } = useAxios();
+const multiselect = ref();
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
+const fetchOptions = (q) => {
+  const options = axios
+    .get(props.fetchUrl, {
       params: {
-        type: Object,
-        default: () => {
-          return {}
-        },
-        required: false
+        q,
+        ...props.params,
       },
-      disabled: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      error: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      helpText: {
-        type: String,
-        default: '',
-        required: false
-      },
-      readonly: {
-        type: Boolean,
-        default: false,
-        required: false
-      }
-    },
-    computed: {
-      charactersLeft () {
-        return this.maximalChars - this.value.length
-      },
-      calcOptions () {
-        return this.options.filter(option => !this.inputValue.some(item => item.label === option.label))
-      }
-    },
-    data () {
-      return {
-        inputValue: '',
-        options: []
-      }
-    },
-    created () {
-      if (this.value) {
-        this.inputValue = this.value
-      }
-      if (this.prefetch) {
-        this.fetchOptions('', function () {})
-      }
-    },
-    methods: {
-      fetchOptions (search, loading) {
-        loading(true)
-        axios.get(this.fetchUrl, {
-          params: {
-            q: search,
-            ...this.params
-          }
-        }).then(res => {
-          this.options = res.data.results.map((el) => {return {label: el.username || el.name, value: el.pk || el.value, pk: el.pk || el.id}})
-          loading(false)
-        }).catch(err => {
-          loading(false)
-          console.log(err)
-        })
-      }
-    },
-    watch: {
-      inputValue (newValue) {
-        this.$emit('update:value', newValue)
-      },
-      disabled (newValue) {
-        if (!newValue && this.prefetch) {
-          this.fetchOptions('', function () {})
-        }
-      },
-      value (newValue) {
-        this.inputValue = newValue
-      },
-      params (newValue) {
-        this.fetchOptions('', function () {})
-      }
-    }
+    })
+    .then((res) => {
+      let options = res.data.results.map((el) => {
+        return {
+          label: el.username || el.name,
+          value: el.pk || el.value,
+          pk: el.pk || el.id,
+        };
+      });
+
+      const compareObjects = (a, b) => {
+        return a.pk === b.pk && a.label === b.label;
+      };
+
+      let uniqueSet = new Set(options.map(JSON.stringify));
+      let uniqueArray = Array.from(uniqueSet).map(JSON.parse);
+
+      let resultArray = uniqueArray.filter((item, index, self) => {
+        return self.findIndex((obj) => compareObjects(obj, item)) === index;
+      });
+
+      return resultArray;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  return options;
+};
+
+const triggerOptionFetch = () => {
+  if (multiselect.value) {
+    multiselect.value.refreshOptions();
   }
+};
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  computed
+//  --------------------------------------------------------------------------------------------------------------------
+const selectMode = computed(() => {
+  return props.multiple ? 'tags' : 'single';
+});
+
+const closeOnSelect = computed(() => {
+  return props.multiple ? false : true;
+});
+
+watch(
+  () => props.disabled,
+  (newState) => {
+    if (newState && multiselect.value) {
+      triggerOptionFetch();
+    }
+  },
+);
+
+watch(
+  () => props.params,
+  () => {
+    triggerOptionFetch();
+  },
+);
 </script>
 
-<style scoped>
-  .v-select {
-    width: 100%;
-  }
+<style lang="scss" scoped>
+@import '@vueform/multiselect/themes/default.css';
 </style>
