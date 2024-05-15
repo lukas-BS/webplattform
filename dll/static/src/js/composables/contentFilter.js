@@ -1,13 +1,16 @@
 import { computed, ref, watch } from 'vue';
 
 import { debounce } from 'lodash';
+import { useAxios } from './axios';
 import { usePagination } from './pagination';
 import { useQuery } from './query';
 
 const { updateQueryString } = useQuery();
 
-export function useContentFilter(axios) {
+export function useContentFilter() {
+  const { axios } = useAxios();
   const { currentPage, updatePagination } = usePagination();
+
   const dataUrl = ref(null);
   const queryParams = ref({});
   const contents = ref([]);

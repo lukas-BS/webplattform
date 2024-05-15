@@ -1,9 +1,9 @@
 import OverviewApp from './OverviewApp.vue';
-// import { VueSelect } from 'vue-select';
 import { createApp } from 'vue';
+import { tooltip } from '../directives/tooltip';
 
 if (document.getElementById('overview-app')) {
   const app = createApp(OverviewApp);
-  // app.component('v-select', VueSelect);
+  app.directive('tooltip', tooltip);
   app.mount('#overview-app');
 }

@@ -11,14 +11,11 @@
         :readonly="props.readonly"
         :maxlength="props.maximalChars"
         v-model="inputValue" />
-      <!-- TODO: Tooltip -->
       <button
         v-if="props.helpText"
         class="button--neutral button--smallSquare button--help ms-1"
         type="button"
-        data-bs-toggle="tooltip"
-        data-placement="top"
-        :title="props.helpText"></button>
+        v-tooltip="props.helpText"></button>
     </div>
     <small v-if="props.characterCounter" class="form-text text-muted float-end">
       {{ charactersLeft }} Zeichen verbleibend

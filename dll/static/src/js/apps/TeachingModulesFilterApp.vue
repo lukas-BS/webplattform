@@ -112,11 +112,9 @@ import { computed, ref, watchEffect } from 'vue';
 import CompetenceFilter from '../components/CompetenceFilter.vue';
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';
-import { useAxios } from '../composables/axios';
 import { useContentFilter } from '../composables/contentFilter';
 import { usePreventEnter } from '../composables/preventEnter';
 
-const { axios } = useAxios();
 const {
   dataUrl,
   queryParams,
@@ -128,7 +126,7 @@ const {
   debouncedUpdate,
   updateContents,
   getSubjects,
-} = useContentFilter(axios);
+} = useContentFilter();
 const { preventEnter } = usePreventEnter();
 
 const subjects = ref([]);

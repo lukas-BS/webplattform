@@ -398,10 +398,8 @@ import RangeInput from '../components/RangeInput.vue';
 import Select from '../components/Select.vue';
 import TextArea from '../components/TextArea.vue';
 import TextInput from '../components/TextInput.vue';
-import { useAxios } from '../composables/axios';
 import { useSubmission } from '../composables/submission';
 
-const { axios } = useAxios();
 const {
   data,
   requiredFields,
@@ -428,7 +426,7 @@ const {
   approveContent,
   declineContent,
   getHelpText,
-} = useSubmission(axios);
+} = useSubmission();
 
 const steps = ref([
   {

@@ -15,14 +15,13 @@
           <span v-if="fileName" v-text="fileName" />
           <span v-else v-text="props.fileLabel" />
         </label>
-        <!-- TODO: Tooltip -->
         <button
           v-if="props.helpText"
           class="button--neutral button--smallSquare button--help ms-1"
           type="button"
           data-bs-toggle="tooltip"
           data-placement="top"
-          :title="props.helpText"></button>
+          v-tooltip="props.helpText"></button>
       </div>
     </div>
     <small v-if="props.hintText" class="form-text text-muted" v-text="props.hintText" />

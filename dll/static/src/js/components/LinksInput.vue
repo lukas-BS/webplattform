@@ -1,14 +1,11 @@
 <template>
   <div class="form-group">
     <label :for="props.id" class="mb-2 w-100">{{ props.label }}:<span v-if="props.required">*</span></label>
-    <!-- TODO: Tooltip -->
     <button
       v-if="props.helpText"
       class="button--neutral button--smallSquare button--help ms-1 float-end"
       type="button"
-      data-bs-toggle="tooltip"
-      data-placement="top"
-      :title="props.helpText"></button>
+      v-tooltip="props.helpText"></button>
     <div class="form__list-inputs">
       <div class="mb-2" v-for="(link, index) in linksValue" :key="index">
         <div class="d-flex align-items-baseline">

@@ -1,6 +1,10 @@
 import { computed, onMounted, ref } from 'vue';
 
-export function useSubmission(axios) {
+import { useAxios } from './axios';
+
+export function useSubmission() {
+  const { axios } = useAxios();
+
   const mode = ref('create');
   const errors = ref([]);
   const saved = ref(false);
@@ -35,6 +39,18 @@ export function useSubmission(axios) {
   const errorFields = ref([]);
   const resourceType = ref(null);
 
+  let timeoutHandler;
+
+  const resetSavedMessageTimeout = () => {
+    if (timeoutHandler) {
+      clearTimeout(timeoutHandler);
+    }
+
+    timeoutHandler = setTimeout(() => {
+      saved.value = false;
+    }, 5000);
+  };
+
   const updateReview = () => {
     loading.value = true;
     return axios
@@ -43,9 +59,7 @@ export function useSubmission(axios) {
       })
       .then(() => {
         saved.value = true;
-        setTimeout(() => {
-          saved.value = false;
-        }, 5000);
+        resetSavedMessageTimeout();
       })
       .catch((error) => {
         console.log(error);
@@ -153,7 +167,6 @@ export function useSubmission(axios) {
         data.value = response.data;
         data.value.author = window.dllData.authorName;
         window.history.pushState('Content created', '', document.location.pathname + data.value.slug);
-        //TODO: check if tooltip init needed
       })
       .catch((error) => {
         if (error.response.status === 400) {
@@ -217,9 +230,7 @@ export function useSubmission(axios) {
         saved.value = true;
         mode.value = 'edit';
         setContent(response.data);
-        setTimeout(() => {
-          saved.value = false;
-        }, 5000);
+        resetSavedMessageTimeout();
       })
       .catch((error) => {
         if (error.response.status === 400) {
@@ -298,8 +309,6 @@ export function useSubmission(axios) {
   });
 
   onMounted(() => {
-    //TODO: Check if tooltip init needed
-    // initTooltip();
     if (window.dllData) {
       mode.value = window.dllData.mode || 'create';
       canDelete.value = window.dllData.canDelete || false;

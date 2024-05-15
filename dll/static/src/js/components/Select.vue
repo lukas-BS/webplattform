@@ -13,17 +13,15 @@
           v-for="(option, index) in props.options"
           :key="index"
           :value="option.value"
-          :selected="option.value === defaultVal"
-          v-text="option.label" />
+          :selected="option.value == defaultVal">
+          {{ option.label }}
+        </option>
       </select>
-      <!-- TODO: Tooltip -->
       <button
         v-if="props.helpText"
         class="button--neutral button--smallSquare button--help ms-1"
         type="button"
-        data-bs-toggle="tooltip"
-        data-placement="top"
-        :title="props.helpText"></button>
+        v-tooltip="props.helpText"></button>
     </div>
     <ReviewInput
       :mode="props.review ? 'review' : 'edit'"
@@ -56,7 +54,7 @@ const props = defineProps({
     required: true,
   },
   defaultVal: {
-    type: String,
+    type: [String, Number],
     default: '',
   },
   helpText: {
