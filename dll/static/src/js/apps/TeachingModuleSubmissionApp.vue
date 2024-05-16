@@ -57,26 +57,15 @@
       <div v-show="stepIndex === 0">
         <Dropdown
           id="co_authors"
+          label="Co-Autor_innen"
+          fetch-url="/api/authors"
+          multiple
           :readonly="readonly"
           :review="review"
-          label="Co-Autor_innen"
           :error="errorFields.includes('co_authors')"
-          fetch-url="/api/authors"
-          :multiple="true"
           :help-text="getHelpText('co_authors')"
           v-model:dropdown-value="data.co_authors"
-          v-model:review-value="reviewValue.co_authors"></Dropdown>
-        <app-dropdown
-          id="co_authors"
-          :readonly="readonly"
-          :review="review"
-          label="Co-Autor_innen"
-          :value.sync="data.co_authors"
-          :review-value.sync="reviewValue.co_authors"
-          :error="errorFields.includes('co_authors')"
-          fetch-url="/api/authors"
-          :multiple="true"
-          :help-text="getHelpText('co_authors')"></app-dropdown>
+          v-model:review-value="reviewValue.co_authors" />
         <PendingCoAuthors :pending-co-authors="data.pending_co_authors" />
         <FileInput
           id="image"
@@ -140,32 +129,33 @@
           v-model:review-value="reviewValue.licence" />
       </div>
       <div v-show="stepIndex === 1">
-        <app-dropdown
+        <Dropdown
           id="subject"
-          :readonly="readonly"
-          :review="review"
-          :required="true"
           label="Unterrichtsfach"
-          :value.sync="data.subjects"
-          :review-value.sync="reviewValue.subjects"
-          :error="errorFields.includes('subjects')"
           fetch-url="/api/subjects"
-          :multiple="true"
-          :prefetch="true"
-          :help-text="getHelpText('subjects')"></app-dropdown>
-        <app-dropdown
-          id="schoolType"
+          required
+          multiple
+          prefetch
           :readonly="readonly"
           :review="review"
-          :required="true"
+          :error="errorFields.includes('subjects')"
+          :help-text="getHelpText('subjects')"
+          v-model:dropdown-value="data.subjects"
+          v-model:review-value="reviewValue.subjects" />
+        <Dropdown
+          id="schoolType"
           label="Schulform"
-          :value.sync="data.school_types"
-          :review-value.sync="reviewValue.school_types"
-          :error="errorFields.includes('school_types')"
+          required
+          multiple
+          prefetch
           fetch-url="/api/schoolTypes"
-          :multiple="true"
-          :prefetch="true"
-          :help-text="getHelpText('school_types')"></app-dropdown>
+          :readonly="readonly"
+          :review="review"
+          :error="errorFields.includes('school_types')"
+          :help-text="getHelpText('school_types')"
+          v-model:dropdown-value="data.school_types"
+          v-model:review-value="reviewValue.school_types" />
+
         <RangeInput
           id="classes"
           label="Jahrgangsstufe"
@@ -250,33 +240,33 @@
           :help-text="getHelpText('differentiating_attribute')"
           v-model:input-value="data.differentiating_attribute"
           v-model:review-value="reviewValue.differentiating_attribute" />
-        <app-dropdown
+        <Dropdown
           id="competences"
-          :readonly="readonly"
-          :review="review"
           label="Kompetenzen in der digitalen Welt"
-          :required="true"
-          :value.sync="data.competences"
-          :review-value.sync="reviewValue.competences"
-          :error="errorFields.includes('competences')"
           fetch-url="/api/competences"
-          :multiple="true"
-          :prefetch="true"
-          :help-text="getHelpText('competences')"></app-dropdown>
-        <app-dropdown
-          id="subCompetences"
+          required
+          multiple
+          prefetch
           :readonly="readonly"
           :review="review"
+          :error="errorFields.includes('competences')"
+          :help-text="getHelpText('competences')"
+          v-model:dropdown-value="data.competences"
+          v-model:review-value="reviewValue.competences" />
+        <Dropdown
+          id="subCompetences"
           label="Detaillierte Kompetenzbeschreibungen"
-          :value.sync="data.sub_competences"
-          :review-value.sync="reviewValue.sub_competences"
+          fetch-url="/api/sub-competences"
+          prefetch
+          multiple
+          :readonly="readonly"
+          :review="review"
           :error="errorFields.includes('sub_competences')"
           :disabled="!data.competences.length"
-          fetch-url="/api/sub-competences"
-          :prefetch="true"
           :params="{ competences: data.competences }"
-          :multiple="true"
-          :help-text="getHelpText('sub_competences')"></app-dropdown>
+          :help-text="getHelpText('sub_competences')"
+          v-model:dropdown-value="data.sub_competences"
+          v-model:review-value="reviewValue.sub_competences" />
       </div>
       <div v-show="stepIndex === 3">
         <ListInput
@@ -313,11 +303,12 @@
           v-model:links-value="data.mediaLinks"
           v-model:review-value="reviewValue.mediaLinks" />
 
-        <app-dropzone
+        <!-- TODO: create new Dropzone -->
+        <!-- <Dropzone
           :slug="data.slug"
           label="Dateiupload"
           :files="data.content_files"
-          :help-text="getHelpText('contentfile')"></app-dropzone>
+          :help-text="getHelpText('contentfile')" /> -->
       </div>
       <div v-show="stepIndex === 4">
         <LinksInput
@@ -330,30 +321,30 @@
           :help-text="getHelpText('contentlink')"
           v-model:links-value="data.literatureLinks"
           v-model:review-value="reviewValue.literatureLinks" />
-        <app-dropdown
+        <Dropdown
           id="teaching-modules"
-          :readonly="readonly"
-          :review="review"
           label="Passende Unterrichtsbausteine"
-          :value.sync="data.teaching_modules"
-          :review-value.sync="reviewValue.teaching_modules"
-          :error="errorFields.includes('teaching_modules')"
           fetch-url="/api/unterrichtsbausteine"
-          :multiple="true"
-          :help-text="getHelpText('teaching_modules')"
-          :prefetch="true"></app-dropdown>
-        <app-dropdown
-          id="tools"
+          multiple
+          prefetch
           :readonly="readonly"
           :review="review"
+          :error="errorFields.includes('teaching_modules')"
+          :help-text="getHelpText('teaching_modules')"
+          v-model:dropdown-value="data.teaching_modules"
+          v-model:review-value="reviewValue.teaching_modules" />
+        <Dropdown
+          id="tools"
           label="Verwendete Tools"
-          :value.sync="data.tools"
-          :review-value.sync="reviewValue.tools"
-          :error="errorFields.includes('tools')"
           fetch-url="/api/tools"
-          :multiple="true"
+          multiple
+          prefetch
+          :readonly="readonly"
+          :review="review"
+          :error="errorFields.includes('tools')"
           :help-text="getHelpText('tools')"
-          :prefetch="true"></app-dropdown>
+          v-model:dropdown-value="data.tools"
+          v-model:review-value="reviewValue.tools" />
         <LinksInput
           id="additional_tools"
           label="Andere Tools"
@@ -365,18 +356,18 @@
           :help-text="getHelpText('additional_tools')"
           v-model:links-value="data.additional_tools"
           v-model:review-value="reviewValue.additional_tools" />
-        <app-dropdown
+        <Dropdown
           id="trends"
+          label="Passende Trends"
+          fetch-url="/api/trends"
+          multiple
+          prefetch
           :readonly="readonly"
           :review="review"
-          label="Passende Trends"
-          :value.sync="data.trends"
-          :review-value.sync="reviewValue.trends"
           :error="errorFields.includes('trends')"
-          fetch-url="/api/trends"
-          :multiple="true"
           :help-text="getHelpText('trends')"
-          :prefetch="true"></app-dropdown>
+          v-model:dropdown-value="data.trends"
+          v-model:review-value="reviewValue.trends" />
       </div>
     </div>
     <template #extraButtons>

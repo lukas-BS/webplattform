@@ -51,22 +51,21 @@ export function useSubmission() {
     }, 5000);
   };
 
-  const updateReview = () => {
+  const updateReview = async () => {
     loading.value = true;
-    return axios
-      .put('/api/review/' + data.value.slug + '/', {
-        json_data: reviewValue.value,
-      })
-      .then(() => {
+    try {
+      try {
+        await axios.put('/api/review/' + data.value.slug + '/', {
+          json_data: reviewValue.value,
+        });
         saved.value = true;
         resetSavedMessageTimeout();
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+      }
+    } finally {
+      loading.value = false;
+    }
   };
 
   const approveContent = async () => {

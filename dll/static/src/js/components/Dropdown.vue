@@ -19,13 +19,7 @@
         :filter-results="false"
         :resolve-on-load="props.prefetch"
         v-model="dropdownValue"
-        @open="
-          (select$) => {
-            if (select$.noOptions) {
-              select$.resolveOptions();
-            }
-          }
-        ">
+        @open="triggerOptionFetch()">
       </Multiselect>
       <button
         v-if="props.helpText"
@@ -42,7 +36,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 import Multiselect from '@vueform/multiselect';
 
@@ -69,42 +63,34 @@ const props = defineProps({
   prefetch: {
     type: Boolean,
     default: false,
-    required: false,
   },
   multiple: {
     type: Boolean,
     default: false,
-    required: false,
   },
   fetchUrl: {
     type: String,
     default: '',
-    required: false,
   },
   required: {
     type: Boolean,
     default: false,
-    required: false,
   },
   params: {
     type: Object,
     default: () => {},
-    required: false,
   },
   disabled: {
     type: Boolean,
     default: false,
-    required: false,
   },
   error: {
     type: Boolean,
     default: false,
-    required: false,
   },
   helpText: {
     type: String,
     default: '',
-    required: false,
   },
   readonly: {
     type: Boolean,
@@ -180,21 +166,24 @@ const closeOnSelect = computed(() => {
   return props.multiple ? false : true;
 });
 
-watch(
-  () => props.disabled,
-  (newState) => {
-    if (newState && multiselect.value) {
-      triggerOptionFetch();
-    }
-  },
-);
+//  --------------------------------------------------------------------------------------------------------------------
+//  watchers
+//  --------------------------------------------------------------------------------------------------------------------
+// watch(
+//   () => props.disabled,
+//   (newState) => {
+//     if (newState && multiselect.value) {
+//       triggerOptionFetch();
+//     }
+//   },
+// );
 
-watch(
-  () => props.params,
-  () => {
-    triggerOptionFetch();
-  },
-);
+// watch(
+//   () => props.params,
+//   () => {
+//     triggerOptionFetch();
+//   },
+// );
 </script>
 
 <style lang="scss" scoped>
