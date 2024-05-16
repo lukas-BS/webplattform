@@ -3,14 +3,14 @@
     <label for="dropzone">{{ props.label }}</label>
     <div class="dll-dropzone" :class="{ active: isDragActive }" v-bind="getRootProps()">
       <input v-bind="getInputProps()" />
-      <p v-if="isDragActive">Dateien hier los lassen</p>
-      <p v-else>Dateien hier hinziehen oder klicken</p>
+      <span v-if="isDragActive">Dateien hier los lassen</span>
+      <span v-else>Dateien hier hinziehen oder klicken</span>
     </div>
-    <div class="alert alert-danger" v-if="fileErrorList.length">
-      <div v-for="fileError in fileErrorList">
-        <span v-text="fileError.fileName"></span>
+    <div class="alert alert-danger" v-if="fileRejections.length">
+      <div v-for="fileRejection in fileRejections">
+        <span v-text="fileRejection.file.name"></span>
         <ul>
-          <li v-for="error in fileError.errors" class="text-wrap text-break">{{ error.message }}</li>
+          <li v-for="error in fileRejection.errors" class="text-wrap text-break">{{ error.message }}</li>
         </ul>
       </div>
     </div>
@@ -55,7 +55,6 @@ const fileErrorList = ref([]);
 const dropzoneOptions = computed(() => {
   return {
     onDropAccepted: onDropAccepted,
-    onDropRejected: onDropRejected,
     accept: '.pdf,.docx,.doc,.pptx,.ppt,.xls,.xlsx,.odt,.odp,.ods,.wav,.mp3,.zip,.png,.jpg,.jpeg,.gif',
     maxSize: 12000000,
     // TODO: add error response in template
@@ -120,21 +119,6 @@ const onDropAccepted = (acceptedFiles) => {
   });
 };
 
-const onDropRejected = (rejectReasons) => {
-  rejectReasons.forEach((reason) => {
-    const newErrorObject = {
-      fileName: reason.file.name,
-      errors: reason.errors,
-    };
-
-    fileErrorList.value.push(newErrorObject);
-  });
-
-  setTimeout(() => {
-    fileErrorList.value = [];
-  }, 5000);
-};
-
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
@@ -148,7 +132,7 @@ watch(
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
-const { getRootProps, getInputProps, isDragActive } = useDropzone(dropzoneOptions.value);
+const { getRootProps, getInputProps, fileRejections, isDragActive } = useDropzone(dropzoneOptions.value);
 </script>
 
 <style scoped lang="scss">
