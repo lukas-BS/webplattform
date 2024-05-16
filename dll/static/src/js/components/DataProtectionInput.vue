@@ -7,13 +7,13 @@
       >
     </label>
     <button
-      v-if="helpText"
+      v-if="props.helpText"
       class="button--neutral button--smallSquare button--help ms-1 float-end"
       type="button"
       v-tooltip="props.helpText"></button>
     <div class="form__links-input">
       <div class="d-flex align-items-baseline">
-        <select class="form-control me-3" name="types" v-model="compliance" @change="updateText">
+        <select class="form-control me-3" name="types" v-model="compliance" @change="updateText($event)">
           <option value="compliant">Erfüllt</option>
           <option value="not_compliant">Nicht erfüllt</option>
           <option value="unknown">Unbekannt</option>
