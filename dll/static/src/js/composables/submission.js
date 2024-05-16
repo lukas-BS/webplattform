@@ -181,7 +181,7 @@ export function useSubmission() {
       });
   };
 
-  const updateContent = () => {
+  const updateContent = async () => {
     if (data.value.literatureLinks && data.value.mediaLinks) {
       data.value.contentlink_set = data.value.mediaLinks.concat(data.value.literatureLinks);
     } else if (data.value.mediaLinks) {
@@ -220,38 +220,38 @@ export function useSubmission() {
     errors.value = [];
     errorFields.value = [];
 
-    return axios
-      .put('/api/inhalt-bearbeiten/' + data.value.slug + '/', {
+    try {
+      const response = await axios.put('/api/inhalt-bearbeiten/' + data.value.slug + '/', {
         ...data.value,
         resourcetype: resourceType.value,
-      })
-      .then((response) => {
-        saved.value = true;
-        mode.value = 'edit';
-        setContent(response.data);
-        resetSavedMessageTimeout();
-      })
-      .catch((error) => {
-        if (error.response.status === 400) {
-          // TODO sometimes fields are wrapped - find out why to declutter this piece of code
-          for (let field in error.response.data) {
-            if (!Array.isArray(error.response.data[field])) {
-              for (let i = 0; i < error.response.data[field].length; i++) {
-                errors.value.push(error.response.data[field][i]);
+      });
+      saved.value = true;
+      mode.value = 'edit';
+      setContent(response.data);
+      resetSavedMessageTimeout();
+    } catch (err) {
+      if (err.response.status === 400) {
+        // TODO sometimes fields are wrapped - find out why to declutter this piece of code
+        for (let field in err.response.data) {
+          if (Array.isArray(err.response.data[field])) {
+            for (let i = 0; i < err.response.data[field].length; i++) {
+              errors.value.push(err.response.data[field][i]);
+              errorFields.value.push(field);
+            }
+          } else {
+            for (let field2 in err.response.data[field]) {
+              for (let i = 0; i < err.response.data[field][field2].length; i++) {
+                errors.value.push(err.response.data[field][field2][i]);
                 errorFields.value.push(field);
-              }
-            } else {
-              for (let field2 in error.response.data[field]) {
-                for (let i = 0; i < error.response.data[field][field2].length; i++) {
-                  errors.value.push(error.response.data[field][field2][i]);
-                  errorFields.value.push(field);
-                }
               }
             }
           }
         }
-        throw Error('Submission failed!');
-      });
+      }
+      throw new Error('Submission failed');
+    }
+
+    loading.value = false;
   };
 
   const validate = () => {

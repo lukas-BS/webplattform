@@ -4,8 +4,10 @@
     <div class="d-flex">
       <Multiselect
         ref="multiselect"
+        class="dll-dropdown"
         :class="{ 'form__field--error': props.error }"
         searchable
+        object
         :mode="selectMode"
         :close-on-select="closeOnSelect"
         :min-chars="1"
@@ -124,7 +126,7 @@ const fetchOptions = (q) => {
       let options = res.data.results.map((el) => {
         return {
           label: el.username || el.name,
-          value: el.pk || el.value,
+          value: el.pk || el.value || el.id,
           pk: el.pk || el.id,
         };
       });
@@ -188,4 +190,11 @@ const closeOnSelect = computed(() => {
 
 <style lang="scss" scoped>
 @import '@vueform/multiselect/themes/default.css';
+
+.dll-dropdown {
+  --ms-tag-bg: #f0f0f0;
+  --ms-tag-color: #333;
+  --ms-tag-font-weight: 400;
+  --ms-ring-color: #0d6efd40;
+}
 </style>
