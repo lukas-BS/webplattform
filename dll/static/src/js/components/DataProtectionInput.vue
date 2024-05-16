@@ -1,139 +1,145 @@
 <template>
   <div class="form-group">
-      <label  :for="id" class="mb-2 w-100"><span class="icon--dlt me-3" :class="iconClass" v-if="icon"></span> {{ label }}:<span v-if="required">*</span></label>
-      <button class="button--neutral button--smallSquare button--help ms-1 float-end" type="button" data-bs-toggle="tooltip" data-placement="top" :title="helpText" v-if="helpText"></button>
+    <label :for="props.id" class="mb-2 w-100">
+      <span class="icon--dlt me-3" :class="iconClass" v-if="props.icon"></span> {{ props.label }}:<span
+        v-if="props.required"
+        >*</span
+      >
+    </label>
+    <button
+      v-if="helpText"
+      class="button--neutral button--smallSquare button--help ms-1 float-end"
+      type="button"
+      v-tooltip="props.helpText"></button>
     <div class="form__links-input">
-      <div class="d-flex align-items-baseline ">
-        <select class="form-control me-3" name="types" v-model="complianceLevel" @change="updateText">
+      <div class="d-flex align-items-baseline">
+        <select class="form-control me-3" name="types" v-model="compliance" @change="updateText">
           <option value="compliant">Erfüllt</option>
           <option value="not_compliant">Nicht erfüllt</option>
           <option value="unknown">Unbekannt</option>
         </select>
-        <input type="text" class="form-control me-3" :class="{'form__field--error': error}" :id="id" placeholder="Anmerkungen" v-model="complianceTextInternal" :readonly="readonly">
+        <input
+          type="text"
+          class="form-control me-3"
+          :class="{ 'form__field--error': props.error }"
+          :id="props.id"
+          placeholder="Anmerkungen"
+          v-model="complianceText"
+          :readonly="props.readonly" />
       </div>
     </div>
-    <app-review-input :mode="review ? 'review' : 'edit'" :id="'id'+-review" :name="label" :reviewValue.sync="ownReviewValue"></app-review-input>
+    <ReviewInput
+      :mode="props.review ? 'review' : 'edit'"
+      :id="'id' + -props.review"
+      :name="props.label"
+      v-model="reviewValue" />
   </div>
 </template>
 
-<script>
-  import ReviewInput from './ReviewInput.vue'
-  import { reviewMixin } from '../mixins/reviewMixin'
-  export default {
-    name: 'DataProtectionInput',
-    components: {
-      'AppReviewInput': ReviewInput
-    },
-    mixins: [reviewMixin],
-    props: {
-      id: {
-        type: String,
-        default: '',
-        required: true
-      },
-      required: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      label: {
-        type: String,
-        default: '',
-        required: true
-      },
-      icon: {
-        type: String,
-        default: '',
-        required: false
-      },
-      compliance: {
-        type: String,
-        default: '',
-        required: false
-      },
-      complianceText: {
-        type: String,
-        default: '',
-        required: false
-      },
-      error: {
-        type: Boolean,
-        default: false,
-        required: false
-      },
-      helpText: {
-        type: String,
-        default: '',
-        required: false
-      },
-      readonly: {
-        type: Boolean,
-        default: false,
-        required: false
-      }
-    },
-    data () {
-      return {
-        complianceLevel: 'unknown',
-        complianceTextInternal: '',
-        defaultTextCompliant: '',
-        defaultTextNotCompliant: '',
-        defaultTextUknown: ''
-      }
-    },
-    computed: {
-      iconClass () {
-        if (this.icon) {
-          const icon = this.icon ? 'icon-' + this.icon : ''
-          if (this.complianceLevel === 'compliant') {
-            return icon + '--green'
-          } else if (this.complianceLevel === 'not_compliant') {
-            return icon + '--red'
-          } else {
-            return icon + '--grey'
-          }
-        }
-        return ''
-      }
-    },
-    methods: {
-      isDefaultText(s) {
-        return s === this.defaultTextCompliant || s === this.defaultTextNotCompliant || s === this.defaultTextUknown || s === ''
-      },
-      updateText(event) {
-        if (event.target.value === 'compliant') {
-          if (this.isDefaultText(this.complianceTextInternal)) {
-            this.complianceTextInternal = this.defaultTextCompliant
-          }
-        } else if (event.target.value === 'not_compliant') {
-          if (this.isDefaultText(this.complianceTextInternal)) {
-            this.complianceTextInternal = this.defaultTextNotCompliant
-          }
-        } else {
-          if (this.isDefaultText(this.complianceTextInternal)) {
-            this.complianceTextInternal = this.defaultTextUknown
-          }
-        }
-      }
-    },
-    created () {
-      this.defaultTextCompliant = window.compliance[this.id].compliant;
-      this.defaultTextNotCompliant = window.compliance[this.id].not_compliant;
-      this.defaultTextUknown = window.compliance[this.id].unknown;
-      this.complianceTextInternal = this.complianceText
-      this.complianceLevel = this.compliance
-    },
-    watch: {
-      complianceTextInternal: function (val) {
-        this.$emit('update:complianceText', val)
-      },
-      complianceLevel: function (val) {
-        this.$emit('update:compliance', val)
-      }
+<script setup>
+import { computed, ref } from 'vue';
+
+import ReviewInput from './ReviewInput.vue';
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  models + props
+//  --------------------------------------------------------------------------------------------------------------------
+const complianceText = defineModel('complianceText', { default: '' });
+const compliance = defineModel('compliance', { default: 'unknown' });
+const reviewValue = defineModel('reviewValue', { default: '' });
+
+const props = defineProps({
+  id: {
+    type: String,
+    default: '',
+    required: true,
+  },
+  label: {
+    type: String,
+    default: '',
+    required: true,
+  },
+  required: {
+    type: Boolean,
+    default: false,
+  },
+  icon: {
+    type: String,
+    default: '',
+  },
+  error: {
+    type: Boolean,
+    default: false,
+  },
+  helpText: {
+    type: String,
+    default: '',
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  review: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const defaultTextCompliant = ref('');
+const defaultTextNotCompliant = ref('');
+const defaultTextUnknown = ref('');
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  computed
+//  --------------------------------------------------------------------------------------------------------------------
+const iconClass = computed(() => {
+  if (props.icon) {
+    const icon = props.icon ? 'icon-' + props.icon : '';
+    if (compliance.value === 'compliant') {
+      return icon + '--green';
+    } else if (compliance.value === 'not_compliant') {
+      return icon + '--red';
+    } else {
+      return icon + '--grey';
     }
   }
+  return '';
+});
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
+const isDefaultText = (s) => {
+  return (
+    s === defaultTextCompliant.value ||
+    s === defaultTextNotCompliant.value ||
+    s === defaultTextUnknown.value ||
+    s === ''
+  );
+};
+
+const updateText = (event) => {
+  if (event.target.value === 'compliant') {
+    if (isDefaultText(complianceText.value)) {
+      complianceText.value = defaultTextCompliant.value;
+    }
+  } else if (event.target.value === 'not_compliant') {
+    if (isDefaultText(complianceText.value)) {
+      complianceText.value = defaultTextNotCompliant.value;
+    }
+  } else {
+    if (isDefaultText(complianceText.value)) {
+      complianceText.value = defaultTextUnknown.value;
+    }
+  }
+};
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+defaultTextCompliant.value = window.compliance[props.id].compliant;
+defaultTextNotCompliant.value = window.compliance[props.id].not_compliant;
+defaultTextUnknown.value = window.compliance[props.id].unknown;
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

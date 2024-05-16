@@ -47,8 +47,6 @@
 </template>
 
 <script setup>
-import { watch } from 'vue';
-
 import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
