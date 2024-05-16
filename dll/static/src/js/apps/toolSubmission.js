@@ -1,10 +1,9 @@
-import Vue from 'vue'
-import ToolSubmissionApp from './ToolSubmissionApp.vue'
+import ToolSubmissionApp from './ToolSubmissionApp.vue';
+import { createApp } from 'vue';
+import { tooltip } from '../directives/tooltip';
 
 if (document.getElementById('tool-submission')) {
-  new Vue({
-    components: {ToolSubmissionApp},
-    template: '<ToolSubmissionApp/>',
-    render: h => h(ToolSubmissionApp)
-  }).$mount('#tool-submission')
+  const app = createApp(ToolSubmissionApp);
+  app.directive('tooltip', tooltip);
+  app.mount('#tool-submission');
 }
