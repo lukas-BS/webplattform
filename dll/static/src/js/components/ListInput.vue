@@ -15,7 +15,7 @@
           :id="props.id"
           :placeholder="props.placeholder"
           :readonly="props.readonly"
-          v-model="item.text" />
+          v-model="listValue[index]" />
         <textarea
           v-else
           type="text"
@@ -23,7 +23,7 @@
           :id="props.id"
           :placeholder="props.placeholder"
           :readonly="props.readonly"
-          v-model="item.text" />
+          v-model="listValue[index]" />
         <button
           v-if="!props.readonly"
           class="button--danger button--smallSquare"
@@ -47,6 +47,8 @@
 </template>
 
 <script setup>
+import { watch } from 'vue';
+
 import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
@@ -102,7 +104,7 @@ const props = defineProps({
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const addItem = () => {
-  listValue.value.push({ text: '' });
+  listValue.value.push('');
 };
 
 const removeItem = (text) => {
@@ -122,11 +124,11 @@ const removeItem = (text) => {
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
-listValue.value = props.initial ? props.initial.map((x) => x) : [];
+listValue.value = props.initial.map((x) => x.text);
 
-for (let i = listValue.value.length; i < props.min; i++) {
-  addItem();
-}
+// for (let i = listValue.value.length; i < props.min; i++) {
+//   addItem();
+// }
 </script>
 
 <!-- <script>

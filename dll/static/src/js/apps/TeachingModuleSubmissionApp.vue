@@ -303,12 +303,11 @@
           v-model:links-value="data.mediaLinks"
           v-model:review-value="reviewValue.mediaLinks" />
 
-        <!-- TODO: create new Dropzone -->
-        <!-- <Dropzone
-          :slug="data.slug"
+        <Dropzone
           label="Dateiupload"
+          :slug="data.slug"
           :files="data.content_files"
-          :help-text="getHelpText('contentfile')" /> -->
+          :help-text="getHelpText('contentfile')" />
       </div>
       <div v-show="stepIndex === 4">
         <LinksInput
@@ -392,6 +391,7 @@ import { computed, ref } from 'vue';
 
 import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
 import Dropdown from '../components/Dropdown.vue';
+import Dropzone from '../components/Dropzone.vue';
 import FileInput from '../components/FileInput.vue';
 import FormProgress from '../components/FormProgress.vue';
 import LinksInput from '../components/LinksInput.vue';
