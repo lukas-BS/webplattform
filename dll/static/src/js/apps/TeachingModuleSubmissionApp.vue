@@ -307,6 +307,7 @@
           label="Dateiupload"
           :slug="data.slug"
           :files="data.content_files"
+          :readonly="readonly"
           :help-text="getHelpText('contentfile')" />
       </div>
       <div v-show="stepIndex === 4">

@@ -7,7 +7,7 @@
       type="button"
       v-tooltip="props.helpText"></button>
     <div class="form__list-inputs">
-      <div class="d-flex align-items-baseline mb-2" v-for="(item, index) in listValue" :key="index">
+      <div class="d-flex align-items-baseline mb-2" v-for="(item, index) in internalList" :key="index">
         <input
           v-if="!props.textarea"
           type="text"
@@ -15,7 +15,7 @@
           :id="props.id"
           :placeholder="props.placeholder"
           :readonly="props.readonly"
-          v-model="listValue[index]" />
+          v-model="internalList[index]" />
         <textarea
           v-else
           type="text"
@@ -23,7 +23,7 @@
           :id="props.id"
           :placeholder="props.placeholder"
           :readonly="props.readonly"
-          v-model="listValue[index]" />
+          v-model="internalList[index]" />
         <button
           v-if="!props.readonly"
           class="button--danger button--smallSquare"
@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import ReviewInput from './ReviewInput.vue';
 
@@ -100,54 +100,36 @@ const props = defineProps({
   },
 });
 
+const internalList = ref(props.initial);
+
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const addItem = () => {
-  listValue.value.push('');
+  internalList.value.push('');
 };
 
 const removeItem = (text) => {
-  listValue.value.splice(listValue.value.indexOf(text), 1);
+  internalList.value.splice(internalList.value.indexOf(text), 1);
 };
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
-// watch(listValue, (newListValue) => {
-//   const tempResult = newListValue.map((x) => x.text);
-
-//   const result = tempResult.filter((input) => input.length !== 0);
-//   listValue.value = result;
-// });
+watch(internalList, (newListValue) => {
+  const result = newListValue.filter((input) => input.length !== 0);
+  listValue.value = result;
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
-listValue.value = props.initial.map((x) => x.text);
-
-// for (let i = listValue.value.length; i < props.min; i++) {
-//   addItem();
-// }
+if (!internalList.value.length) {
+  listValue.value = [];
+  for (let i = 0; i < props.min; i++) {
+    addItem();
+  }
+}
 </script>
-
-<!-- <script>
-export default {
-  methods: {
-    emitUpdate() {
-      const result = this.list.map((x) => x.text);
-      this.$emit('update:list', result);
-    },
-  },
-  watch: {
-    list(newValue) {
-      const tempResult = newValue.map((x) => x.text);
-      // Remove empty fields
-      const result = tempResult.filter((input) => input.length !== 0);
-      this.$emit('update:list', result);
-    },
-  },
-};
-</script> -->
 
 <style scoped></style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <label for="dropzone">{{ props.label }}</label>
-    <div class="dll-dropzone" :class="{ active: isDragActive }" v-bind="getRootProps()">
+    <div v-if="!readonly" class="dll-dropzone" :class="{ active: isDragActive }" v-bind="getRootProps()">
       <input v-bind="getInputProps()" />
       <span v-if="isDragActive">Dateien hier los lassen</span>
       <span v-else>Dateien hier hinziehen oder klicken</span>
@@ -17,14 +17,14 @@
     <ul class="list-unstyled">
       <li v-for="file in fileList" class="file-list__item">
         <a :href="file.url">{{ file.title }}</a>
-        <a href="#" @click="removeFile($event, file)" class="float-end">Löschen</a>
+        <a v-if="!readonly" href="#" @click="removeFile($event, file)" class="float-end">Löschen</a>
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, readonly, ref, watch } from 'vue';
 
 import { useDropzone } from 'vue3-dropzone';
 
@@ -43,11 +43,14 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const { axios } = useAxios();
 const fileList = ref(props.files);
-const fileErrorList = ref([]);
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
