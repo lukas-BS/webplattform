@@ -1,20 +1,12 @@
 import { ref } from 'vue';
 
-import queryString from 'query-string';
-
-import { useContentFilter } from './contentFilter';
-
-const { updateContents } = useContentFilter();
-
-export function usePagination() {
+export function usePagination(updateContents) {
   const pagination = ref({
     count: 0,
     perPage: 20,
     next: null,
     prev: null,
   });
-
-  const currentPage = ref(1);
 
   const updatePagination = (response) => {
     pagination.value = {
@@ -23,33 +15,25 @@ export function usePagination() {
       next: response.data.next,
       prev: response.data.previous,
     };
-    console.log('update pagination', pagination.value);
   };
 
-  const jumpTo = (event, page) => {
-    currentPage.value = page;
-    updateContents(page);
+  const jumpTo = async (newPage) => {
+    const response = await updateContents(newPage);
+    updatePagination(response);
   };
 
-  const previousPage = () => {
-    updateContents(--currentPage.value);
+  const previousPage = async (newPage) => {
+    const response = await updateContents(newPage);
+    updatePagination(response);
   };
 
-  const nextPage = () => {
-    updateContents(++currentPage.value);
+  const nextPage = async (newPage) => {
+    const response = await updateContents(newPage);
+    updatePagination(response);
   };
-
-  const query = queryString.parse(location.search, {
-    parseBooleans: true,
-  });
-
-  if (query.page) {
-    currentPage.value = parseInt(query.page);
-  }
 
   return {
     pagination,
-    currentPage,
     jumpTo,
     previousPage,
     nextPage,

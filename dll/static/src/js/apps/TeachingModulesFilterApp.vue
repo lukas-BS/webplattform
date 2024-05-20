@@ -90,7 +90,12 @@
         <div class="col col-12 col-xl-6 mb-4" v-for="content in contents">
           <ContentTeaser :content="content" />
         </div>
-        <Pagination />
+        <Pagination
+          v-model:pagination="pagination"
+          v-model:current-page="currentPage"
+          @jump-to="jumpTo"
+          @next-page="nextPage"
+          @previous-page="previousPage" />
       </div>
       <div class="row" v-else>
         <div class="col">
@@ -113,6 +118,7 @@ import CompetenceFilter from '../components/CompetenceFilter.vue';
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';
 import { useContentFilter } from '../composables/contentFilter';
+import { usePagination } from '../composables/pagination';
 import { usePreventEnter } from '../composables/preventEnter';
 
 const {
@@ -124,9 +130,12 @@ const {
   q,
   competences,
   debouncedUpdate,
+  currentPage,
   updateContents,
   getSubjects,
 } = useContentFilter();
+
+const { pagination, jumpTo, previousPage, nextPage, updatePagination } = usePagination(updateContents);
 const { preventEnter } = usePreventEnter();
 
 const subjects = ref([]);
@@ -153,13 +162,21 @@ const teachingModulesQueryParams = computed(() => {
 });
 
 //  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
+const initAppData = async () => {
+  const initContentResponse = await updateContents();
+  updatePagination(initContentResponse);
+};
+
+//  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
 watchEffect(() => {
   queryParams.value = teachingModulesQueryParams.value;
 });
 
-updateContents();
+initAppData();
 </script>
 
 <style scoped></style>

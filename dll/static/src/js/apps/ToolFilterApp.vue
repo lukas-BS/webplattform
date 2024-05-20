@@ -239,7 +239,12 @@
         <div class="col col-12 col-xl-6 mb-4" v-for="content in contents">
           <ContentTeaser :content="content" />
         </div>
-        <Pagination />
+        <Pagination
+          v-model:pagination="pagination"
+          v-model:current-page="currentPage"
+          @jump-to="jumpTo"
+          @next-page="nextPage"
+          @previous-page="previousPage" />
       </div>
       <div class="row" v-else>
         <div class="col">
@@ -261,13 +266,26 @@ import { computed, nextTick, ref, watch, watchEffect } from 'vue';
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';
 import { useContentFilter } from '../composables/contentFilter';
+import { usePagination } from '../composables/pagination';
 import { usePreventEnter } from '../composables/preventEnter';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
-const { dataUrl, q, queryParams, sorting, contents, loading, loggedIn, debouncedUpdate, updateContents, getSubjects } =
-  useContentFilter();
+const {
+  dataUrl,
+  q,
+  queryParams,
+  sorting,
+  contents,
+  loading,
+  loggedIn,
+  debouncedUpdate,
+  currentPage,
+  updateContents,
+  getSubjects,
+} = useContentFilter();
+const { pagination, jumpTo, previousPage, nextPage, updatePagination } = usePagination(updateContents);
 const { preventEnter } = usePreventEnter();
 
 const applications = ref([]);
@@ -345,6 +363,14 @@ const functionsFilter = computed(() => {
 });
 
 //  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
+const initAppData = async () => {
+  const initContentResponse = await updateContents();
+  updatePagination(initContentResponse);
+};
+
+//  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
 watchEffect(() => {
@@ -372,7 +398,7 @@ watch(activePotentials, () => {
   });
 });
 
-updateContents();
+initAppData();
 </script>
 
 <style scoped></style>

@@ -2,15 +2,13 @@ import { computed, ref, watch } from 'vue';
 
 import { debounce } from 'lodash';
 import { useAxios } from './axios';
-import { usePagination } from './pagination';
 import { useQuery } from './query';
 
 const { updateQueryString } = useQuery();
+const { axios } = useAxios();
 
 export function useContentFilter() {
-  const { axios } = useAxios();
-  const { currentPage, updatePagination } = usePagination();
-
+  const currentPage = ref(1);
   const dataUrl = ref(null);
   const queryParams = ref({});
   const contents = ref([]);
@@ -40,16 +38,19 @@ export function useContentFilter() {
     };
   };
 
-  const updateContents = (page) => {
-    loading.value = true;
+  const updateContents = async (page) => {
+    let updateResponse = null;
     const params = getParams(page);
+    loading.value = true;
 
     if (!page || typeof page === 'object') {
       // Reset page to 1 if there is no page given or page object is an event (object)
       currentPage.value = 1;
+    } else {
+      currentPage.value = page;
     }
 
-    axios
+    await axios
       .get(dataUrl.value, {
         params,
       })
@@ -57,7 +58,7 @@ export function useContentFilter() {
         window.scroll(0, 0);
         updateQueryString(params);
         contents.value = response.data.results;
-        updatePagination(response);
+        updateResponse = response;
       })
       .catch((error) => {
         console.log(error);
@@ -65,6 +66,8 @@ export function useContentFilter() {
       .finally(() => {
         loading.value = false;
       });
+
+    return updateResponse;
   };
 
   //  --------------------------------------------------------------------------
@@ -90,8 +93,8 @@ export function useContentFilter() {
     competences,
     debouncedUpdate,
     loggedIn,
+    currentPage,
     getSubjects,
-    getParams,
     updateContents,
   };
 }

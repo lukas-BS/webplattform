@@ -87,7 +87,12 @@
         <div class="col col-12 col-xl-6 mb-4" v-for="content in contents">
           <ContentTeaser :content="content" />
         </div>
-        <Pagination />
+        <Pagination
+          v-model:pagination="pagination"
+          v-model:current-page="currentPage"
+          @jump-to="jumpTo"
+          @next-page="nextPage"
+          @previous-page="previousPage" />
       </div>
       <div class="row" v-else>
         <div class="col">
@@ -109,12 +114,14 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watchEffect } from
 import ContentTeaser from '../components/ContentTeaser.vue';
 import Pagination from '../components/Pagination.vue';
 import { useContentFilter } from '../composables/contentFilter';
+import { usePagination } from '../composables/pagination';
 import { usePreventEnter } from '../composables/preventEnter';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
-const { dataUrl, queryParams, sorting, contents, loading, q, updateContents } = useContentFilter();
+const { dataUrl, queryParams, sorting, contents, loading, q, currentPage, updateContents } = useContentFilter();
+const { pagination, jumpTo, previousPage, nextPage, updatePagination } = usePagination(updateContents);
 const { preventEnter } = usePreventEnter();
 
 const teachingModules = ref(true);
@@ -153,6 +160,11 @@ const onResize = () => {
   windowWidth.value = window.innerWidth;
 };
 
+const initAppData = async () => {
+  const initContentResponse = await updateContents();
+  updatePagination(initContentResponse);
+};
+
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
@@ -173,7 +185,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize);
 });
 
-updateContents();
+initAppData();
 </script>
 
 <style scoped></style>

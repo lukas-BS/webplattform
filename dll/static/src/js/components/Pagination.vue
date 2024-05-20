@@ -2,7 +2,7 @@
   <div class="pagination" v-if="pagination && pagination.count > 0">
     <button
       class="pagination__button pagination__previous"
-      @click="previousPage()"
+      @click="emitPreviousPage(currentPage - 1)"
       :disabled="pagination.prev === null">
       <span><</span>
     </button>
@@ -12,7 +12,7 @@
         class="pagination__button"
         :disabled="page === '...'"
         :class="{ 'pagination__button--active': page === currentPage }"
-        @click="jumpTo($event, page)">
+        @click="emitJumpTo(page)">
         {{ page }}
       </button>
       <button
@@ -22,7 +22,10 @@
         ...
       </button>
     </div>
-    <button class="pagination__button pagination__next" @click="nextPage()" :disabled="pagination.next === null">
+    <button
+      class="pagination__button pagination__next"
+      @click="emitNextPage(currentPage + 1)"
+      :disabled="pagination.next === null">
       <span>></span>
     </button>
   </div>
@@ -31,9 +34,8 @@
 <script setup>
 import { computed } from 'vue';
 
-import { usePagination } from '../composables/pagination';
-
-const { pagination, currentPage, jumpTo, previousPage, nextPage } = usePagination();
+const pagination = defineModel('pagination', { default: {} });
+const currentPage = defineModel('currentPage', { default: 1 });
 
 const props = defineProps({
   paginateBy: {
@@ -49,7 +51,6 @@ const props = defineProps({
 });
 
 const pages = computed(() => {
-  console.log(pagination.value);
   if (pagination.value.count) {
     let counter = pagination.value.count;
     let pages = [];
@@ -69,6 +70,23 @@ const pages = computed(() => {
     return pages;
   }
 });
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  emits
+//  --------------------------------------------------------------------------------------------------------------------
+const emits = defineEmits(['nextPage', 'previousPage', 'jumpTo']);
+
+const emitNextPage = (page) => {
+  emits('nextPage', page);
+};
+
+const emitPreviousPage = (page) => {
+  emits('previousPage', page);
+};
+
+const emitJumpTo = (page) => {
+  emits('jumpTo', page);
+};
 </script>
 
 <style scoped></style>

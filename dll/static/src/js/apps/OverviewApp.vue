@@ -122,20 +122,32 @@
         </div>
       </div>
     </div>
-    <Pagination />
+    <Pagination
+      v-model:pagination="pagination"
+      v-model:current-page="currentPage"
+      @jump-to="jumpTo"
+      @next-page="nextPage"
+      @previous-page="previousPage" />
     <div v-if="contents.length === 0" class="text-center">Es stehen keine Inhalte zur Verfügung.</div>
   </div>
 </template>
 
 <script setup>
-import { computed, onBeforeMount, ref, watchEffect } from 'vue';
+import {
+  computed,
+  onBeforeMount,
+  ref,
+  watchEffect,
+} from 'vue';
 
 import Pagination from '../components/Pagination.vue';
 import { useAxios } from '../composables/axios';
 import { useContentFilter } from '../composables/contentFilter';
+import { usePagination } from '../composables/pagination';
 
 const { axios } = useAxios();
-const { dataUrl, queryParams, contents, q, updateContents } = useContentFilter(axios);
+const { dataUrl, queryParams, contents, q, currentPage, updateContents } = useContentFilter(axios);
+const { pagination, jumpTo, previousPage, nextPage, updatePagination } = usePagination(updateContents);
 
 const type = ref('');
 const status = ref('');
@@ -172,7 +184,8 @@ const claimReview = (content) => {
   axios
     .post(content.assign_reviewer_url, data)
     .then(() => {
-      updateContents(currentPage);
+      const response = await updateContents(currentPage.value);
+      updatePagination(response);
     })
     .catch((err) => {
       console.log(err);
@@ -183,11 +196,17 @@ const unassign = (content) => {
   axios
     .post(content.unassign_reviewer_url, {})
     .then(() => {
-      updateContents(currentPage);
+      const response = await updateContents(currentPage.value);
+      updatePagination(response);
     })
     .catch((err) => {
       console.log(err);
     });
+};
+
+const initAppData = async () => {
+  const initContentResponse = await updateContents();
+  updatePagination(initContentResponse);
 };
 
 //  --------------------------------------------------------------------------------------------------------------------
@@ -216,7 +235,7 @@ onBeforeMount(() => {
   });
 });
 
-updateContents();
+initAppData();
 </script>
 
 <style scoped></style>
