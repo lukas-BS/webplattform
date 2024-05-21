@@ -1,0 +1,13 @@
+{
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended", "plugin:vue/vue3-recommended", "plugin:perfectionist/recommended-natural"],
+  "root": true,
+  "rules": {
+    "no-unused-vars": "warn",
+    "perfectionist/sort-vue-attributes": "off",
+    "vue/no-v-html": "off"
+  }
+}
