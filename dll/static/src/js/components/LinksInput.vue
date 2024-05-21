@@ -1,9 +1,6 @@
 <template>
   <div class="form-group">
-    <label
-      :for="props.id"
-      class="mb-2 w-100"
-    >{{ props.label }}:<span v-if="props.required">*</span></label>
+    <label :for="props.id" class="mb-2 w-100">{{ props.label }}:<span v-if="props.required">*</span></label>
     <button
       v-if="props.helpText"
       v-tooltip="props.helpText"
@@ -11,11 +8,7 @@
       type="button"
     />
     <div class="form__list-inputs">
-      <div
-        v-for="(link, index) in linksValue"
-        :key="index"
-        class="mb-2"
-      >
+      <div v-for="(link, index) in linksValue" :key="index" class="mb-2">
         <div class="d-flex align-items-baseline">
           <input
             :id="props.id"
@@ -24,7 +17,7 @@
             class="form-control me-3"
             :placeholder="props.namePlaceholder"
             :readonly="props.readonly"
-          >
+          />
           <input
             :id="props.id"
             v-model="link.url"
@@ -34,19 +27,10 @@
             :placeholder="props.linkPlaceholder"
             :readonly="props.readonly"
             @blur="checkLinkValid(link)"
-          >
-          <select
-            v-if="props.types"
-            v-model="link.type"
-            class="form-control me-3"
-            name="types"
-          >
-            <option value="video">
-              Video / Audio
-            </option>
-            <option value="href">
-              Text
-            </option>
+          />
+          <select v-if="props.types" v-model="link.type" class="form-control me-3" name="types">
+            <option value="video">Video / Audio</option>
+            <option value="href">Text</option>
           </select>
           <button
             v-if="!props.readonly"
@@ -57,20 +41,13 @@
             <span class="fas fa-times" />
           </button>
         </div>
-        <div
-          v-if="!link.validUrl"
-          class="alert alert-danger mt-1"
-        >
+        <div v-if="!link.validUrl" class="alert alert-danger mt-1">
           Bitte geben Sie eine valide URL ein. Die URL muss mit http:// bzw. https:// beginnen.
         </div>
       </div>
     </div>
     <div v-if="!props.readonly">
-      <button
-        class="button--neutral button--smallSquare"
-        type="button"
-        @click="addLink()"
-      >
+      <button class="button--neutral button--smallSquare" type="button" @click="addLink()">
         <span class="fas fa-plus" />
       </button>
     </div>
@@ -84,73 +61,73 @@
 </template>
 
 <script setup>
-import { watch } from 'vue'
+import { watch } from 'vue';
 
-import ReviewInput from './ReviewInput.vue'
+import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const linksValue = defineModel('linksValue', { default: [] })
-const reviewValue = defineModel('reviewValue', { default: '' })
+const linksValue = defineModel('linksValue', { default: [], type: Array });
+const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
   error: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   helpText: {
     default: '',
-    type: String,
+    type: String
   },
   id: {
     required: true,
-    type: String,
+    type: String
   },
   label: {
     required: true,
-    type: String,
+    type: String
   },
   linkPlaceholder: {
     default: 'https://example.org',
-    type: String,
+    type: String
   },
   namePlaceholder: {
     default: 'Linktext',
-    type: String,
+    type: String
   },
   readonly: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   required: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   review: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   type: {
     default: 'href',
-    type: String,
+    type: String
   },
   types: {
     default: false,
-    type: Boolean,
-  },
-})
+    type: Boolean
+  }
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const addLink = () => {
-  linksValue.value.push({ name: '', type: props.type, url: '', validUrl: true })
-}
+  linksValue.value.push({ name: '', type: props.type, url: '', validUrl: true });
+};
 
 const removeLink = (link) => {
-  linksValue.value.splice(linksValue.value.indexOf(link), 1)
-}
+  linksValue.value.splice(linksValue.value.indexOf(link), 1);
+};
 
 const isValidUrl = (url) => {
   // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
@@ -161,14 +138,14 @@ const isValidUrl = (url) => {
       '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
       '(\\?[;&a-z\\d%_.~+=-]*)?' +
       '(\\#[-a-z\\d_]*)?$',
-    'i',
-  )
-  return !!pattern.test(url)
-}
+    'i'
+  );
+  return !!pattern.test(url);
+};
 
 const checkLinkValid = (link) => {
-  link.validUrl = isValidUrl(link.url)
-}
+  link.validUrl = isValidUrl(link.url);
+};
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
@@ -177,17 +154,17 @@ watch(
   () => props.error,
   () => {
     for (let i = 0; i < linksValue.value.length; i++) {
-      console.log('checking link')
-      checkLinkValid(linksValue.value[i])
+      console.log('checking link');
+      checkLinkValid(linksValue.value[i]);
     }
-  },
-)
+  }
+);
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
 for (let i = 0; i < linksValue.value.length; i++) {
-  linksValue.value[i].validUrl = true
+  linksValue.value[i].validUrl = true;
 }
 </script>
 

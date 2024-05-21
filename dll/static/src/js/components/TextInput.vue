@@ -11,7 +11,7 @@
         :placeholder="props.placeholder"
         :readonly="props.readonly"
         :maxlength="props.maximalChars"
-      >
+      />
       <button
         v-if="props.helpText"
         v-tooltip="props.helpText"
@@ -19,10 +19,7 @@
         type="button"
       />
     </div>
-    <small
-      v-if="props.characterCounter"
-      class="form-text text-muted float-end"
-    >
+    <small v-if="props.characterCounter" class="form-text text-muted float-end">
       {{ charactersLeft }} Zeichen verbleibend
     </small>
     <div class="clearfix" />
@@ -36,69 +33,69 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-import ReviewInput from './ReviewInput.vue'
+import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const inputValue = defineModel('inputValue', { default: '' })
-const reviewValue = defineModel('reviewValue', { default: '' })
+const inputValue = defineModel('inputValue', { default: '', type: String });
+const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
   characterCounter: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   error: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   helpText: {
     default: '',
-    type: String,
+    type: String
   },
   id: {
     required: true,
-    type: String,
+    type: String
   },
   label: {
     required: true,
-    type: String,
+    type: String
   },
   maximalChars: {
     default: null,
-    type: Number,
+    type: Number
   },
   placeholder: {
     default: '',
-    type: String,
+    type: String
   },
   readonly: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   required: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   review: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   type: {
     default: 'text',
-    type: String,
-  },
-})
+    type: String
+  }
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
 const charactersLeft = computed(() => {
-  return inputValue.value ? props.maximalChars - inputValue.value.length : props.maximalChars
-})
+  return inputValue.value ? props.maximalChars - inputValue.value.length : props.maximalChars;
+});
 </script>
 
 <style scoped></style>

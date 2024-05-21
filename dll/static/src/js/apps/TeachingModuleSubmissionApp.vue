@@ -16,16 +16,8 @@
     @approve-review="approveContent"
     @decline-review="declineContent"
   >
-    <template
-      v-if="mode === 'edit'"
-      #progress
-    >
-      <FormProgress
-        class="mt-5"
-        :steps="steps"
-        :active="stepIndex"
-        @set-index="setIndex"
-      />
+    <template v-if="mode === 'edit'" #progress>
+      <FormProgress class="mt-5" :steps="steps" :active="stepIndex" @set-index="setIndex" />
     </template>
 
     <template #buttonsTop>
@@ -39,11 +31,8 @@
       {{ currentStep.long }}
     </h2>
 
-    <div
-      v-if="reviewValue.feedback && !review"
-      class="form-group"
-    >
-      <label>Feedback:</label> <br>
+    <div v-if="reviewValue.feedback && !review" class="form-group">
+      <label>Feedback:</label> <br />
       {{ reviewValue.feedback }}
     </div>
     <TextArea
@@ -58,13 +47,7 @@
     />
 
     <div v-show="stepIndex === 0">
-      <TextInput
-        id="author"
-        v-model:input-value="data.author"
-        label="Autor_in"
-        required
-        readonly
-      />
+      <TextInput id="author" v-model:input-value="data.author" label="Autor_in" required readonly />
       <TextInput
         id="title"
         v-model:input-value="data.name"
@@ -81,7 +64,7 @@
     </div>
     <div v-if="mode === 'edit' || mode === 'review'">
       <div v-show="stepIndex === 0">
-        <Dropdown
+        <AppDropdown
           id="co_authors"
           v-model:dropdown-value="data.co_authors"
           v-model:review-value="reviewValue.co_authors"
@@ -147,7 +130,7 @@
           :initial="data.subject_of_tuition"
           :help-text="getHelpText('subject_of_tuition')"
         />
-        <Select
+        <AppSelect
           id="license"
           v-model:input-value="data.licence"
           v-model:review-value="reviewValue.licence"
@@ -161,7 +144,7 @@
         />
       </div>
       <div v-show="stepIndex === 1">
-        <Dropdown
+        <AppDropdown
           id="subject"
           v-model:dropdown-value="data.subjects"
           v-model:review-value="reviewValue.subjects"
@@ -175,7 +158,7 @@
           :error="errorFields.includes('subjects')"
           :help-text="getHelpText('subjects')"
         />
-        <Dropdown
+        <AppDropdown
           id="schoolType"
           v-model:dropdown-value="data.school_types"
           v-model:review-value="reviewValue.school_types"
@@ -205,7 +188,7 @@
           :max="13"
           :help-text="getHelpText('school_class')"
         />
-        <Select
+        <AppSelect
           id="state"
           v-model:input-value="data.state"
           v-model:review-value="reviewValue.state"
@@ -281,7 +264,7 @@
           :maximal-chars="700"
           :help-text="getHelpText('differentiating_attribute')"
         />
-        <Dropdown
+        <AppDropdown
           id="competences"
           v-model:dropdown-value="data.competences"
           v-model:review-value="reviewValue.competences"
@@ -295,7 +278,7 @@
           :error="errorFields.includes('competences')"
           :help-text="getHelpText('competences')"
         />
-        <Dropdown
+        <AppDropdown
           id="subCompetences"
           v-model:dropdown-value="data.sub_competences"
           v-model:review-value="reviewValue.sub_competences"
@@ -349,7 +332,7 @@
           :help-text="getHelpText('contentlink')"
         />
 
-        <Dropzone
+        <AppDropzone
           label="Dateiupload"
           :slug="data.slug"
           :files="data.content_files"
@@ -369,7 +352,7 @@
           :error="errorFields.includes('literatureLinks')"
           :help-text="getHelpText('contentlink')"
         />
-        <Dropdown
+        <AppDropdown
           id="teaching-modules"
           v-model:dropdown-value="data.teaching_modules"
           v-model:review-value="reviewValue.teaching_modules"
@@ -382,7 +365,7 @@
           :error="errorFields.includes('teaching_modules')"
           :help-text="getHelpText('teaching_modules')"
         />
-        <Dropdown
+        <AppDropdown
           id="tools"
           v-model:dropdown-value="data.tools"
           v-model:review-value="reviewValue.tools"
@@ -407,7 +390,7 @@
           :error="errorFields.includes('additional_tools')"
           :help-text="getHelpText('additional_tools')"
         />
-        <Dropdown
+        <AppDropdown
           id="trends"
           v-model:dropdown-value="data.trends"
           v-model:review-value="reviewValue.trends"
@@ -423,16 +406,8 @@
       </div>
     </div>
     <template #extraButtons>
-      <div
-        v-if="mode === 'edit' || mode === 'review'"
-        class="text-right"
-      >
-        <button
-          v-if="stepIndex > 0"
-          class="button button--primary me-3"
-          type="button"
-          @click="setIndex(stepIndex - 1)"
-        >
+      <div v-if="mode === 'edit' || mode === 'review'" class="text-right">
+        <button v-if="stepIndex > 0" class="button button--primary me-3" type="button" @click="setIndex(stepIndex - 1)">
           Vorheriger Schritt
         </button>
         <button
@@ -449,21 +424,21 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import ContentSubmissionForm from '../components/ContentSubmissionForm.vue'
-import Dropdown from '../components/Dropdown.vue'
-import Dropzone from '../components/Dropzone.vue'
-import FileInput from '../components/FileInput.vue'
-import FormProgress from '../components/FormProgress.vue'
-import LinksInput from '../components/LinksInput.vue'
-import ListInput from '../components/ListInput.vue'
-import PendingCoAuthors from '../components/PendingCoAuthors.vue'
-import RangeInput from '../components/RangeInput.vue'
-import Select from '../components/Select.vue'
-import TextArea from '../components/TextArea.vue'
-import TextInput from '../components/TextInput.vue'
-import { useSubmission } from '../composables/submission'
+import AppDropdown from '../components/AppDropdown.vue';
+import AppDropzone from '../components/AppDropzone.vue';
+import AppSelect from '../components/AppSelect.vue';
+import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
+import FileInput from '../components/FileInput.vue';
+import FormProgress from '../components/FormProgress.vue';
+import LinksInput from '../components/LinksInput.vue';
+import ListInput from '../components/ListInput.vue';
+import PendingCoAuthors from '../components/PendingCoAuthors.vue';
+import RangeInput from '../components/RangeInput.vue';
+import TextArea from '../components/TextArea.vue';
+import TextInput from '../components/TextInput.vue';
+import { useSubmission } from '../composables/submission';
 
 const {
   approveContent,
@@ -490,32 +465,32 @@ const {
   showDeleteWarning,
   submitContent,
   updateContent,
-  updateReview,
-} = useSubmission()
+  updateReview
+} = useSubmission();
 
 const steps = ref([
   {
     long: 'Allgemeine Informationen zum Unterrichtsbaustein',
-    short: 'Allgemeine Informationen',
+    short: 'Allgemeine Informationen'
   },
   {
     long: 'Allgemeine Informationen zum schulischen Kontext des Unterrichtsbausteins',
-    short: 'Informationen zum schulischen Kontext',
+    short: 'Informationen zum schulischen Kontext'
   },
   {
     long: 'Zielsetzungen des Unterrichtsbausteins',
-    short: 'Zielsetzungen',
+    short: 'Zielsetzungen'
   },
   {
     long: 'Voraussetzungen zum Einsatz des Unterrichtsbausteins im Unterricht',
-    short: 'Voraussetzungen zum Einsatz',
+    short: 'Voraussetzungen zum Einsatz'
   },
   {
     long: 'Weiterführende Informationen zum Unterrichtsbaustein',
-    short: 'Weiterführende Informationen',
-  },
-])
-const stepIndex = ref(0)
+    short: 'Weiterführende Informationen'
+  }
+]);
+const stepIndex = ref(0);
 const germanStateOptions = ref([
   { label: 'Nordrhein-Westfalen', value: 'nordrhein-westfalen' },
   { label: 'Niedersachsen', value: 'niedersachsen' },
@@ -532,8 +507,8 @@ const germanStateOptions = ref([
   { label: 'Sachsen-Anhalt', value: 'sachsen-anhalt' },
   { label: 'Bremen', value: 'bremen' },
   { label: 'Baden-Württemberg', value: 'baden-wuerttemberg' },
-  { label: 'Hamburg', value: 'hamburg' },
-])
+  { label: 'Hamburg', value: 'hamburg' }
+]);
 
 data.value = {
   additional_info: '',
@@ -567,9 +542,9 @@ data.value = {
   teaching_modules: [],
   teaser: '',
   tools: [],
-  trends: [],
-}
-resourceType.value = 'TeachingModule'
+  trends: []
+};
+resourceType.value = 'TeachingModule';
 requiredFields.value = [
   { field: 'name', title: 'Titel' },
   { field: 'teaser', title: 'Kurzzusammenfassung' },
@@ -577,34 +552,34 @@ requiredFields.value = [
   { field: 'competences', title: 'Kompetenzen in der digitalen Welt' },
   { field: 'description', title: 'Detaillierte Beschreibung' },
   { field: 'school_types', title: 'Schulform' },
-  { field: 'subjects', title: 'Unterrichtsfach' },
-]
+  { field: 'subjects', title: 'Unterrichtsfach' }
+];
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
 const currentStep = computed(() => {
-  return steps.value[stepIndex.value]
-})
+  return steps.value[stepIndex.value];
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const setIndex = (index) => {
   if (mode.value === 'edit') {
-    updateContent()
+    updateContent();
   }
 
   if (mode.value === 'review') {
-    updateReview()
+    updateReview();
   }
 
-  stepIndex.value = index
-  let ele = document.getElementById('submission-form')
+  stepIndex.value = index;
+  let ele = document.getElementById('submission-form');
   if (window.scrollY > ele.offsetTop) {
-    window.scrollTo(0, ele.offsetTop)
+    window.scrollTo(0, ele.offsetTop);
   }
-}
+};
 </script>
 
 <style scoped></style>

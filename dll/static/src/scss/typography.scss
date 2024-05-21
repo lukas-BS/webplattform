@@ -6,8 +6,9 @@
 
 @font-face {
   font-family: 'dll_icons';
-  src:  url('../../fonts/dll_icons.eot?vckmkm');
-  src:  url('../../fonts/dll_icons.eot?vckmkm#iefix') format('embedded-opentype'),
+  src: url('../../fonts/dll_icons.eot?vckmkm');
+  src:
+    url('../../fonts/dll_icons.eot?vckmkm#iefix') format('embedded-opentype'),
     url('../../fonts/dll_icons.ttf?vckmkm') format('truetype'),
     url('../../fonts/dll_icons.woff?vckmkm') format('woff'),
     url('../../fonts/dll_icons.svg?vckmkm#icomoon') format('svg');
@@ -16,7 +17,8 @@
   font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^='icon-'],
+[class*=' icon-'] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'dll_icons' !important;
   speak: none;
@@ -34,157 +36,157 @@
 .icon-icons-01:before,
 .icon-competence-id-1:before,
 .icon-suchen-verarbeiten-aufbewahren:before {
-  content: "\e900";
+  content: '\e900';
 }
 .icon-icons-02:before,
 .icon-competence-id-2:before,
 .icon-kommunizieren-kooperieren:before {
-  content: "\e901";
+  content: '\e901';
 }
 .icon-icons-03:before,
 .icon-competence-id-3:before,
 .icon-produzieren-praesentieren:before,
 .icon-produzieren-praesentieren:before {
-  content: "\e902";
+  content: '\e902';
 }
 .icon-icons-04:before,
 .icon-competence-id-4:before,
 .icon-schuetzen-sicher-agieren:before {
-  content: "\e903";
+  content: '\e903';
 }
 .icon-icons-05:before,
 .icon-competence-id-5:before,
 .icon-problemloesen-handeln:before {
-  content: "\e904";
+  content: '\e904';
 }
 .icon-icons-06:before,
 .icon-competence-id-6:before,
 .icon-analysieren-reflektieren:before {
-  content: "\e905";
+  content: '\e905';
 }
 .icon-icons-07:before,
 .icon-upload:before {
-  content: "\e906";
+  content: '\e906';
 }
 .icon-icons-08:before {
-  content: "\e907";
+  content: '\e907';
 }
 .icon-icons-09,
 .icon-hexagon:before {
-  content: "\e908";
+  content: '\e908';
 }
 .icon-icons-10:before {
-  content: "\e909";
+  content: '\e909';
 }
 .icon-icons-11:before,
 .icon-subject:before {
-  content: "\e90a";
+  content: '\e90a';
 }
 .icon-icons-12:before,
 .icon-level:before {
-  content: "\e90b";
+  content: '\e90b';
 }
 .icon-icons-13:before,
 .icon-time:before {
-  content: "\e90c";
+  content: '\e90c';
 }
 .icon-icons-14:before,
 .icon-school:before {
-  content: "\e90d";
+  content: '\e90d';
 }
 .icon-icons-15:before,
 .icon-category:before {
-  content: "\e90e";
+  content: '\e90e';
 }
 .icon-icons-16:before,
 .icon-search:before {
-  content: "\e90f";
+  content: '\e90f';
 }
 .icon-icons-17:before,
 .icon-language:before {
-  content: "\e910";
+  content: '\e910';
 }
 .icon-icons-18:before {
-  content: "\e911";
+  content: '\e911';
 }
 .icon-icons-19:before,
 .icon-release-date:before {
-  content: "\e912";
+  content: '\e912';
 }
 .icon-icons-20:before,
 .icon-settings:before {
-  content: "\e913";
+  content: '\e913';
 }
 .icon-icons-21:before,
 .icon-registration:before {
-  content: "\e914";
+  content: '\e914';
 }
 .icon-icons-22:before {
-  content: "\e915";
+  content: '\e915';
 }
 .icon-icons-23:before {
-  content: "\e916";
+  content: '\e916';
 }
 .icon-icons-24:before {
-  content: "\e917";
+  content: '\e917';
 }
 .icon-icons-25:before {
-  content: "\e918";
+  content: '\e918';
 }
 .icon-icons-26:before {
-  content: "\e919";
+  content: '\e919';
 }
 .icon-icons-27:before {
-  content: "\e91a";
+  content: '\e91a';
 }
 .icon-icons-28:before {
-  content: "\e91b";
+  content: '\e91b';
 }
 .icon-icons-29:before {
-  content: "\e91c";
+  content: '\e91c';
 }
 .icon-icons-30:before {
-  content: "\e91d";
+  content: '\e91d';
 }
 .icon-icons-31:before {
-  content: "\e91e";
+  content: '\e91e';
 }
 .icon-icons-32:before {
-  content: "\e91f";
+  content: '\e91f';
 }
 .icon-icons-33:before {
-  content: "\e920";
+  content: '\e920';
 }
 .icon-produzieren:before {
-  content: "\e925";
+  content: '\e925';
 }
 .icon-kommunizieren:before {
-  content: "\e922";
+  content: '\e922';
 }
 .icon-reflexion:before {
-  content: "\e926"
+  content: '\e926';
 }
 .icon-spielerisch-lernen:before {
-  content: "\e927"
+  content: '\e927';
 }
 .icon-diagnose-test:before {
-    content: "\e928"
+  content: '\e928';
 }
 .icon-ordnen-strukturieren:before {
-  content: "\e92b"
+  content: '\e92b';
 }
 .icon-kooperieren:before {
-  content: "\e923"
+  content: '\e923';
 }
 .icon-probleme-losen:before {
-  content: "\e924"
+  content: '\e924';
 }
 .icon-visualisierung-simulation:before {
-  content: "\e929"
+  content: '\e929';
 }
 .icon-inhalte:before {
-  content: "\e921"
+  content: '\e921';
 }
 .icon-tool:before {
-  content: "\e92a"
+  content: '\e92a';
 }

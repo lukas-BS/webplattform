@@ -16,11 +16,8 @@
     @approve-review="approveContent"
     @decline-review="declineContent"
   >
-    <div
-      v-if="reviewValue.feedback && !review"
-      class="form-group"
-    >
-      <label>Feedback:</label> <br>
+    <div v-if="reviewValue.feedback && !review" class="form-group">
+      <label>Feedback:</label> <br />
       {{ reviewValue.feedback }}
     </div>
     <TextArea
@@ -33,13 +30,7 @@
       :rows="3"
       :help-text="getHelpText('feedback')"
     />
-    <TextInput
-      id="author"
-      v-model:input-value="data.author"
-      :readonly="true"
-      label="Autor_in"
-      :required="true"
-    />
+    <TextInput id="author" v-model:input-value="data.author" :readonly="true" label="Autor_in" :required="true" />
     <TextInput
       id="title"
       v-model:review-value="reviewValue.name"
@@ -80,7 +71,7 @@
         :rows="3"
         :help-text="getHelpText('teaser')"
       />
-      <Dropdown
+      <AppDropdown
         id="co_authors"
         v-model:review-value="reviewValue.co_authors"
         v-model:dropdown-value="data.co_authors"
@@ -93,7 +84,7 @@
         :help-text="getHelpText('co_authors')"
       />
       <PendingCoAuthors :pending-co-authors="data.pending_co_authors" />
-      <Dropdown
+      <AppDropdown
         id="teaching-modules"
         v-model:review-value="reviewValue.teaching_modules"
         v-model:dropdown-value="data.teaching_modules"
@@ -106,7 +97,7 @@
         :help-text="getHelpText('teaching_modules')"
         :prefetch="true"
       />
-      <Dropdown
+      <AppDropdown
         id="tools"
         v-model:review-value="reviewValue.tools"
         v-model:dropdown-value="data.tools"
@@ -119,7 +110,7 @@
         :help-text="getHelpText('tools')"
         :prefetch="true"
       />
-      <Dropdown
+      <AppDropdown
         id="trends"
         v-model:review-value="reviewValue.trends"
         v-model:dropdown-value="data.trends"
@@ -132,7 +123,7 @@
         :help-text="getHelpText('trends')"
         :prefetch="true"
       />
-      <Dropdown
+      <AppDropdown
         id="competences"
         v-model:review-value="reviewValue.competences"
         v-model:dropdown-value="data.competences"
@@ -285,18 +276,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-import ContentSubmissionForm from '../components/ContentSubmissionForm.vue'
-import Dropdown from '../components/Dropdown.vue'
-import FileInput from '../components/FileInput.vue'
-import LinksInput from '../components/LinksInput.vue'
-import ListInput from '../components/ListInput.vue'
-import PendingCoAuthors from '../components/PendingCoAuthors.vue'
-import Select from '../components/Select.vue'
-import TextArea from '../components/TextArea.vue'
-import TextInput from '../components/TextInput.vue'
-import { useSubmission } from '../composables/submission'
+import AppDropdown from '../components/AppDropdown.vue';
+import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
+import FileInput from '../components/FileInput.vue';
+import LinksInput from '../components/LinksInput.vue';
+import ListInput from '../components/ListInput.vue';
+import PendingCoAuthors from '../components/PendingCoAuthors.vue';
+import Select from '../components/Select.vue';
+import TextArea from '../components/TextArea.vue';
+import TextInput from '../components/TextInput.vue';
+import { useSubmission } from '../composables/submission';
 
 const {
   approveContent,
@@ -323,21 +314,21 @@ const {
   showDeleteWarning,
   submitContent,
   updateContent,
-  updateReview,
-} = useSubmission()
+  updateReview
+} = useSubmission();
 
 const categoryOptions = ref([
   { label: 'Keine Angaben', value: 0 },
   { label: 'Forschung', value: 1 },
   { label: 'Portal', value: 2 },
   { label: 'Praxisbeispiel', value: 3 },
-  { label: 'Veröffentlichung', value: 4 },
-])
+  { label: 'Veröffentlichung', value: 4 }
+]);
 
 const languageOptions = ref([
   { label: 'Deutsch', value: 'german' },
-  { label: 'Englisch', value: 'english' },
-])
+  { label: 'Englisch', value: 'english' }
+]);
 
 data.value = {
   additional_info: '',
@@ -363,16 +354,16 @@ data.value = {
   teaching_modules: [],
   teaser: '',
   tools: [],
-  trends: [],
-}
+  trends: []
+};
 
-resourceType.value = 'Trend'
+resourceType.value = 'Trend';
 requiredFields.value = [
   { field: 'name', title: 'Titel' },
   { field: 'teaser', title: 'Kurzzusammenfassung' },
   { field: 'image', title: 'Anzeigebild' },
-  { field: 'competences', title: 'Kompetenzen in der digitalen Welt' },
-]
+  { field: 'competences', title: 'Kompetenzen in der digitalen Welt' }
+];
 </script>
 
 <style scoped></style>

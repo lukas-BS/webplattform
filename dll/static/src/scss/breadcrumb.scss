@@ -3,7 +3,7 @@
   padding: 0;
 }
 .breadcrumb-item + .breadcrumb-item::before {
-  content: '>'
+  content: '>';
 }
 .breadcrumb-item {
   font-weight: $font-weight-regular;

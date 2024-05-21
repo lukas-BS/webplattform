@@ -15,7 +15,7 @@
         :delay="0"
         :options="
           async function (query) {
-            return await fetchOptions(query)
+            return await fetchOptions(query);
           }
         "
         :disabled="props.disabled || props.readonly"
@@ -40,77 +40,77 @@
 </template>
 
 <script setup>
-import Multiselect from '@vueform/multiselect'
-import { computed, ref } from 'vue'
+import Multiselect from '@vueform/multiselect';
+import { computed, ref } from 'vue';
 
-import { useAxios } from '../composables/axios'
-import ReviewInput from './ReviewInput.vue'
+import { useAxios } from '../composables/axios';
+import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const dropdownValue = defineModel('dropdownValue', { default: () => {} })
-const reviewValue = defineModel('reviewValue', { default: '' })
+const dropdownValue = defineModel('dropdownValue', { default: () => {}, type: Object });
+const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
   disabled: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   error: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   fetchUrl: {
     default: '',
-    type: String,
+    type: String
   },
   helpText: {
     default: '',
-    type: String,
+    type: String
   },
   id: {
     default: '',
     required: true,
-    type: String,
+    type: String
   },
   label: {
     default: '',
     required: true,
-    type: String,
+    type: String
   },
   multiple: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   params: {
     default: () => {},
-    type: Object,
+    type: Object
   },
   prefetch: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   readonly: {
     default: false,
     required: false,
-    type: Boolean,
+    type: Boolean
   },
   required: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   review: {
     default: false,
-    type: Boolean,
-  },
-})
+    type: Boolean
+  }
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
-const { axios } = useAxios()
-const multiselect = ref()
+const { axios } = useAxios();
+const multiselect = ref();
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
@@ -120,54 +120,54 @@ const fetchOptions = (q) => {
     .get(props.fetchUrl, {
       params: {
         q,
-        ...props.params,
-      },
+        ...props.params
+      }
     })
     .then((res) => {
       let options = res.data.results.map((el) => {
         return {
           label: el.username || el.name,
           pk: el.pk || el.id,
-          value: el.pk || el.value || el.id,
-        }
-      })
+          value: el.pk || el.value || el.id
+        };
+      });
 
       const compareObjects = (a, b) => {
-        return a.pk === b.pk && a.label === b.label
-      }
+        return a.pk === b.pk && a.label === b.label;
+      };
 
-      let uniqueSet = new Set(options.map(JSON.stringify))
-      let uniqueArray = Array.from(uniqueSet).map(JSON.parse)
+      let uniqueSet = new Set(options.map(JSON.stringify));
+      let uniqueArray = Array.from(uniqueSet).map(JSON.parse);
 
       let resultArray = uniqueArray.filter((item, index, self) => {
-        return self.findIndex((obj) => compareObjects(obj, item)) === index
-      })
+        return self.findIndex((obj) => compareObjects(obj, item)) === index;
+      });
 
-      return resultArray
+      return resultArray;
     })
     .catch((err) => {
-      console.log(err)
-    })
+      console.log(err);
+    });
 
-  return options
-}
+  return options;
+};
 
 const triggerOptionFetch = () => {
   if (multiselect.value) {
-    multiselect.value.refreshOptions()
+    multiselect.value.refreshOptions();
   }
-}
+};
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
 const selectMode = computed(() => {
-  return props.multiple ? 'tags' : 'single'
-})
+  return props.multiple ? 'tags' : 'single';
+});
 
 const closeOnSelect = computed(() => {
-  return props.multiple ? false : true
-})
+  return props.multiple ? false : true;
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers

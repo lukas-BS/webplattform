@@ -61,7 +61,10 @@ $sidebar-preview-button-color: darken($sidebar-preview-color, 8%);
   padding: 1rem 1rem;
   padding-left: $sidebar-side-padding--mobile;
   text-transform: uppercase;
-  &:active, &:hover, &:focus, &:link {
+  &:active,
+  &:hover,
+  &:focus,
+  &:link {
     color: rgba(255, 255, 255, 1);
   }
   &:hover {

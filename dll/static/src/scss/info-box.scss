@@ -1,4 +1,3 @@
-
 $info-box__border-color: $color--daintree;
 $info-box__head__background-color: $color--daintree;
 $info-box__head__color: rgba(255, 255, 255, 1);
@@ -18,7 +17,7 @@ $info-box__left-spacing: 1.5rem;
   padding: 0.5rem 0;
   text-align: center;
 }
-.info-box__subhead{
+.info-box__subhead {
   font-weight: $font-weight-semi-bold;
   padding: 1.25rem $info-box__left-spacing;
   text-align: left;
@@ -46,7 +45,7 @@ $info-box__left-spacing: 1.5rem;
   vertical-align: middle;
   left: $info-box__left-spacing;
   &:after {
-    font-family: "Font Awesome 5 Free";
+    font-family: 'Font Awesome 5 Free';
     speak: none;
     font-style: normal;
     font-variant: normal;
@@ -56,11 +55,11 @@ $info-box__left-spacing: 1.5rem;
     margin-left: 5px;
     display: inline-block;
     vertical-align: middle;
-    font-weight: 600!important;
+    font-weight: 600 !important;
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    content: "\f054";
+    content: '\f054';
   }
 }
 .info-box__link--inline {

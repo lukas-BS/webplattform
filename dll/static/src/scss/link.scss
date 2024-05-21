@@ -18,7 +18,7 @@
 }
 .link--arrow {
   &:after {
-    font-family: "Font Awesome 5 Free";
+    font-family: 'Font Awesome 5 Free';
     speak: none;
     font-style: normal;
     font-variant: normal;
@@ -28,10 +28,10 @@
     margin-left: 5px;
     display: inline-block;
     vertical-align: middle;
-    font-weight: 600!important;
+    font-weight: 600 !important;
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    content: "\f054";
+    content: '\f054';
   }
 }

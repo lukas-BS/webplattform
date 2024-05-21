@@ -1,14 +1,9 @@
 <template>
   <div class="form-group">
-    <label
-      :for="props.id"
-      class="mb-2 w-100"
-    >
-      <span
-        v-if="props.icon"
-        class="icon--dlt me-3"
-        :class="iconClass"
-      /> {{ props.label }}:<span v-if="props.required">*</span>
+    <label :for="props.id" class="mb-2 w-100">
+      <span v-if="props.icon" class="icon--dlt me-3" :class="iconClass" /> {{ props.label }}:<span v-if="props.required"
+        >*</span
+      >
     </label>
     <button
       v-if="props.helpText"
@@ -18,21 +13,10 @@
     />
     <div class="form__links-input">
       <div class="d-flex align-items-baseline">
-        <select
-          v-model="compliance"
-          class="form-control me-3"
-          name="types"
-          @change="updateText($event)"
-        >
-          <option value="compliant">
-            Erfüllt
-          </option>
-          <option value="not_compliant">
-            Nicht erfüllt
-          </option>
-          <option value="unknown">
-            Unbekannt
-          </option>
+        <select v-model="compliance" class="form-control me-3" name="types" @change="updateText($event)">
+          <option value="compliant">Erfüllt</option>
+          <option value="not_compliant">Nicht erfüllt</option>
+          <option value="unknown">Unbekannt</option>
         </select>
         <input
           :id="props.id"
@@ -42,7 +26,7 @@
           :class="{ 'form__field--error': props.error }"
           placeholder="Anmerkungen"
           :readonly="props.readonly"
-        >
+        />
       </div>
     </div>
     <ReviewInput
@@ -55,74 +39,74 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import ReviewInput from './ReviewInput.vue'
+import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const complianceText = defineModel('complianceText', { default: '' })
-const compliance = defineModel('compliance', { default: 'unknown' })
-const reviewValue = defineModel('reviewValue', { default: '' })
+const complianceText = defineModel('complianceText', { default: '', type: String });
+const compliance = defineModel('compliance', { default: 'unknown', type: String });
+const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
   error: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   helpText: {
     default: '',
-    type: String,
+    type: String
   },
   icon: {
     default: '',
-    type: String,
+    type: String
   },
   id: {
     default: '',
     required: true,
-    type: String,
+    type: String
   },
   label: {
     default: '',
     required: true,
-    type: String,
+    type: String
   },
   readonly: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   required: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   review: {
     default: false,
-    type: Boolean,
-  },
-})
+    type: Boolean
+  }
+});
 
-const defaultTextCompliant = ref('')
-const defaultTextNotCompliant = ref('')
-const defaultTextUnknown = ref('')
+const defaultTextCompliant = ref('');
+const defaultTextNotCompliant = ref('');
+const defaultTextUnknown = ref('');
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
 const iconClass = computed(() => {
   if (props.icon) {
-    const icon = props.icon ? 'icon-' + props.icon : ''
+    const icon = props.icon ? 'icon-' + props.icon : '';
     if (compliance.value === 'compliant') {
-      return icon + '--green'
+      return icon + '--green';
     } else if (compliance.value === 'not_compliant') {
-      return icon + '--red'
+      return icon + '--red';
     } else {
-      return icon + '--grey'
+      return icon + '--grey';
     }
   }
-  return ''
-})
+  return '';
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
@@ -133,31 +117,31 @@ const isDefaultText = (s) => {
     s === defaultTextNotCompliant.value ||
     s === defaultTextUnknown.value ||
     s === ''
-  )
-}
+  );
+};
 
 const updateText = (event) => {
   if (event.target.value === 'compliant') {
     if (isDefaultText(complianceText.value)) {
-      complianceText.value = defaultTextCompliant.value
+      complianceText.value = defaultTextCompliant.value;
     }
   } else if (event.target.value === 'not_compliant') {
     if (isDefaultText(complianceText.value)) {
-      complianceText.value = defaultTextNotCompliant.value
+      complianceText.value = defaultTextNotCompliant.value;
     }
   } else {
     if (isDefaultText(complianceText.value)) {
-      complianceText.value = defaultTextUnknown.value
+      complianceText.value = defaultTextUnknown.value;
     }
   }
-}
+};
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
-defaultTextCompliant.value = window.compliance[props.id].compliant
-defaultTextNotCompliant.value = window.compliance[props.id].not_compliant
-defaultTextUnknown.value = window.compliance[props.id].unknown
+defaultTextCompliant.value = window.compliance[props.id].compliant;
+defaultTextNotCompliant.value = window.compliance[props.id].not_compliant;
+defaultTextUnknown.value = window.compliance[props.id].unknown;
 </script>
 
 <style scoped></style>

@@ -11,20 +11,10 @@
           :disabled="props.readonly"
           :accept="props.accept"
           @change="processInput($event)"
-        >
-        <label
-          class="custom-file-label"
-          :class="{ 'form__field--error': props.error }"
-          :for="props.id"
-        >
-          <span
-            v-if="fileName"
-            v-text="fileName"
-          />
-          <span
-            v-else
-            v-text="props.fileLabel"
-          />
+        />
+        <label class="custom-file-label" :class="{ 'form__field--error': props.error }" :for="props.id">
+          <span v-if="fileName" v-text="fileName" />
+          <span v-else v-text="props.fileLabel" />
         </label>
         <button
           v-if="props.helpText"
@@ -36,17 +26,8 @@
         />
       </div>
     </div>
-    <small
-      v-if="props.hintText"
-      class="form-text text-muted"
-      v-text="props.hintText"
-    />
-    <img
-      v-if="imageUrl"
-      :src="imageUrl"
-      alt="Vorschaubild"
-      class="img-thumbnail"
-    >
+    <small v-if="props.hintText" class="form-text text-muted" v-text="props.hintText" />
+    <img v-if="imageUrl" :src="imageUrl" alt="Vorschaubild" class="img-thumbnail" />
     <ReviewInput
       :id="'id' + -props.review"
       v-model="reviewValue"
@@ -57,98 +38,98 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-import ReviewInput from './ReviewInput.vue'
+import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const fileValue = defineModel('fileValue', { default: null })
-const reviewValue = defineModel('reviewValue', { default: '' })
+const fileValue = defineModel('fileValue', { type: File });
+const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
   accept: {
     default: 'image/gif, image/jpeg, image/png',
-    type: String,
+    type: String
   },
   error: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   fileLabel: {
     required: true,
-    type: String,
+    type: String
   },
   helpText: {
     default: '',
-    type: String,
+    type: String
   },
   hintText: {
     default: null,
-    type: String,
+    type: String
   },
   id: {
     required: true,
-    type: String,
+    type: String
   },
   image: {
     default: () => {
-      return {}
+      return {};
     },
-    type: Object,
+    type: Object
   },
   label: {
     required: true,
-    type: String,
+    type: String
   },
   readonly: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   required: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   review: {
     default: false,
-    type: Boolean,
-  },
-})
+    type: Boolean
+  }
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
 const imageUrl = computed(() => {
   if (fileValue.value) {
-    return URL.createObjectURL(fileValue.value)
+    return URL.createObjectURL(fileValue.value);
   }
 
   if (props.image) {
-    return props.image.url
+    return props.image.url;
   }
 
-  return null
-})
+  return null;
+});
 
 const fileName = computed(() => {
   if (fileValue.value) {
-    return fileValue.value.name
+    return fileValue.value.name;
   }
 
   if (props.image) {
-    return props.image.name
+    return props.image.name;
   }
 
-  return ''
-})
+  return '';
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const processInput = (e) => {
-  fileValue.value = e.target.files[0]
-}
+  fileValue.value = e.target.files[0];
+};
 </script>
 
 <style scoped></style>

@@ -12,7 +12,8 @@
 }
 .button--primary {
   background-color: $color--oracle;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     background-color: $color--smalt-blue;
   }
@@ -22,7 +23,9 @@
   background-color: #fff;
   color: $color--oracle;
   border: 1px solid $color--oracle;
-  &:hover, &:focus, &:active {
+  &:hover,
+  &:focus,
+  &:active {
     color: $color--smalt-blue;
     border-color: $color--smalt-blue;
     border-radius: 0;
@@ -32,7 +35,8 @@
 }
 .button--preview {
   background-color: $color--preview;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     background-color: darken($color--preview, 5%);
   }
@@ -40,7 +44,8 @@
 }
 .button--submit {
   background-color: $color--submit;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     background-color: darken($color--submit, 10%);
   }
@@ -51,7 +56,8 @@
   color: rgba(255, 255, 255, 1);
   font-weight: $font-weight-light;
   background-color: $color--teaching-module;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     background-color: $color--teaching-module;
     text-decoration: underline;
@@ -63,7 +69,8 @@
   color: rgba(255, 255, 255, 1);
   font-weight: $font-weight-light;
   background-color: $color--trend;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     background-color: $color--trend;
     text-decoration: underline;
@@ -75,7 +82,8 @@
   color: rgba(255, 255, 255, 1);
   font-weight: $font-weight-light;
   background-color: $color--tool;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     background-color: $color--tool;
     text-decoration: underline;
@@ -87,7 +95,8 @@
   color: rgba(255, 255, 255, 1);
   font-weight: $font-weight-semi-bold;
   background-color: $color--pale;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     background-color: $color--pale;
     text-decoration: none;
@@ -98,7 +107,8 @@
 .button--danger:visited {
   color: rgba(255, 255, 255, 1);
   background-color: $color--punch;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     background-color: darken($color--punch, 10%);
     text-decoration: none;
@@ -114,12 +124,11 @@
   text-align: center;
 }
 .button--help:before {
-  font-family: "Font Awesome 5 Free";
+  font-family: 'Font Awesome 5 Free';
   font-weight: 300;
-  content: "\f059";
+  content: '\f059';
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-
 }
 .button--small {
   font-size: 0.8rem;
@@ -137,10 +146,10 @@
   }
 }
 .button__icon--active {
-  color: rgba(192, 46, 21, 1)
+  color: rgba(192, 46, 21, 1);
 }
 .button__icon--inactive {
-  color: rgba(201, 209, 222, 1)
+  color: rgba(201, 209, 222, 1);
 }
 .button__scroll-top {
   background-color: $color--smalt-blue;
@@ -153,7 +162,7 @@
   opacity: 0;
   bottom: 10%;
   visibility: hidden;
-  transition: opacity .3s linear;
+  transition: opacity 0.3s linear;
   z-index: 100000;
   &.show {
     opacity: 1;

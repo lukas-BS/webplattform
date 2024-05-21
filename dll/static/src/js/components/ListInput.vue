@@ -1,9 +1,6 @@
 <template>
   <div class="form-group">
-    <label
-      :for="props.id"
-      class="mb-2 w-100"
-    >{{ props.label }}:<span v-if="props.required">*</span></label>
+    <label :for="props.id" class="mb-2 w-100">{{ props.label }}:<span v-if="props.required">*</span></label>
     <button
       v-if="props.helpText"
       v-tooltip="props.helpText"
@@ -11,11 +8,7 @@
       type="button"
     />
     <div class="form__list-inputs">
-      <div
-        v-for="(item, index) in internalList"
-        :key="index"
-        class="d-flex align-items-baseline mb-2"
-      >
+      <div v-for="(item, index) in internalList" :key="index" class="d-flex align-items-baseline mb-2">
         <input
           v-if="!props.textarea"
           :id="props.id"
@@ -24,7 +17,7 @@
           class="form-control me-3 form__list-input"
           :placeholder="props.placeholder"
           :readonly="props.readonly"
-        >
+        />
         <textarea
           v-else
           :id="props.id"
@@ -45,12 +38,7 @@
       </div>
     </div>
     <div>
-      <button
-        v-if="!props.readonly"
-        class="button--neutral button--smallSquare"
-        type="button"
-        @click="addItem()"
-      >
+      <button v-if="!props.readonly" class="button--neutral button--smallSquare" type="button" @click="addItem()">
         <span class="fas fa-plus" />
       </button>
     </div>
@@ -64,87 +52,87 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch } from 'vue';
 
-import ReviewInput from './ReviewInput.vue'
+import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const listValue = defineModel('listValue', { default: [] })
-const reviewValue = defineModel('reviewValue', { default: '' })
+const listValue = defineModel('listValue', { default: [], type: Array });
+const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
   helpText: {
     default: '',
-    type: String,
+    type: String
   },
   id: {
     required: true,
-    type: String,
+    type: String
   },
   initial: {
     default: () => [],
-    type: Array,
+    type: Array
   },
   label: {
     required: true,
-    type: String,
+    type: String
   },
   min: {
     default: 0,
-    type: Number,
+    type: Number
   },
   placeholder: {
     default: '',
-    type: String,
+    type: String
   },
   readonly: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   required: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   review: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   textarea: {
     default: false,
-    type: Boolean,
-  },
-})
+    type: Boolean
+  }
+});
 
-const internalList = ref(props.initial)
+const internalList = ref(props.initial);
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const addItem = () => {
-  internalList.value.push('')
-}
+  internalList.value.push('');
+};
 
 const removeItem = (text) => {
-  internalList.value.splice(internalList.value.indexOf(text), 1)
-}
+  internalList.value.splice(internalList.value.indexOf(text), 1);
+};
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
 watch(internalList, (newListValue) => {
-  const result = newListValue.filter((input) => input.length !== 0)
-  listValue.value = result
-})
+  const result = newListValue.filter((input) => input.length !== 0);
+  listValue.value = result;
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
 if (!internalList.value.length) {
-  listValue.value = []
+  listValue.value = [];
   for (let i = 0; i < props.min; i++) {
-    addItem()
+    addItem();
   }
 }
 </script>

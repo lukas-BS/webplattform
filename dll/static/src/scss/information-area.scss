@@ -41,11 +41,11 @@
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
 }
-[aria-expanded="true"].information-area__title:before {
-  content: "\f105";
+[aria-expanded='true'].information-area__title:before {
+  content: '\f105';
   transform: rotate(-90deg);
 }
-[aria-expanded="false"].information-area__title:before {
-  content: "\f105";
+[aria-expanded='false'].information-area__title:before {
+  content: '\f105';
   transform: rotate(90deg);
 }

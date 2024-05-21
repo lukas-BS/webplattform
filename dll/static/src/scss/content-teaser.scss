@@ -56,10 +56,10 @@
   max-width: 68%;
   vertical-align: top;
 
-  [class*=--blue] {
+  [class*='--blue'] {
     display: inline-block;
   }
-  [class*=--white] {
+  [class*='--white'] {
     display: none;
   }
   &:hover {
@@ -70,10 +70,10 @@
     .content-teaser__favor .favor-icon {
       color: rgba(255, 255, 255, 1);
     }
-    [class*=--blue] {
+    [class*='--blue'] {
       display: none;
     }
-    [class*=--white] {
+    [class*='--white'] {
       display: inline-block;
     }
   }

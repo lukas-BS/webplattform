@@ -1,17 +1,17 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export function useAxios() {
-  const token = window.dllData?.csrfToken || null
+  const token = window.dllData?.csrfToken || null;
   const axiosHeaders = {
-    'X-CSRFToken': token,
-  }
+    'X-CSRFToken': token
+  };
 
   const axiosInstance = axios.create({
-    headers: axiosHeaders,
-  })
+    headers: axiosHeaders
+  });
 
   return {
     axios: axiosInstance,
-    axiosHeaders,
-  }
+    axiosHeaders
+  };
 }

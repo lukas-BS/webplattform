@@ -16,11 +16,8 @@
     @approve-review="approveContent"
     @decline-review="declineContent"
   >
-    <div
-      v-if="reviewValue.feedback && !review"
-      class="form-group"
-    >
-      <label>Feedback:</label> <br>
+    <div v-if="reviewValue.feedback && !review" class="form-group">
+      <label>Feedback:</label> <br />
       {{ reviewValue.feedback }}
     </div>
     <TextArea
@@ -33,13 +30,7 @@
       :rows="3"
       :help-text="getHelpText('feedback')"
     />
-    <TextInput
-      id="author"
-      v-model:input-value="data.author"
-      label="Autor_in"
-      readonly
-      required
-    />
+    <TextInput id="author" v-model:input-value="data.author" label="Autor_in" readonly required />
     <TextInput
       id="title"
       v-model:input-value="data.name"
@@ -80,7 +71,7 @@
         :rows="3"
         :help-text="getHelpText('teaser')"
       />
-      <Dropdown
+      <AppDropdown
         id="co_authors"
         v-model:dropdown-value="data.co_authors"
         v-model:review-value="reviewValue.co_authors"
@@ -93,7 +84,7 @@
         :help-text="getHelpText('co_authors')"
       />
       <PendingCoAuthors :pending-co-authors="data.pending_co_authors" />
-      <Dropdown
+      <AppDropdown
         id="teaching-modules"
         v-model:dropdown-value="data.teaching_modules"
         v-model:review-value="reviewValue.teaching_modules"
@@ -106,7 +97,7 @@
         :error="errorFields.includes('teaching_modules')"
         :help-text="getHelpText('teaching_modules')"
       />
-      <Dropdown
+      <AppDropdown
         id="tools"
         v-model:dropdown-value="data.tools"
         v-model:review-value="reviewValue.tools"
@@ -119,7 +110,7 @@
         :error="errorFields.includes('tools')"
         :help-text="getHelpText('tools')"
       />
-      <Dropdown
+      <AppDropdown
         id="trends"
         v-model:value="data.trends"
         v-model:review-value="reviewValue.trends"
@@ -132,7 +123,7 @@
         :help-text="getHelpText('trends')"
         :prefetch="true"
       />
-      <Dropdown
+      <AppDropdown
         v-if="!dltFeatures"
         id="competences"
         v-model:value="data.competences"
@@ -147,7 +138,7 @@
         :prefetch="true"
         :help-text="getHelpText('competences')"
       />
-      <Dropdown
+      <AppDropdown
         v-if="!dltFeatures"
         id="tool-functions"
         v-model:value="data.functions"
@@ -200,7 +191,7 @@
         :initial="data.contra"
         :help-text="getHelpText('contra')"
       />
-      <Select
+      <AppSelect
         id="data-privacy"
         v-model:input-value="data.privacy"
         v-model:review-value="reviewValue.privacy"
@@ -224,7 +215,7 @@
         :maximal-chars="300"
         :help-text="getHelpText('usage')"
       />
-      <Dropdown
+      <AppDropdown
         id="applications"
         v-model:dropdown-value="data.applications"
         v-model:review-value="reviewValue.applications"
@@ -260,7 +251,7 @@
         :help-text="getHelpText('contentlink')"
         :types="true"
       />
-      <Select
+      <AppSelect
         id="requires_registration"
         v-model:input-value="data.requires_registration"
         v-model:review-value="reviewValue.requires_registration"
@@ -272,7 +263,7 @@
         :default-val="data.requires_registration"
         :help-text="getHelpText('requires_registration')"
       />
-      <Select
+      <AppSelect
         id="usk"
         v-model:input-value="data.usk"
         v-model:review-value="reviewValue.usk"
@@ -284,7 +275,7 @@
         :default-val="data.usk"
         :help-text="getHelpText('usk')"
       />
-      <Select
+      <AppSelect
         id="status"
         v-model:input-value="data.status"
         v-model:review-value="reviewValue.status"
@@ -322,7 +313,7 @@
         :rows="10"
         :help-text="getHelpText('description')"
       />
-      <Dropdown
+      <AppDropdown
         id="operating_systems"
         v-model:dropdown-value="data.operating_systems"
         v-model:review-value="reviewValue.operating_systems"
@@ -335,7 +326,7 @@
         :prefetch="true"
         :help-text="getHelpText('operating_systems')"
       />
-      <Dropdown
+      <AppDropdown
         id="subject"
         v-model:dropdown-value="data.subjects"
         v-model:review-value="reviewValue.subjects"
@@ -349,7 +340,7 @@
         :prefetch="true"
         :help-text="getHelpText('subjects')"
       />
-      <Select
+      <AppSelect
         id="with_costs"
         v-model:input-value="data.with_costs"
         v-model:review-value="reviewValue.with_costs"
@@ -361,7 +352,7 @@
         :default-val="data.with_costs"
         :help-text="getHelpText('with_costs')"
       />
-      <Dropdown
+      <AppDropdown
         v-if="dltFeatures"
         id="tool-potentials"
         v-model:dropdown-value="data.potentials"
@@ -498,17 +489,17 @@
 </template>
 
 <script setup>
-import ContentSubmissionForm from '../components/ContentSubmissionForm.vue'
-import DataProtectionInput from '../components/DataProtectionInput.vue'
-import Dropdown from '../components/Dropdown.vue'
-import FileInput from '../components/FileInput.vue'
-import LinksInput from '../components/LinksInput.vue'
-import ListInput from '../components/ListInput.vue'
-import PendingCoAuthors from '../components/PendingCoAuthors.vue'
-import Select from '../components/Select.vue'
-import TextArea from '../components/TextArea.vue'
-import TextInput from '../components/TextInput.vue'
-import { useSubmission } from '../composables/submission'
+import AppDropdown from '../components/AppDropdown.vue';
+import AppSelect from '../components/AppSelect.vue';
+import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
+import DataProtectionInput from '../components/DataProtectionInput.vue';
+import FileInput from '../components/FileInput.vue';
+import LinksInput from '../components/LinksInput.vue';
+import ListInput from '../components/ListInput.vue';
+import PendingCoAuthors from '../components/PendingCoAuthors.vue';
+import TextArea from '../components/TextArea.vue';
+import TextInput from '../components/TextInput.vue';
+import { useSubmission } from '../composables/submission';
 
 const {
   approveContent,
@@ -534,8 +525,8 @@ const {
   showDeleteWarning,
   submitContent,
   updateContent,
-  updateReview,
-} = useSubmission()
+  updateReview
+} = useSubmission();
 
 data.value = {
   additional_info: '',
@@ -568,18 +559,18 @@ data.value = {
   tools: [],
   trends: [],
   video_tutorials: [],
-  with_costs: false,
-}
-resourceType.value = 'Tool'
+  with_costs: false
+};
+resourceType.value = 'Tool';
 requiredFields.value = [
   { field: 'name', title: 'Titel' },
   { field: 'teaser', title: 'Kurzzusammenfassung' },
   { field: 'image', title: 'Anzeigebild' },
   // {field: 'competences', title: 'Kompetenzen in der digitalen Welt'},
-  { field: 'url', title: 'Website' },
-]
+  { field: 'url', title: 'Website' }
+];
 
-const dltFeatures = window.dltFeatures
+const dltFeatures = window.dltFeatures;
 
 const dataPrivacyOptions = [
   { label: 'Unbekannt', value: 0 },
@@ -587,40 +578,40 @@ const dataPrivacyOptions = [
   {
     label:
       'Personenbezogene Daten wie z.B. Logins werden geschützt auf dem Server abgelegt. Es greift die EU-Datenschutz-Grundverordnung.',
-    value: 2,
+    value: 2
   },
   {
     label:
       'Personenbezogene Daten werden erhoben. Dritte haben Zugriff auf diese Daten. Es greift die EU-Datenschutz-Grundverordnung.',
-    value: 3,
+    value: 3
   },
   {
     label: 'Personenbezogene Daten werden erhoben. Es greift NICHT die EU-Datenschutz-Grundverordnung.',
-    value: 4,
-  },
-]
+    value: 4
+  }
+];
 
 const registrationOptions = [
   { label: 'Ja', value: true },
-  { label: 'Nein', value: false },
-]
+  { label: 'Nein', value: false }
+];
 
 const uskOptions = [
   { label: 'Ohne Altersbeschränkung', value: 'usk0' },
   { label: 'Ab 6 Jahren', value: 'usk6' },
   { label: 'Ab 12 Jahren', value: 'usk12' },
   { label: 'Ab 16 Jahren', value: 'usk16' },
-  { label: 'Ab 18 Jahren', value: 'usk18' },
-]
+  { label: 'Ab 18 Jahren', value: 'usk18' }
+];
 const statusOptions = [
   { label: 'Online', value: 'on' },
   { label: 'Offline', value: 'off' },
-  { label: 'Online & Offline', value: 'onoff' },
-]
+  { label: 'Online & Offline', value: 'onoff' }
+];
 const with_costsOptions = [
   { label: 'Ja', value: true },
-  { label: 'Nein', value: false },
-]
+  { label: 'Nein', value: false }
+];
 </script>
 
 <style scoped></style>

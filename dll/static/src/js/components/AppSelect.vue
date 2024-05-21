@@ -1,9 +1,6 @@
 <template>
   <div class="form-group">
-    <label
-      :for="props.id"
-      v-text="props.label"
-    />
+    <label :for="props.id" v-text="props.label" />
     <div class="d-flex">
       <select
         :id="props.id"
@@ -39,53 +36,53 @@
 </template>
 
 <script setup>
-import ReviewInput from './ReviewInput.vue'
+import ReviewInput from './ReviewInput.vue';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const selectValue = defineModel('inputValue', { default: '' })
-const reviewValue = defineModel('reviewValue', { default: '' })
+const selectValue = defineModel('inputValue', { default: '', type: [String, Number] });
+const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
   defaultVal: {
     default: '',
-    type: [String, Number],
+    type: [String, Number]
   },
   error: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   helpText: {
     default: '',
-    type: String,
+    type: String
   },
   id: {
     required: true,
-    type: String,
+    type: String
   },
   label: {
     required: true,
-    type: String,
+    type: String
   },
   options: {
     required: true,
-    type: Array,
+    type: Array
   },
   readonly: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   review: {
     default: false,
-    type: Boolean,
-  },
-})
+    type: Boolean
+  }
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
-selectValue.value = props.defaultVal
+selectValue.value = props.defaultVal;
 </script>
 
 <style scoped></style>

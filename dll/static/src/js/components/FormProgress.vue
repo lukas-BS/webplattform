@@ -7,10 +7,7 @@
       :class="{ 'step--is-active': stepIsActive(index + 1) }"
       @click="emitSetIndex(index)"
     >
-      <img
-        :src="getStepImage(index + 1)"
-        alt=""
-      >
+      <img :src="getStepImage(index + 1)" alt="" />
       <div class="step-text">
         {{ step.short }}
       </div>
@@ -25,37 +22,37 @@
 const props = defineProps({
   active: {
     default: 0,
-    type: Number,
+    type: Number
   },
   steps: {
     required: true,
-    type: Array,
-  },
-})
+    type: Array
+  }
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const getStepImage = (index) => {
   if (stepIsActive(index)) {
-    return `https://dll-production.s3-de-central.profitbricks.com/static/img/forms/step_${index}_black.svg`
+    return `https://dll-production.s3-de-central.profitbricks.com/static/img/forms/step_${index}_black.svg`;
   }
 
-  return `https://dll-production.s3-de-central.profitbricks.com/static/img/forms/step_${index}.svg`
-}
+  return `https://dll-production.s3-de-central.profitbricks.com/static/img/forms/step_${index}.svg`;
+};
 
 const stepIsActive = (index) => {
-  return index <= props.active + 1
-}
+  return index <= props.active + 1;
+};
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  emits
 //  --------------------------------------------------------------------------------------------------------------------
-const emits = defineEmits(['setIndex'])
+const emits = defineEmits(['setIndex']);
 
 const emitSetIndex = (index) => {
-  emits('setIndex', index)
-}
+  emits('setIndex', index);
+};
 </script>
 
 <style lang="scss" scoped>

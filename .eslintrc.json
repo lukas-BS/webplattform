@@ -3,7 +3,12 @@
     "browser": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "plugin:vue/vue3-recommended", "plugin:perfectionist/recommended-natural"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/vue3-recommended",
+    "plugin:perfectionist/recommended-natural",
+    "plugin:prettier/recommended"
+  ],
   "root": true,
   "rules": {
     "no-unused-vars": "warn",

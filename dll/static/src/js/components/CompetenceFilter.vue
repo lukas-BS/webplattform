@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h3 class="form-subhead">
-      Kompetenzen in der digitalen Welt
-    </h3>
+    <h3 class="form-subhead">Kompetenzen in der digitalen Welt</h3>
     <ul class="list-unstyled">
       <li class="form-check">
         <input
@@ -13,11 +11,8 @@
           name="competenceType"
           value="1"
           @change="update"
-        >
-        <label
-          class="form-check-label"
-          for="competence-1"
-        >Suchen, Verarbeiten & Aufbewahren</label>
+        />
+        <label class="form-check-label" for="competence-1">Suchen, Verarbeiten & Aufbewahren</label>
       </li>
       <li class="form-check">
         <input
@@ -28,11 +23,8 @@
           name="competenceType"
           value="2"
           @change="update"
-        >
-        <label
-          class="form-check-label"
-          for="competence-2"
-        >Kommunizieren & Kooperieren</label>
+        />
+        <label class="form-check-label" for="competence-2">Kommunizieren & Kooperieren</label>
       </li>
       <li class="form-check">
         <input
@@ -43,11 +35,8 @@
           name="competenceType"
           value="3"
           @change="update"
-        >
-        <label
-          class="form-check-label"
-          for="competence-3"
-        >Produzieren & Präsentieren</label>
+        />
+        <label class="form-check-label" for="competence-3">Produzieren & Präsentieren</label>
       </li>
       <li class="form-check">
         <input
@@ -58,11 +47,8 @@
           name="competenceType"
           value="4"
           @change="update"
-        >
-        <label
-          class="form-check-label"
-          for="competence-4"
-        >Schützen & sicher Agieren</label>
+        />
+        <label class="form-check-label" for="competence-4">Schützen & sicher Agieren</label>
       </li>
       <li class="form-check">
         <input
@@ -73,11 +59,8 @@
           name="competenceType"
           value="5"
           @change="update"
-        >
-        <label
-          class="form-check-label"
-          for="competence-5"
-        >Problemlösen & Handeln</label>
+        />
+        <label class="form-check-label" for="competence-5">Problemlösen & Handeln</label>
       </li>
       <li class="form-check">
         <input
@@ -88,11 +71,8 @@
           name="competenceType"
           value="6"
           @change="update"
-        >
-        <label
-          class="form-check-label"
-          for="competence-6"
-        >Analysieren & Reflektieren</label>
+        />
+        <label class="form-check-label" for="competence-6">Analysieren & Reflektieren</label>
       </li>
     </ul>
   </div>
@@ -104,8 +84,8 @@
 //  --------------------------------------------------------------------------------------------------------------------
 const competences = defineModel({
   default: () => [],
-  type: Array,
-})
+  type: Array
+});
 </script>
 
 <style scoped></style>
