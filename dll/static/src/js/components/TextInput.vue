@@ -3,96 +3,102 @@
     <label :for="props.id">{{ props.label }}:<span v-if="props.required">*</span></label>
     <div class="d-flex">
       <input
+        :id="props.id"
+        v-model="inputValue"
         :type="props.type"
         class="form-control"
         :class="{ 'form__field--error': props.error }"
-        :id="props.id"
         :placeholder="props.placeholder"
         :readonly="props.readonly"
         :maxlength="props.maximalChars"
-        v-model="inputValue" />
+      >
       <button
         v-if="props.helpText"
+        v-tooltip="props.helpText"
         class="button--neutral button--smallSquare button--help ms-1"
         type="button"
-        v-tooltip="props.helpText"></button>
+      />
     </div>
-    <small v-if="props.characterCounter" class="form-text text-muted float-end">
+    <small
+      v-if="props.characterCounter"
+      class="form-text text-muted float-end"
+    >
       {{ charactersLeft }} Zeichen verbleibend
     </small>
-    <div class="clearfix"></div>
+    <div class="clearfix" />
     <ReviewInput
-      :mode="props.review ? 'review' : 'edit'"
       :id="'id' + -props.review"
+      v-model="reviewValue"
+      :mode="props.review ? 'review' : 'edit'"
       :name="props.label"
-      v-model="reviewValue" />
+    />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed } from 'vue'
 
-import ReviewInput from './ReviewInput.vue';
+import ReviewInput from './ReviewInput.vue'
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const inputValue = defineModel('inputValue', { default: '' });
-const reviewValue = defineModel('reviewValue', { default: '' });
+const inputValue = defineModel('inputValue', { default: '' })
+const reviewValue = defineModel('reviewValue', { default: '' })
 
 const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
-  label: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: String,
-    default: 'text',
-  },
-  readonly: {
-    type: Boolean,
-    default: false,
-  },
-  placeholder: {
-    type: String,
-    default: '',
-  },
   characterCounter: {
-    type: Boolean,
     default: false,
-  },
-  maximalChars: {
-    type: Number,
-    default: null,
-  },
-  required: {
     type: Boolean,
-    default: false,
-  },
-  helpText: {
-    type: String,
-    default: '',
   },
   error: {
-    type: Boolean,
     default: false,
+    type: Boolean,
+  },
+  helpText: {
+    default: '',
+    type: String,
+  },
+  id: {
+    required: true,
+    type: String,
+  },
+  label: {
+    required: true,
+    type: String,
+  },
+  maximalChars: {
+    default: null,
+    type: Number,
+  },
+  placeholder: {
+    default: '',
+    type: String,
+  },
+  readonly: {
+    default: false,
+    type: Boolean,
+  },
+  required: {
+    default: false,
+    type: Boolean,
   },
   review: {
-    type: Boolean,
     default: false,
+    type: Boolean,
   },
-});
+  type: {
+    default: 'text',
+    type: String,
+  },
+})
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
 const charactersLeft = computed(() => {
-  return inputValue.value ? props.maximalChars - inputValue.value.length : props.maximalChars;
-});
+  return inputValue.value ? props.maximalChars - inputValue.value.length : props.maximalChars
+})
 </script>
 
 <style scoped></style>

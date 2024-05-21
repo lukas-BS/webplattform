@@ -1,118 +1,213 @@
 <template>
-  <form class="mb-4" id="submission-form">
-    <slot name="progress"></slot>
+  <form
+    id="submission-form"
+    class="mb-4"
+  >
+    <slot name="progress" />
     <div class="submission-form">
-      <div class="alert alert-success" v-if="props.data.submitted && props.mode !== 'review'">
+      <div
+        v-if="props.data.submitted && modeValue !== 'review'"
+        class="alert alert-success"
+      >
         Der Inhalt wurde eingereicht und wird nun von Mitarbeiter_innen geprüft.
       </div>
       <slot name="messagesTop">
-        <div class="alert alert-primary" v-if="props.saved">Ihre Änderungen wurden gespeichert.</div>
-        <div class="alert alert-danger" v-if="props.errors.length">
+        <div
+          v-if="props.saved"
+          class="alert alert-primary"
+        >
+          Ihre Änderungen wurden gespeichert.
+        </div>
+        <div
+          v-if="props.errors.length"
+          class="alert alert-danger"
+        >
           <ul class="list-unstyled">
-            <li v-for="error in props.errors">{{ error }}</li>
+            <li
+              v-for="(error, index) in props.errors"
+              :key="index"
+            >
+              {{ error }}
+            </li>
           </ul>
         </div>
       </slot>
       <slot name="buttonsTop">
-        <div v-if="props.mode === 'edit'">
+        <div v-if="modeValue === 'edit'">
+          <button
+            v-if="!props.data.submitted"
+            class="button button--primary"
+            type="button"
+            :disabled="props.loading"
+            @click="emitUpdate()"
+          >
+            Speichern
+          </button>
+          <button
+            class="button button--preview"
+            type="button"
+            :disabled="props.loading"
+            @click="emitPreview()"
+          >
+            Vorschau
+          </button>
+          <button
+            v-if="!props.data.submitted"
+            class="button button--submit"
+            type="button"
+            :disabled="props.loading"
+            @click="emitSubmit()"
+          >
+            Einreichen
+          </button>
+          <button
+            v-if="props.canDelete"
+            class="button button--danger"
+            type="button"
+            :disabled="props.loading"
+            @click="emitDeleteWarning()"
+          >
+            Löschen
+          </button>
+        </div>
+        <div v-if="modeValue === 'review'">
           <button
             class="button button--primary"
             type="button"
-            @click="emitUpdate()"
             :disabled="props.loading"
-            v-if="!props.data.submitted">
+            @click="emitUpdateReview()"
+          >
             Speichern
-          </button>
-          <button class="button button--preview" type="button" :disabled="props.loading" @click="emitPreview()">
-            Vorschau
           </button>
           <button
             class="button button--submit"
             type="button"
             :disabled="props.loading"
-            @click="emitSubmit()"
-            v-if="!props.data.submitted">
-            Einreichen
+            @click="emitApproveReview()"
+          >
+            Freigeben
           </button>
           <button
             class="button button--danger"
             type="button"
             :disabled="props.loading"
-            @click="emitDeleteWarning()"
-            v-if="props.canDelete">
-            Löschen
-          </button>
-        </div>
-        <div v-if="props.mode === 'review'">
-          <button class="button button--primary" type="button" @click="emitUpdateReview()" :disabled="props.loading">
-            Speichern
-          </button>
-          <button class="button button--submit" type="button" :disabled="props.loading" @click="emitApproveReview()">
-            Freigeben
-          </button>
-          <button class="button button--danger" type="button" :disabled="props.loading" @click="emitDeclineReview()">
+            @click="emitDeclineReview()"
+          >
             Ablehnen
           </button>
         </div>
       </slot>
-      <slot v-if="props.mode === 'edit' || props.mode === 'create' || props.mode === 'review'"></slot>
-      <div v-if="props.mode === 'delete'">
+      <slot v-if="modeValue === 'edit' || modeValue === 'create' || modeValue === 'review'" />
+      <div v-if="modeValue === 'delete'">
         <h3>Wollen Sie den folgenden Inhalt wirklich löschen?</h3>
         <p>
           <b>{{ props.data.name }}</b>
         </p>
 
-        <button type="button" class="button button--danger" @click="emitDelete()">Ja, Inhalt löschen</button>
-        <button type="button" class="button button--primary" @click="props.mode = 'edit'">Nein, abbrechen.</button>
-      </div>
-      <div v-if="props.mode === 'review'">
-        <button class="button button--primary" type="button" @click="emitUpdateReview()" :disabled="props.loading">
-          Speichern
+        <button
+          type="button"
+          class="button button--danger"
+          @click="emitDelete()"
+        >
+          Ja, Inhalt löschen
         </button>
-        <button class="button button--submit" type="button" :disabled="props.loading" @click="emitApproveReview()">
-          Freigeben
-        </button>
-        <button class="button button--danger" type="button" :disabled="props.loading" @click="emitDeclineReview()">
-          Ablehnen
+        <button
+          type="button"
+          class="button button--primary"
+          @click="modeValue = 'edit'"
+        >
+          Nein, abbrechen.
         </button>
       </div>
-      <div class="alert alert-primary" v-if="props.saved">Ihre Änderungen wurden gespeichert.</div>
-      <div class="alert alert-danger" v-if="props.errors.length">
-        <ul class="list-unstyled">
-          <li v-for="error in props.errors">{{ error }}</li>
-        </ul>
-      </div>
-      <slot name="extraButtons"></slot>
-      <div v-if="props.mode === 'edit'">
+      <div v-if="modeValue === 'review'">
         <button
           class="button button--primary"
           type="button"
-          @click="submit"
           :disabled="props.loading"
-          v-if="!props.data.submitted">
+          @click="emitUpdateReview()"
+        >
           Speichern
-        </button>
-        <button class="button button--preview" type="button" :disabled="props.loading" @click="emitPreview()">
-          Vorschau
         </button>
         <button
           class="button button--submit"
           type="button"
           :disabled="props.loading"
-          @click="emitSubmit()"
-          v-if="!props.data.submitted">
-          Einreichen
+          @click="emitApproveReview()"
+        >
+          Freigeben
         </button>
         <button
           class="button button--danger"
           type="button"
           :disabled="props.loading"
+          @click="emitDeclineReview()"
+        >
+          Ablehnen
+        </button>
+      </div>
+      <div
+        v-if="props.saved"
+        class="alert alert-primary"
+      >
+        Ihre Änderungen wurden gespeichert.
+      </div>
+      <div
+        v-if="props.errors.length"
+        class="alert alert-danger"
+      >
+        <ul class="list-unstyled">
+          <li
+            v-for="(error, index) in props.errors"
+            :key="index"
+          >
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+      <slot name="extraButtons" />
+      <div v-if="modeValue === 'edit'">
+        <button
+          v-if="!props.data.submitted"
+          class="button button--primary"
+          type="button"
+          :disabled="props.loading"
+          @click="submit"
+        >
+          Speichern
+        </button>
+        <button
+          class="button button--preview"
+          type="button"
+          :disabled="props.loading"
+          @click="emitPreview()"
+        >
+          Vorschau
+        </button>
+        <button
+          v-if="!props.data.submitted"
+          class="button button--submit"
+          type="button"
+          :disabled="props.loading"
+          @click="emitSubmit()"
+        >
+          Einreichen
+        </button>
+        <button
+          v-if="props.canDelete"
+          class="button button--danger"
+          type="button"
+          :disabled="props.loading"
           @click="emitDeleteWarning()"
-          v-if="props.canDelete">
+        >
           Löschen
         </button>
       </div>
-      <button class="button button--primary" @click="emitCreate()" type="button" v-if="props.mode === 'create'">
+      <button
+        v-if="modeValue === 'create'"
+        class="button button--primary"
+        type="button"
+        @click="emitCreate()"
+      >
         Speichern
       </button>
     </div>
@@ -123,43 +218,41 @@
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
+const modeValue = defineModel('mode', { required: true, type: String })
+
 const props = defineProps({
-  saved: {
-    type: Boolean,
-    required: true,
-  },
-  errors: {
-    type: Array,
-    required: true,
-  },
-  mode: {
-    type: String,
-    required: true,
-  },
   canDelete: {
-    type: Boolean,
     required: true,
-  },
-  loading: {
     type: Boolean,
-    required: true,
   },
   data: {
-    type: Object,
     default: () => {
-      return {};
+      return {}
     },
+    type: Object,
   },
-});
+  errors: {
+    required: true,
+    type: Array,
+  },
+  loading: {
+    required: true,
+    type: Boolean,
+  },
+  saved: {
+    required: true,
+    type: Boolean,
+  },
+})
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const submit = () => {
-  const submissionEvent = new Event('content-submission');
-  window.dispatchEvent(submissionEvent);
-  emitUpdate();
-};
+  const submissionEvent = new Event('content-submission')
+  window.dispatchEvent(submissionEvent)
+  emitUpdate()
+}
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  emits
@@ -174,43 +267,43 @@ const emits = defineEmits([
   'declineReview',
   'updateReview',
   'delete',
-]);
+])
 
 const emitUpdate = () => {
-  emits('update');
-};
+  emits('update')
+}
 
 const emitPreview = () => {
-  emits('preview');
-};
+  emits('preview')
+}
 
 const emitSubmit = () => {
-  emits('submit');
-};
+  emits('submit')
+}
 
 const emitCreate = () => {
-  emits('create');
-};
+  emits('create')
+}
 
 const emitDeleteWarning = () => {
-  emits('deleteWarning');
-};
+  emits('deleteWarning')
+}
 
 const emitApproveReview = () => {
-  emits('approveReview');
-};
+  emits('approveReview')
+}
 
 const emitDeclineReview = () => {
-  emits('declineReview');
-};
+  emits('declineReview')
+}
 
 const emitUpdateReview = () => {
-  emits('updateReview');
-};
+  emits('updateReview')
+}
 
 const emitDelete = () => {
-  emits('delete');
-};
+  emits('delete')
+}
 </script>
 
 <style lang="scss" scoped>

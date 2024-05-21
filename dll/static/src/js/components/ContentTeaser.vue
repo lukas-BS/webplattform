@@ -1,30 +1,39 @@
 <template>
-  <a class="content-teaser" :class="contentClass" :href="props.content.url">
+  <a
+    class="content-teaser"
+    :class="contentClass"
+    :href="props.content.url"
+  >
     <div class="content-teaser__image-container">
       <img
         v-if="props.content.image"
         class="content-teaser__image"
         :src="props.content.image"
         srcset=""
-        :alt="'Vorschaubild ' + props.content.name" />
+        :alt="'Vorschaubild ' + props.content.name"
+      >
     </div>
     <div class="content-teaser__body">
       <div class="content-teaser__type">{{ props.content.type_verbose }}</div>
-      <div class="content-teaser__favor" v-if="props.content.favored">
+      <div
+        v-if="props.content.favored"
+        class="content-teaser__favor"
+      >
         <span class="fa fa-heart favor-icon favor-icon--active">
           <span class="sr-only">Auf dem Merkzettel</span>
         </span>
       </div>
-      <div class="clearfix"></div>
+      <div class="clearfix" />
       <div class="content-teaser__title">{{ props.content.name }}</div>
       <div class="content-teaser__abstract">{{ props.content.teaser }}</div>
       <div class="content-teaser__footer">
         <div class="content-teaser__competences">
           <span
             v-for="competence in props.content.competences"
+            v-tooltip="competence.name"
             class="content-teaser__competence"
             :class="competence.icon"
-            v-tooltip="competence.name"></span>
+          />
         </div>
       </div>
     </div>
@@ -32,26 +41,26 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
 const props = defineProps({
   content: {
-    type: Object,
     default() {
-      return {};
+      return {}
     },
+    type: Object,
   },
-});
+})
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
 const contentClass = computed(() => {
-  return props.content.type ? `content-teaser--${props.content.type}` : '';
-});
+  return props.content.type ? `content-teaser--${props.content.type}` : ''
+})
 </script>
 
 <style scoped></style>

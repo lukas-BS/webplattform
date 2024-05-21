@@ -1,84 +1,91 @@
 <template>
   <div class="form-group">
-    <label :for="props.id" v-text="props.label" />
+    <label
+      :for="props.id"
+      v-text="props.label"
+    />
     <div class="d-flex">
       <select
-        :name="props.id"
         :id="props.id"
+        v-model="selectValue"
+        :name="props.id"
         class="form-control"
         :class="{ 'form__field--error': props.error }"
-        v-model="selectValue"
-        :disabled="props.readonly">
+        :disabled="props.readonly"
+      >
         <option
           v-for="(option, index) in props.options"
           :key="index"
           :value="option.value"
-          :selected="option.value == defaultVal">
+          :selected="option.value == defaultVal"
+        >
           {{ option.label }}
         </option>
       </select>
       <button
         v-if="props.helpText"
+        v-tooltip="props.helpText"
         class="button--neutral button--smallSquare button--help ms-1"
         type="button"
-        v-tooltip="props.helpText"></button>
+      />
     </div>
     <ReviewInput
-      :mode="props.review ? 'review' : 'edit'"
       :id="'id' + -props.review"
+      v-model="reviewValue"
+      :mode="props.review ? 'review' : 'edit'"
       :name="props.label"
-      v-model="reviewValue" />
+    />
   </div>
 </template>
 
 <script setup>
-import ReviewInput from './ReviewInput.vue';
+import ReviewInput from './ReviewInput.vue'
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const selectValue = defineModel('inputValue', { default: '' });
-const reviewValue = defineModel('reviewValue', { default: '' });
+const selectValue = defineModel('inputValue', { default: '' })
+const reviewValue = defineModel('reviewValue', { default: '' })
 
 const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
-  label: {
-    type: String,
-    required: true,
-  },
-  options: {
-    type: Array,
-    required: true,
-  },
   defaultVal: {
+    default: '',
     type: [String, Number],
-    default: '',
-  },
-  helpText: {
-    type: String,
-    default: '',
-  },
-  readonly: {
-    type: Boolean,
-    default: false,
   },
   error: {
-    type: Boolean,
     default: false,
+    type: Boolean,
+  },
+  helpText: {
+    default: '',
+    type: String,
+  },
+  id: {
+    required: true,
+    type: String,
+  },
+  label: {
+    required: true,
+    type: String,
+  },
+  options: {
+    required: true,
+    type: Array,
+  },
+  readonly: {
+    default: false,
+    type: Boolean,
   },
   review: {
-    type: Boolean,
     default: false,
+    type: Boolean,
   },
-});
+})
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
-selectValue.value = props.defaultVal;
+selectValue.value = props.defaultVal
 </script>
 
 <style scoped></style>

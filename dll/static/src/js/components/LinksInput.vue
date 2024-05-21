@@ -1,128 +1,156 @@
 <template>
   <div class="form-group">
-    <label :for="props.id" class="mb-2 w-100">{{ props.label }}:<span v-if="props.required">*</span></label>
+    <label
+      :for="props.id"
+      class="mb-2 w-100"
+    >{{ props.label }}:<span v-if="props.required">*</span></label>
     <button
       v-if="props.helpText"
+      v-tooltip="props.helpText"
       class="button--neutral button--smallSquare button--help ms-1 float-end"
       type="button"
-      v-tooltip="props.helpText"></button>
+    />
     <div class="form__list-inputs">
-      <div class="mb-2" v-for="(link, index) in linksValue" :key="index">
+      <div
+        v-for="(link, index) in linksValue"
+        :key="index"
+        class="mb-2"
+      >
         <div class="d-flex align-items-baseline">
           <input
+            :id="props.id"
+            v-model="link.name"
             type="text"
             class="form-control me-3"
-            :id="props.id"
             :placeholder="props.namePlaceholder"
             :readonly="props.readonly"
-            v-model="link.name" />
+          >
           <input
+            :id="props.id"
+            v-model="link.url"
             type="text"
             class="form-control me-3"
             :class="{ 'form__field--error': !link.validUrl }"
-            :id="props.id"
             :placeholder="props.linkPlaceholder"
             :readonly="props.readonly"
-            v-model="link.url"
-            @blur="checkLinkValid(link)" />
-          <select v-if="props.types" class="form-control me-3" name="types" v-model="link.type">
-            <option value="video">Video / Audio</option>
-            <option value="href">Text</option>
+            @blur="checkLinkValid(link)"
+          >
+          <select
+            v-if="props.types"
+            v-model="link.type"
+            class="form-control me-3"
+            name="types"
+          >
+            <option value="video">
+              Video / Audio
+            </option>
+            <option value="href">
+              Text
+            </option>
           </select>
           <button
             v-if="!props.readonly"
             class="button--danger button--smallSquare"
             type="button"
-            @click="removeLink(link)">
-            <span class="fas fa-times"></span>
+            @click="removeLink(link)"
+          >
+            <span class="fas fa-times" />
           </button>
         </div>
-        <div class="alert alert-danger mt-1" v-if="!link.validUrl">
+        <div
+          v-if="!link.validUrl"
+          class="alert alert-danger mt-1"
+        >
           Bitte geben Sie eine valide URL ein. Die URL muss mit http:// bzw. https:// beginnen.
         </div>
       </div>
     </div>
     <div v-if="!props.readonly">
-      <button class="button--neutral button--smallSquare" @click="addLink()" type="button">
-        <span class="fas fa-plus"></span>
+      <button
+        class="button--neutral button--smallSquare"
+        type="button"
+        @click="addLink()"
+      >
+        <span class="fas fa-plus" />
       </button>
     </div>
     <ReviewInput
-      :mode="props.review ? 'review' : 'edit'"
       :id="'id' + -props.review"
+      v-model="reviewValue"
+      :mode="props.review ? 'review' : 'edit'"
       :name="props.label"
-      v-model="reviewValue" />
+    />
   </div>
 </template>
 
 <script setup>
-import { watch } from 'vue';
+import { watch } from 'vue'
 
-import ReviewInput from './ReviewInput.vue';
+import ReviewInput from './ReviewInput.vue'
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const linksValue = defineModel('linksValue', { default: [] });
-const reviewValue = defineModel('reviewValue', { default: '' });
+const linksValue = defineModel('linksValue', { default: [] })
+const reviewValue = defineModel('reviewValue', { default: '' })
 
 const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
-  label: {
-    type: String,
-    required: true,
-  },
   error: {
-    type: Boolean,
     default: false,
-  },
-  required: {
     type: Boolean,
-    default: false,
-  },
-  namePlaceholder: {
-    type: String,
-    default: 'Linktext',
-  },
-  linkPlaceholder: {
-    type: String,
-    default: 'https://example.org',
-  },
-  type: {
-    type: String,
-    default: 'href',
   },
   helpText: {
-    type: String,
     default: '',
+    type: String,
+  },
+  id: {
+    required: true,
+    type: String,
+  },
+  label: {
+    required: true,
+    type: String,
+  },
+  linkPlaceholder: {
+    default: 'https://example.org',
+    type: String,
+  },
+  namePlaceholder: {
+    default: 'Linktext',
+    type: String,
   },
   readonly: {
-    type: Boolean,
     default: false,
+    type: Boolean,
   },
-  types: {
-    type: Boolean,
+  required: {
     default: false,
+    type: Boolean,
   },
   review: {
-    type: Boolean,
     default: false,
+    type: Boolean,
   },
-});
+  type: {
+    default: 'href',
+    type: String,
+  },
+  types: {
+    default: false,
+    type: Boolean,
+  },
+})
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const addLink = () => {
-  linksValue.value.push({ name: '', url: '', type: props.type, validUrl: true });
-};
+  linksValue.value.push({ name: '', type: props.type, url: '', validUrl: true })
+}
 
 const removeLink = (link) => {
-  linksValue.value.splice(linksValue.value.indexOf(link), 1);
-};
+  linksValue.value.splice(linksValue.value.indexOf(link), 1)
+}
 
 const isValidUrl = (url) => {
   // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
@@ -134,13 +162,13 @@ const isValidUrl = (url) => {
       '(\\?[;&a-z\\d%_.~+=-]*)?' +
       '(\\#[-a-z\\d_]*)?$',
     'i',
-  );
-  return !!pattern.test(url);
-};
+  )
+  return !!pattern.test(url)
+}
 
 const checkLinkValid = (link) => {
-  link.validUrl = isValidUrl(link.url);
-};
+  link.validUrl = isValidUrl(link.url)
+}
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
@@ -149,17 +177,17 @@ watch(
   () => props.error,
   () => {
     for (let i = 0; i < linksValue.value.length; i++) {
-      console.log('checking link');
-      checkLinkValid(linksValue.value[i]);
+      console.log('checking link')
+      checkLinkValid(linksValue.value[i])
     }
   },
-);
+)
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
 for (let i = 0; i < linksValue.value.length; i++) {
-  linksValue.value[i].validUrl = true;
+  linksValue.value[i].validUrl = true
 }
 </script>
 

@@ -1,8 +1,8 @@
 <template>
   <ContentSubmissionForm
+    v-model:mode="mode"
     :data="data"
     :errors="errors"
-    :mode="mode"
     :loading="loading"
     :saved="saved"
     :can-delete="canDelete"
@@ -14,23 +14,36 @@
     @submit="submitContent"
     @update-review="updateReview"
     @approve-review="approveContent"
-    @decline-review="declineContent">
-    <div class="form-group" v-if="reviewValue.feedback && !review">
-      <label>Feedback:</label> <br />
+    @decline-review="declineContent"
+  >
+    <div
+      v-if="reviewValue.feedback && !review"
+      class="form-group"
+    >
+      <label>Feedback:</label> <br>
       {{ reviewValue.feedback }}
     </div>
     <TextArea
       v-if="review"
       id="feedback"
+      v-model:review-value="reviewValue.feedback"
       label="Feedback"
       :review="false"
       :required="false"
       :rows="3"
       :help-text="getHelpText('feedback')"
-      v-model:review-value="reviewValue.feedback" />
-    <TextInput id="author" label="Autor_in" readonly required v-model:input-value="data.author" />
+    />
+    <TextInput
+      id="author"
+      v-model:input-value="data.author"
+      label="Autor_in"
+      readonly
+      required
+    />
     <TextInput
       id="title"
+      v-model:input-value="data.name"
+      v-model:review-value="reviewValue.name"
       label="Titel des Tools"
       required
       character-counter
@@ -39,11 +52,12 @@
       :error="errorFields.includes('name')"
       :maximal-chars="140"
       :help-text="getHelpText('name')"
-      v-model:input-value="data.name"
-      v-model:review-value="reviewValue.name" />
+    />
     <div v-if="mode === 'edit' || mode === 'review'">
       <FileInput
         id="image"
+        v-model:file-value="previewImage"
+        v-model:review-value="reviewValue.previewImage"
         label="Anzeigebild"
         file-label="Bild wählen"
         required
@@ -52,11 +66,12 @@
         :error="errorFields.includes('image')"
         :image="data.image"
         :help-text="getHelpText('image')"
-        :hintText="imageHintText"
-        v-model:file-value="previewImage"
-        v-model:review-value="reviewValue.previewImage" />
+        :hint-text="imageHintText"
+      />
       <TextArea
         id="teaser"
+        v-model:input-value="data.teaser"
+        v-model:review-value="reviewValue.teaser"
         label="Kurzzusammenfassung"
         required
         :readonly="readonly"
@@ -64,10 +79,11 @@
         :error="errorFields.includes('teaser')"
         :rows="3"
         :help-text="getHelpText('teaser')"
-        v-model:input-value="data.teaser"
-        v-model:review-value="reviewValue.teaser" />
+      />
       <Dropdown
         id="co_authors"
+        v-model:dropdown-value="data.co_authors"
+        v-model:review-value="reviewValue.co_authors"
         label="Co-Autor_innen"
         fetch-url="/api/authors"
         multiple
@@ -75,11 +91,12 @@
         :review="review"
         :error="errorFields.includes('co_authors')"
         :help-text="getHelpText('co_authors')"
-        v-model:dropdown-value="data.co_authors"
-        v-model:review-value="reviewValue.co_authors" />
+      />
       <PendingCoAuthors :pending-co-authors="data.pending_co_authors" />
       <Dropdown
         id="teaching-modules"
+        v-model:dropdown-value="data.teaching_modules"
+        v-model:review-value="reviewValue.teaching_modules"
         label="Passende Unterrichtsbausteine"
         fetch-url="/api/unterrichtsbausteine"
         multiple
@@ -88,10 +105,11 @@
         :review="review"
         :error="errorFields.includes('teaching_modules')"
         :help-text="getHelpText('teaching_modules')"
-        v-model:dropdown-value="data.teaching_modules"
-        v-model:review-value="reviewValue.teaching_modules" />
+      />
       <Dropdown
         id="tools"
+        v-model:dropdown-value="data.tools"
+        v-model:review-value="reviewValue.tools"
         label="Passende Tools"
         fetch-url="/api/tools"
         multiple
@@ -100,483 +118,509 @@
         :review="review"
         :error="errorFields.includes('tools')"
         :help-text="getHelpText('tools')"
-        v-model:dropdown-value="data.tools"
-        v-model:review-value="reviewValue.tools" />
+      />
       <Dropdown
         id="trends"
+        v-model:value="data.trends"
+        v-model:review-value="reviewValue.trends"
         :readonly="readonly"
         :review="review"
         label="Passende Trends"
-        :value.sync="data.trends"
-        :review-value.sync="reviewValue.trends"
         :error="errorFields.includes('trends')"
         fetch-url="/api/trends"
         :multiple="true"
         :help-text="getHelpText('trends')"
-        :prefetch="true"></Dropdown>
+        :prefetch="true"
+      />
       <Dropdown
         v-if="!dltFeatures"
         id="competences"
+        v-model:value="data.competences"
+        v-model:review-value="reviewValue.competences"
         :readonly="readonly"
         :review="review"
         label="Kompetenzen in der digitalen Welt"
         :required="true"
-        :value.sync="data.competences"
-        :review-value.sync="reviewValue.competences"
         :error="errorFields.includes('competences')"
         fetch-url="/api/competences"
         :multiple="true"
         :prefetch="true"
-        :help-text="getHelpText('competences')"></Dropdown>
+        :help-text="getHelpText('competences')"
+      />
       <Dropdown
         v-if="!dltFeatures"
         id="tool-functions"
+        v-model:value="data.functions"
+        v-model:review-value="reviewValue.functions"
         :readonly="readonly"
         :review="review"
         label="Tool-Funktionen"
         :required="true"
-        :value.sync="data.functions"
-        :review-value.sync="reviewValue.functions"
         :error="errorFields.includes('functions')"
         fetch-url="/api/toolFunctions"
         :multiple="true"
         :prefetch="true"
-        :help-text="getHelpText('functions')"></Dropdown>
+        :help-text="getHelpText('functions')"
+      />
       <LinksInput
         id="url"
-        :readonly="readonly"
-        :review="review"
         v-model:links-value="data.url"
         v-model:review-value="reviewValue.url"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('url')"
         label="Website"
         :type="'null'"
         :help-text="getHelpText('url')"
-        :required="true"></LinksInput>
+        :required="true"
+      />
       <ListInput
         v-if="!dltFeatures"
-        :min="1"
         id="pro"
+        v-model:list-value="data.pro"
+        v-model:review-value="reviewValue.pro"
+        :min="1"
         :readonly="readonly"
         :review="review"
         label="Vorteile"
-        v-model:list-value="data.pro"
-        v-model:review-value="reviewValue.pro"
         :error="errorFields.includes('pro')"
         :initial="data.pro"
-        :help-text="getHelpText('pro')" />
+        :help-text="getHelpText('pro')"
+      />
       <ListInput
         v-if="!dltFeatures"
-        :min="1"
         id="contra"
+        v-model:list-value="data.contra"
+        v-model:review-value="reviewValue.contra"
+        :min="1"
         :readonly="readonly"
         :review="review"
         label="Nachteile"
-        v-model:list-value="data.contra"
-        v-model:review-value="reviewValue.contra"
         :error="errorFields.includes('contra')"
         :initial="data.contra"
-        :help-text="getHelpText('contra')" />
+        :help-text="getHelpText('contra')"
+      />
       <Select
         id="data-privacy"
+        v-model:input-value="data.privacy"
+        v-model:review-value="reviewValue.privacy"
         :readonly="readonly"
         :review="review"
         label="Datenschutz"
         :options="dataPrivacyOptions"
-        v-model:input-value="data.privacy"
-        v-model:review-value="reviewValue.privacy"
         :error="errorFields.includes('privacy')"
         :default-val="data.privacy"
-        :help-text="getHelpText('privacy')" />
+        :help-text="getHelpText('privacy')"
+      />
       <TextArea
         id="usage"
+        v-model:input-value="data.usage"
+        v-model:review-value="reviewValue.usage"
         :readonly="readonly"
         :review="review"
         label="Nutzung"
-        v-model:input-value="data.usage"
-        v-model:review-value="reviewValue.usage"
         :error="errorFields.includes('usage')"
         :character-counter="true"
         :maximal-chars="300"
-        :help-text="getHelpText('usage')"></TextArea>
+        :help-text="getHelpText('usage')"
+      />
       <Dropdown
         id="applications"
+        v-model:dropdown-value="data.applications"
+        v-model:review-value="reviewValue.applications"
         :readonly="readonly"
         :review="review"
         label="Anwendung"
-        v-model:dropdown-value="data.applications"
-        v-model:review-value="reviewValue.applications"
         :error="errorFields.includes('applications')"
         fetch-url="/api/applications"
         :multiple="true"
         :prefetch="true"
-        :help-text="getHelpText('applications')"></Dropdown>
+        :help-text="getHelpText('applications')"
+      />
       <LinksInput
         id="mediaLinks"
-        :readonly="readonly"
-        :review="review"
         v-model:links-value="data.mediaLinks"
         v-model:review-value="reviewValue.mediaLinks"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('mediaLinks')"
         label="Links zu Audio- und Videomedien"
         :type="'video'"
         :help-text="getHelpText('contentlink')"
-        :types="true" />
+        :types="true"
+      />
       <LinksInput
         id="literatureLinks"
-        :readonly="readonly"
-        :review="review"
         v-model:links-value="data.literatureLinks"
         v-model:review-value="reviewValue.literatureLinks"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('literatureLinks')"
         label="Text-Anleitung"
         :help-text="getHelpText('contentlink')"
-        :types="true" />
+        :types="true"
+      />
       <Select
         id="requires_registration"
+        v-model:input-value="data.requires_registration"
+        v-model:review-value="reviewValue.requires_registration"
         :readonly="readonly"
         :review="review"
         label="Registrierung erforderlich"
         :options="registrationOptions"
-        v-model:input-value="data.requires_registration"
-        v-model:review-value="reviewValue.requires_registration"
         :error="errorFields.includes('requires_registration')"
         :default-val="data.requires_registration"
-        :help-text="getHelpText('requires_registration')"></Select>
+        :help-text="getHelpText('requires_registration')"
+      />
       <Select
         id="usk"
+        v-model:input-value="data.usk"
+        v-model:review-value="reviewValue.usk"
         :readonly="readonly"
         :review="review"
         label="Altersfreigabe"
         :options="uskOptions"
-        v-model:input-value="data.usk"
-        v-model:review-value="reviewValue.usk"
         :error="errorFields.includes('usk')"
         :default-val="data.usk"
-        :help-text="getHelpText('usk')"></Select>
+        :help-text="getHelpText('usk')"
+      />
       <Select
         id="status"
+        v-model:input-value="data.status"
+        v-model:review-value="reviewValue.status"
         :readonly="readonly"
         :review="review"
         label="Status"
         :options="statusOptions"
-        v-model:input-value="data.status"
-        v-model:review-value="reviewValue.status"
         :error="errorFields.includes('status')"
         :default-val="data.status"
-        :help-text="getHelpText('status')"></Select>
+        :help-text="getHelpText('status')"
+      />
       <TextArea
         id="additional-info"
+        v-model:input-value="data.additional_info"
+        v-model:review-value="reviewValue.additional_info"
         :readonly="readonly"
         :review="review"
         label="Anmerkungen"
-        v-model:input-value="data.additional_info"
-        v-model:review-value="reviewValue.additional_info"
         :error="errorFields.includes('additional_info')"
         :character-counter="true"
         :maximal-chars="700"
         :rows="10"
-        :help-text="getHelpText('additional_info')"></TextArea>
+        :help-text="getHelpText('additional_info')"
+      />
       <TextArea
         id="description"
+        v-model:value="data.description"
+        v-model:review-value="reviewValue.description"
         :readonly="readonly"
         :review="review"
         label="Detaillierte Beschreibung"
-        :value.sync="data.description"
-        :review-value.sync="reviewValue.description"
         :error="errorFields.includes('description')"
         :character-counter="true"
         :maximal-chars="500"
         :rows="10"
-        :help-text="getHelpText('description')"></TextArea>
+        :help-text="getHelpText('description')"
+      />
       <Dropdown
         id="operating_systems"
+        v-model:dropdown-value="data.operating_systems"
+        v-model:review-value="reviewValue.operating_systems"
         :readonly="readonly"
         :review="review"
         label="Betriebssystem"
-        v-model:dropdown-value="data.operating_systems"
-        v-model:review-value="reviewValue.operating_systems"
         :error="errorFields.includes('operating_systems')"
         fetch-url="/api/operatingSystems"
         :multiple="true"
         :prefetch="true"
-        :help-text="getHelpText('operating_systems')"></Dropdown>
+        :help-text="getHelpText('operating_systems')"
+      />
       <Dropdown
         id="subject"
+        v-model:dropdown-value="data.subjects"
+        v-model:review-value="reviewValue.subjects"
         :readonly="readonly"
         :review="review"
         :required="true"
         label="Unterrichtsfach"
-        v-model:dropdown-value="data.subjects"
-        v-model:review-value="reviewValue.subjects"
         :error="errorFields.includes('subjects')"
         fetch-url="/api/subjects"
         :multiple="true"
         :prefetch="true"
-        :help-text="getHelpText('subjects')"></Dropdown>
+        :help-text="getHelpText('subjects')"
+      />
       <Select
         id="with_costs"
+        v-model:input-value="data.with_costs"
+        v-model:review-value="reviewValue.with_costs"
         :readonly="readonly"
         :review="review"
         label="Kostenpflichtig"
         :options="with_costsOptions"
-        v-model:input-value="data.with_costs"
-        v-model:review-value="reviewValue.with_costs"
         :error="errorFields.includes('with_costs')"
         :default-val="data.with_costs"
-        :help-text="getHelpText('with_costs')"></Select>
+        :help-text="getHelpText('with_costs')"
+      />
       <Dropdown
+        v-if="dltFeatures"
         id="tool-potentials"
+        v-model:dropdown-value="data.potentials"
+        v-model:review-value="reviewValue.potentials"
         :readonly="readonly"
         :review="review"
         label="Potential Kategorien"
         :required="true"
-        v-model:dropdown-value="data.potentials"
-        v-model:review-value="reviewValue.potentials"
         :error="errorFields.includes('potentials')"
         fetch-url="/api/potentials"
         :multiple="true"
         :prefetch="true"
         :help-text="getHelpText('potentials')"
-        v-if="dltFeatures"></Dropdown>
+      />
       <TextArea
+        v-if="dltFeatures"
         id="disclaimer"
+        v-model:input-value="data.disclaimer"
+        v-model:review-value="reviewValue.disclaimer"
         :readonly="readonly"
         :review="review"
         label="Disclaimer"
-        v-model:input-value="data.disclaimer"
-        v-model:review-value="reviewValue.disclaimer"
         :error="errorFields.includes('disclaimer')"
         :rows="3"
         :help-text="getHelpText('disclaimer')"
-        v-if="dltFeatures"></TextArea>
+      />
       <LinksInput
         id="video_tutorials"
-        :readonly="readonly"
-        :review="review"
         v-model:links-value="data.video_tutorials"
         v-model:review-value="reviewValue.video_tutorials"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('video_tutorials')"
         label="Video Anleitungen"
         :type="'video'"
         :help-text="getHelpText('video_tutorials')"
-        :types="false"></LinksInput>
+        :types="false"
+      />
       <DataProtectionInput
+        v-if="dltFeatures"
         id="server_location"
-        label="Serverstandort"
-        :readonly="readonly"
-        :review="review"
         v-model:compliance-text="data.data_privacy_assessment.server_location_text"
         v-model:compliance="data.data_privacy_assessment.server_location"
         v-model:review-value="reviewValue.server_location"
+        label="Serverstandort"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('server_location')"
         :help-text="getHelpText('server_location')"
         icon="serverstandort"
-        v-if="dltFeatures" />
+      />
       <DataProtectionInput
+        v-if="dltFeatures"
         id="provider"
-        label="Anbieter"
-        :readonly="readonly"
-        :review="review"
         v-model:compliance-text="data.data_privacy_assessment.provider_text"
         v-model:compliance="data.data_privacy_assessment.provider"
         v-model:review-value="reviewValue.provider"
+        label="Anbieter"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('provider')"
         :help-text="getHelpText('provider')"
         icon="anbieter"
-        v-if="dltFeatures"></DataProtectionInput>
+      />
       <DataProtectionInput
+        v-if="dltFeatures"
         id="user_registration"
-        label="Benutzeranmeldung"
-        :readonly="readonly"
-        :review="review"
         v-model:compliance-text="data.data_privacy_assessment.user_registration_text"
         v-model:compliance="data.data_privacy_assessment.user_registration"
         v-model:review-value="reviewValue.user_registration"
+        label="Benutzeranmeldung"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('user_registration')"
         :help-text="getHelpText('user_registration')"
         icon="benutzeranmeldung"
-        v-if="dltFeatures"></DataProtectionInput>
+      />
       <DataProtectionInput
+        v-if="dltFeatures"
         id="data_privacy_terms"
-        label="Datenschutzerklärung"
-        :readonly="readonly"
-        :review="review"
         v-model:compliance-text="data.data_privacy_assessment.data_privacy_terms_text"
         v-model:compliance="data.data_privacy_assessment.data_privacy_terms"
         v-model:review-value="reviewValue.data_privacy_terms"
+        label="Datenschutzerklärung"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('data_privacy_terms')"
         :help-text="getHelpText('data_privacy_terms')"
         icon="datenschutzerklarung"
-        v-if="dltFeatures"></DataProtectionInput>
+      />
       <DataProtectionInput
+        v-if="dltFeatures"
         id="terms_and_conditions"
-        label="AGB"
-        :readonly="readonly"
-        :review="review"
         v-model:compliance-text="data.data_privacy_assessment.terms_and_conditions_text"
         v-model:compliance="data.data_privacy_assessment.terms_and_conditions"
         v-model:review-value="reviewValue.terms_and_conditions"
+        label="AGB"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('terms_and_conditions')"
         :help-text="getHelpText('terms_and_conditions')"
         icon="agb"
-        v-if="dltFeatures"></DataProtectionInput>
+      />
       <DataProtectionInput
+        v-if="dltFeatures"
         id="security"
-        label="Sicherheit"
-        :readonly="readonly"
-        :review="review"
         v-model:compliance-text="data.data_privacy_assessment.security_text"
         v-model:compliance="data.data_privacy_assessment.security"
         v-model:review-value="reviewValue.security"
+        label="Sicherheit"
+        :readonly="readonly"
+        :review="review"
         :error="errorFields.includes('security')"
         :help-text="getHelpText('security')"
         icon="sicherheit"
-        v-if="dltFeatures"></DataProtectionInput>
+      />
       <TextArea
+        v-if="dltFeatures"
         id="conclusion"
+        v-model:input-value="data.data_privacy_assessment.conclusion"
+        v-model:review-value="reviewValue.conclusion"
         :readonly="readonly"
         :review="review"
         label="Fazit"
         :required="false"
-        v-model:input-value="data.data_privacy_assessment.conclusion"
-        v-model:review-value="reviewValue.conclusion"
         :error="errorFields.includes('conclusion')"
         :rows="3"
         :help-text="getHelpText('conclusion')"
         :character-counter="true"
         :maximal-chars="700"
-        v-if="dltFeatures"></TextArea>
+      />
     </div>
   </ContentSubmissionForm>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
-import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
-import DataProtectionInput from '../components/DataProtectionInput.vue';
-import Dropdown from '../components/Dropdown.vue';
-import FileInput from '../components/FileInput.vue';
-import LinksInput from '../components/LinksInput.vue';
-import ListInput from '../components/ListInput.vue';
-import PendingCoAuthors from '../components/PendingCoAuthors.vue';
-import Select from '../components/Select.vue';
-import TextArea from '../components/TextArea.vue';
-import TextInput from '../components/TextInput.vue';
-import { useSubmission } from '../composables/submission';
+import ContentSubmissionForm from '../components/ContentSubmissionForm.vue'
+import DataProtectionInput from '../components/DataProtectionInput.vue'
+import Dropdown from '../components/Dropdown.vue'
+import FileInput from '../components/FileInput.vue'
+import LinksInput from '../components/LinksInput.vue'
+import ListInput from '../components/ListInput.vue'
+import PendingCoAuthors from '../components/PendingCoAuthors.vue'
+import Select from '../components/Select.vue'
+import TextArea from '../components/TextArea.vue'
+import TextInput from '../components/TextInput.vue'
+import { useSubmission } from '../composables/submission'
 
 const {
+  approveContent,
+  canDelete,
+  createContent,
   data,
+  declineContent,
+  deleteContent,
+  errorFields,
+  errors,
+  getHelpText,
+  goToPreview,
+  imageHintText,
+  loading,
+  mode,
+  previewImage,
+  readonly,
   requiredFields,
   resourceType,
-  errors,
-  mode,
-  loading,
-  saved,
-  canDelete,
-  reviewValue,
   review,
-  readonly,
-  errorFields,
-  previewImage,
-  imageHintText,
+  reviewValue,
+  saved,
+  showDeleteWarning,
+  submitContent,
   updateContent,
   updateReview,
-  createContent,
-  goToPreview,
-  showDeleteWarning,
-  deleteContent,
-  submitContent,
-  approveContent,
-  declineContent,
-  getHelpText,
-} = useSubmission();
+} = useSubmission()
 
 data.value = {
+  additional_info: '',
   author: '',
-  name: '',
+  co_authors: [],
+  competences: [],
   contentlink_set: [],
-  pending_co_authors: [],
-  teaser: '',
+  data_privacy_assessment: {},
+  description: '',
+  differentiating_attribute: '',
+  disclaimer: '',
+  educational_plan_reference: '',
+  estimated_time: [],
+  functions: [],
   image: null,
   imageRights: null,
-  description: '',
-  co_authors: [],
+  license: null,
+  literatureLinks: [],
+  mediaLinks: [],
+  name: '',
+  pending_co_authors: [],
+  potentials: [],
+  related_content: [],
   school_types: [],
   state: '',
-  estimated_time: [],
-  competences: [],
-  functions: [],
-  educational_plan_reference: '',
-  differentiating_attribute: '',
   sub_competences: [],
   subjects: [],
+  teaching_modules: [],
+  teaser: '',
   tools: [],
   trends: [],
-  teaching_modules: [],
-  additional_info: '',
-  related_content: [],
-  mediaLinks: [],
   video_tutorials: [],
-  literatureLinks: [],
-  license: null,
   with_costs: false,
-  potentials: [],
-  disclaimer: '',
-  data_privacy_assessment: {},
-};
-resourceType.value = 'Tool';
+}
+resourceType.value = 'Tool'
 requiredFields.value = [
   { field: 'name', title: 'Titel' },
   { field: 'teaser', title: 'Kurzzusammenfassung' },
   { field: 'image', title: 'Anzeigebild' },
   // {field: 'competences', title: 'Kompetenzen in der digitalen Welt'},
   { field: 'url', title: 'Website' },
-];
+]
 
-const dltFeatures = window.dltFeatures;
+const dltFeatures = window.dltFeatures
 
 const dataPrivacyOptions = [
-  { value: 0, label: 'Unbekannt' },
-  { value: 1, label: 'Es werden keinerlei Daten erhoben' },
+  { label: 'Unbekannt', value: 0 },
+  { label: 'Es werden keinerlei Daten erhoben', value: 1 },
   {
-    value: 2,
     label:
       'Personenbezogene Daten wie z.B. Logins werden geschützt auf dem Server abgelegt. Es greift die EU-Datenschutz-Grundverordnung.',
+    value: 2,
   },
   {
-    value: 3,
     label:
       'Personenbezogene Daten werden erhoben. Dritte haben Zugriff auf diese Daten. Es greift die EU-Datenschutz-Grundverordnung.',
+    value: 3,
   },
   {
-    value: 4,
     label: 'Personenbezogene Daten werden erhoben. Es greift NICHT die EU-Datenschutz-Grundverordnung.',
+    value: 4,
   },
-];
+]
 
 const registrationOptions = [
   { label: 'Ja', value: true },
   { label: 'Nein', value: false },
-];
+]
 
 const uskOptions = [
-  { value: 'usk0', label: 'Ohne Altersbeschränkung' },
-  { value: 'usk6', label: 'Ab 6 Jahren' },
-  { value: 'usk12', label: 'Ab 12 Jahren' },
-  { value: 'usk16', label: 'Ab 16 Jahren' },
-  { value: 'usk18', label: 'Ab 18 Jahren' },
-];
+  { label: 'Ohne Altersbeschränkung', value: 'usk0' },
+  { label: 'Ab 6 Jahren', value: 'usk6' },
+  { label: 'Ab 12 Jahren', value: 'usk12' },
+  { label: 'Ab 16 Jahren', value: 'usk16' },
+  { label: 'Ab 18 Jahren', value: 'usk18' },
+]
 const statusOptions = [
-  { value: 'on', label: 'Online' },
-  { value: 'off', label: 'Offline' },
-  { value: 'onoff', label: 'Online & Offline' },
-];
+  { label: 'Online', value: 'on' },
+  { label: 'Offline', value: 'off' },
+  { label: 'Online & Offline', value: 'onoff' },
+]
 const with_costsOptions = [
-  { value: true, label: 'Ja' },
-  { value: false, label: 'Nein' },
-];
+  { label: 'Ja', value: true },
+  { label: 'Nein', value: false },
+]
 </script>
 
 <style scoped></style>

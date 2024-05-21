@@ -12,10 +12,10 @@
 <script setup>
 const props = defineProps({
   pendingCoAuthors: {
-    type: Array,
     required: true,
+    type: Array,
   },
-});
+})
 </script>
 
 <style scoped></style>
