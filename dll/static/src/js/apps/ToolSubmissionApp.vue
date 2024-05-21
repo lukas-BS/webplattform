@@ -497,6 +497,7 @@ data.value = {
   author: '',
   name: '',
   contentlink_set: [],
+  pending_co_authors: [],
   teaser: '',
   image: null,
   imageRights: null,

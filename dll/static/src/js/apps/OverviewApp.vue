@@ -183,7 +183,7 @@ const claimReview = (content) => {
   }
   axios
     .post(content.assign_reviewer_url, data)
-    .then(() => {
+    .then(async () => {
       const response = await updateContents(currentPage.value);
       updatePagination(response);
     })
@@ -195,7 +195,7 @@ const claimReview = (content) => {
 const unassign = (content) => {
   axios
     .post(content.unassign_reviewer_url, {})
-    .then(() => {
+    .then(async () => {
       const response = await updateContents(currentPage.value);
       updatePagination(response);
     })

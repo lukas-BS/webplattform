@@ -1,10 +1,9 @@
-import Vue from 'vue'
-import TrendSubmissionApp from './TrendSubmissionApp.vue'
+import TrendSubmissionApp from './TrendSubmissionApp.vue';
+import { createApp } from 'vue';
+import { tooltip } from '../directives/tooltip';
 
 if (document.getElementById('trend-submission')) {
-  new Vue({
-    components: {TrendSubmissionApp},
-    template: '<TrendSubmissionApp/>',
-    render: h => h(TrendSubmissionApp)
-  }).$mount('#trend-submission')
+  const app = createApp(TrendSubmissionApp);
+  app.directive('tooltip', tooltip);
+  app.mount('#trend-submission');
 }

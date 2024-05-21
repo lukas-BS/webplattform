@@ -77,7 +77,7 @@
           :error="errorFields.includes('image')"
           :image="data.image"
           :help-text="getHelpText('image')"
-          :hintText="imageHintText"
+          :hint-text="imageHintText"
           v-model:file-value="previewImage"
           v-model:review-value="reviewValue.image" />
         <TextArea
@@ -388,7 +388,10 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import {
+  computed,
+  ref,
+} from 'vue';
 
 import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
 import Dropdown from '../components/Dropdown.vue';
