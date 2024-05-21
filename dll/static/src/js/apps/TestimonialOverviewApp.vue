@@ -79,140 +79,134 @@
         </div>
       </div>
     </div>
-    <app-pagination
-      :current-page="currentPage"
-      :pagination="pagination"
-      @prev="previousPage"
-      @next="nextPage"
-      @jump="jumpTo"></app-pagination>
+    <Pagination
+      v-model:pagination="pagination"
+      v-model:current-page="currentPage"
+      @jump-to="jumpTo"
+      @next-page="nextPage"
+      @previous-page="previousPage" />
     <div v-if="reviews.length === 0" class="text-center">Es stehen keine Erfahrungsberichte zur Verfügung.</div>
   </div>
 </template>
 
-<script>
-import Vue from 'vue';
+<script setup>
+import { computed, ref } from 'vue';
 
-import axios from 'axios';
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 
 import Pagination from '../components/Pagination.vue';
-import { axiosMixin } from '../mixins/axiosMixin';
-import { paginationMixin } from '../mixins/paginationMixin';
+import { useAxios } from '../composables/axios';
+import { usePagination } from '../composables/pagination';
 
-export default {
-  name: 'OverviewApp',
-  data() {
-    return {
-      reviews: [],
-      type: null,
-      searchTerm: null,
-      status: null,
-      mode: 'user',
-      retrieveUrl: null,
-      invitationContents: [],
-      reviewers: [],
-    };
-  },
-  components: {
-    AppPagination: Pagination,
-    // 'v-select': vSelect,
-  },
-  mixins: [paginationMixin, axiosMixin],
-  computed: {
-    params() {
-      return {
-        type: this.type,
-        q: this.searchTerm,
-        status: this.status,
-      };
-    },
-  },
-  methods: {
-    changeComment(review) {
-      if (review.change === undefined) {
-        Vue.set(review, 'change', true);
-      } else {
-        Vue.set(review, 'change', !review.change);
-      }
-    },
-    updateReviews(page) {
-      axios
-        .get(this.retrieveUrl, {
-          params: {
-            ...this.params,
-            page: Number.isInteger(page) ? page : 1,
-          },
-        })
-        .then((res) => {
-          this.reviews = res.data.results;
-          this.updatePagination(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    sendChange(url, body) {
-      body = body || {};
-      axios
-        .post(url, body, {
-          headers: {
-            'X-CSRFToken': window.dllData.csrfToken,
-          },
-        })
-        .then((res) => {
-          this.updateReviews();
-        });
-    },
-    accept(review) {
-      const url = `${this.retrieveUrl}${review.pk}/accept/`;
-      this.sendChange(url);
-    },
-    decline(review) {
-      const url = `${this.retrieveUrl}${review.pk}/decline/`;
-      this.sendChange(url);
-    },
-    requestChange(review) {
-      if (!review.comment) {
-        Vue.set(review, 'commentError', 'Bitte gib einen Kommentar ein.');
-        return;
-      }
-      const url = `${this.retrieveUrl}${review.pk}/request_changes/`;
-      const body = {
-        comment: review.comment,
-      };
-      this.sendChange(url, body);
-    },
-    submitChange(review) {
-      const url = `${this.updateUrl}${review.testimonial_pk}/`;
-      const body = {
-        comment: review.testimonial_comment,
-      };
+const { axios } = useAxios();
 
-      axios
-        .patch(url, body, {
-          headers: {
-            'X-CSRFToken': window.dllData.csrfToken,
-          },
-        })
-        .then((res) => {
-          this.updateReviews();
-        });
-    },
-  },
-  created() {
-    if (!window.dllData.retrieveUrl) {
-      throw Error('Retrieve URL is not defined.');
-    }
-    this.retrieveUrl = window.dllData.retrieveUrl;
-    this.updateUrl = window.dllData.updateUrl;
-    this.mode = window.dllData.mode;
-    this.updateReviews();
-    this.debouncedUpdate = debounce(this.updateReviews, 500);
-  },
+const reviews = ref([]);
+const type = ref(null);
+const searchTerm = ref(null);
+const status = ref(null);
+const mode = ref('user');
+const retrieveUrl = ref(null);
+const updateUrl = ref(null);
+// const invitationContents = ref([]);
+// const reviewers = ref([]);
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  computed
+//  --------------------------------------------------------------------------------------------------------------------
+const params = computed(() => {
+  return {
+    type: type.value,
+    q: searchTerm.value,
+    status: status.value,
+  };
+});
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
+const changeComment = (review) => {
+  if (review.change === undefined) {
+    review.change = true;
+    // Vue.set(review, 'change', true);
+  } else {
+    review.change = !review.change;
+    // Vue.set(review, 'change', !review.change);
+  }
 };
+
+const updateReviews = (page) => {
+  axios
+    .get(retrieveUrl.value, { params: { ...params.value, page: Number.isInteger(page) ? page : 1 } })
+    .then((res) => {
+      reviews.value = res.data.results;
+      updatePagination(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const sendChange = (url, body) => {
+  body = body || {};
+  axios
+    .post(url, body)
+    .then(() => {
+      updateReviews();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const accept = (review) => {
+  const url = `${retrieveUrl.value}${review.pk}/accept/`;
+  sendChange(url);
+};
+
+const decline = (review) => {
+  const url = `${retrieveUrl.value}${review.pk}/decline/`;
+  sendChange(url);
+};
+
+const requestChange = (review) => {
+  if (!review.comment) {
+    review.commentError = 'Bitte gib einen Kommentar ein.';
+    // Vue.set(review, 'commentError', 'Bitte gib einen Kommentar ein.');
+    return;
+  }
+
+  const url = `${retrieveUrl.value}${review.pk}/request_changes/`;
+  const body = {
+    comment: review.comment,
+  };
+
+  sendChange(url, body);
+};
+
+const submitChange = (review) => {
+  const url = `${updateUrl.value}${review.testimonial_pk}/`;
+  const body = {
+    comment: review.testimonial_comment,
+  };
+
+  axios.patch(url, body).then(() => {
+    updateReviews();
+  });
+};
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+if (!window.dllData.retrieveUrl) {
+  throw Error('Retrieve URL is not defined.');
+}
+retrieveUrl.value = window.dllData.retrieveUrl;
+updateUrl.value = window.dllData.updateUrl;
+mode.value = window.dllData.mode;
+
+updateReviews();
+const debouncedUpdate = debounce(updateReviews, 500);
+const { pagination, jumpTo, previousPage, nextPage, updatePagination } = usePagination(updateReviews);
 </script>
 
 <style scoped></style>

@@ -133,12 +133,7 @@
 </template>
 
 <script setup>
-import {
-  computed,
-  onBeforeMount,
-  ref,
-  watchEffect,
-} from 'vue';
+import { computed, onBeforeMount, ref, watchEffect } from 'vue';
 
 import Pagination from '../components/Pagination.vue';
 import { useAxios } from '../composables/axios';
@@ -146,7 +141,7 @@ import { useContentFilter } from '../composables/contentFilter';
 import { usePagination } from '../composables/pagination';
 
 const { axios } = useAxios();
-const { dataUrl, queryParams, contents, q, currentPage, updateContents } = useContentFilter(axios);
+const { dataUrl, queryParams, contents, q, currentPage, debouncedUpdate, updateContents } = useContentFilter(axios);
 const { pagination, jumpTo, previousPage, nextPage, updatePagination } = usePagination(updateContents);
 
 const type = ref('');
