@@ -168,34 +168,6 @@ const selectMode = computed(() => {
 const closeOnSelect = computed(() => {
   return props.multiple ? false : true;
 });
-
-//  --------------------------------------------------------------------------------------------------------------------
-//  watchers
-//  --------------------------------------------------------------------------------------------------------------------
-// watch(
-//   () => props.disabled,
-//   (newState) => {
-//     if (newState && multiselect.value) {
-//       triggerOptionFetch();
-//     }
-//   },
-// );
-
-// watch(
-//   () => props.params,
-//   () => {
-//     triggerOptionFetch();
-//   },
-// );
 </script>
 
-<style lang="scss" scoped>
-@import '@vueform/multiselect/themes/default.css';
-
-.dll-dropdown {
-  --ms-tag-bg: #f0f0f0;
-  --ms-tag-color: #333;
-  --ms-tag-font-weight: 400;
-  --ms-ring-color: #0d6efd40;
-}
-</style>
+<style lang="scss" scoped></style>

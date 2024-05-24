@@ -68,7 +68,10 @@ import ReviewInput from './ReviewInput.vue';
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const linksValue = defineModel('linksValue', { default: [], type: Array });
+const linksValue = defineModel('linksValue', {
+  default: () => [{ url: '', url_name: '', validUrl: true }],
+  type: Array
+});
 const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
@@ -163,6 +166,10 @@ watch(
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
+if (!linksValue.value) {
+  linksValue.value = [];
+}
+
 for (let i = 0; i < linksValue.value.length; i++) {
   linksValue.value[i].validUrl = true;
 }

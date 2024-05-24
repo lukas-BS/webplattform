@@ -101,7 +101,7 @@
             <li v-if="mode === 'review' && content.can_assign && !content.reviewer" class="content-box__action">
               <div style="width: 250px">
                 Reviewer zuweisen:
-                <!-- TODO: VSelect -->
+                <!-- TODO: Check -->
                 <!-- <v-select
                   :options="reviewers"
                   label="username"
@@ -109,6 +109,15 @@
                   @input="claimReview(content)"
                   v-model="content.reviewer_pk"
                   :reduce="reduceReviewer" /> -->
+                <Multiselect
+                  v-model="content.reviewer_pk"
+                  class="dll-dropdown"
+                  close-on-select
+                  searchable
+                  object
+                  :options="reviewers"
+                  @change="claimReview(content)"
+                />
               </div>
             </li>
             <li v-if="mode === 'review' && !content.has_assigned_reviewer" class="content-box__action">
@@ -147,6 +156,7 @@
 </template>
 
 <script setup>
+import Multiselect from '@vueform/multiselect';
 import { computed, onBeforeMount, ref, watchEffect } from 'vue';
 
 import AppPagination from '../components/AppPagination.vue';

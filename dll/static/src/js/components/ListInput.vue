@@ -121,10 +121,14 @@ const removeItem = (text) => {
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
-watch(internalList, (newListValue) => {
-  const result = newListValue.filter((input) => input.length !== 0);
-  listValue.value = result;
-});
+watch(
+  internalList,
+  (newListValue) => {
+    const result = newListValue.filter((input) => input.length !== 0);
+    listValue.value = result;
+  },
+  { deep: true }
+);
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle

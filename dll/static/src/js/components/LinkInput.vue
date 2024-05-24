@@ -1,165 +1,140 @@
 <template>
   <div class="form-group">
-    <label
-      :for="id"
-      class="mb-2 w-100"
-    >{{ label }}:<span v-if="required">*</span></label>
+    <label :for="props.id" class="mb-2 w-100">{{ props.label }}:<span v-if="props.required">*</span></label>
     <button
-      v-if="helpText"
+      v-if="props.helpText"
       class="button--neutral button--smallSquare button--help ms-1 float-end"
       type="button"
       data-bs-toggle="tooltip"
       data-placement="top"
-      :title="helpText"
+      :title="props.helpText"
     />
     <div class="form__links-input">
       <div class="d-flex align-items-baseline">
         <input
-          :id="id"
-          v-model="internalLink.url_name"
+          :id="props.id"
+          v-model="internalValue.url_name"
           type="text"
           class="form-control me-3"
-          :class="{ 'form__field--error': error }"
+          :class="{ 'form__field--error': props.error }"
           placeholder="Linktext"
-          :readonly="readonly"
-        >
+          :readonly="props.readonly"
+          @blur="checkLinkValid(internalValue)"
+        />
         <input
-          :id="id"
-          v-model="internalLink.url"
+          :id="props.id"
+          v-model="internalValue.url"
           type="text"
           class="form-control me-3"
-          :class="{ 'form__field--error': !internalLink.validUrl || error }"
+          :class="{ 'form__field--error': !internalValue.validUrl || props.error }"
           placeholder="https://example.org"
-          :readonly="readonly"
-          @blur="checkLinkValid(internalLink)"
-        >
-        <select
-          v-if="types"
-          v-model="internalLink.type"
-          class="form-control me-3"
-          name="types"
-        >
-          <option value="video">
-            Video / Audio
-          </option>
-          <option value="href">
-            Text
-          </option>
+          :readonly="props.readonly"
+          @blur="checkLinkValid(internalValue)"
+        />
+        <select v-if="props.types" v-model="internalValue.type" class="form-control me-3" name="types">
+          <option value="video">Video / Audio</option>
+          <option value="href">Text</option>
         </select>
       </div>
     </div>
-    <div
-      v-if="!internalLink.validUrl"
-      class="alert alert-danger mt-1"
-    >
+    <div v-if="!internalValue.validUrl" class="alert alert-danger mt-1">
       Bitte geben Sie eine valide URL ein. Die URL muss mit http:// bzw. https:// beginnen.
     </div>
-    <div
-      v-if="incomplete"
-      class="alert alert-danger mt-1"
-    >
+    <div v-if="incomplete" class="alert alert-danger mt-1">
       Bitte geben Sie sowohl eine Bezeichnung (z.B. Webseite X) und eine URL an.
     </div>
-    <app-review-input
-      :id="'id' + -review"
-      v-model:review-value="ownReviewValue"
-      :mode="review ? 'review' : 'edit'"
-      :name="label"
+    <ReviewInput
+      :id="'id' + -props.review"
+      v-model="reviewValue"
+      :mode="props.review ? 'review' : 'edit'"
+      :name="props.label"
     />
   </div>
 </template>
 
-<script>
-import { reviewMixin } from '../mixins/reviewMixin'
-import ReviewInput from './ReviewInput.vue'
-export default {
-  name: 'LinkInput',
-  components: {
-    AppReviewInput: ReviewInput,
+<script setup>
+import { ref, watch } from 'vue';
+
+import ReviewInput from './ReviewInput.vue';
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  models + props
+//  --------------------------------------------------------------------------------------------------------------------
+const linkValue = defineModel('linkValue', {
+  default: { url: '', url_name: '', validUrl: true },
+  type: Object
+});
+const reviewValue = defineModel('reviewValue', { default: '', type: String });
+
+const props = defineProps({
+  error: {
+    default: false,
+    type: Boolean
   },
-  created() {
-    if (this.link) {
-      this.internalLink = this.link
-      this.internalLink.validUrl = true
-    } else {
-      this.internalLink = { url: '', url_name: '', validUrl: true }
-    }
+  helpText: {
+    default: '',
+    type: String
   },
-  data() {
-    return {
-      internalLink: [],
-      incomplete: false,
-    }
+  id: {
+    required: true,
+    type: String
   },
-  methods: {
-    isValidUrl(url) {
-      var pattern = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/, 'i')
-      return !!pattern.test(url)
-    },
-    checkLinkValid(link) {
-      link.validUrl = this.isValidUrl(link.url)
-      this.incomplete = !link.url || !link.url_name
-      this.$forceUpdate()
-    },
+  label: {
+    required: true,
+    type: String
   },
-  mixins: [reviewMixin],
-  props: {
-    error: {
-      default: false,
-      required: false,
-      type: Boolean,
-    },
-    helpText: {
-      default: '',
-      required: false,
-      type: String,
-    },
-    id: {
-      default: '',
-      required: true,
-      type: String,
-    },
-    label: {
-      default: '',
-      required: true,
-      type: String,
-    },
-    link: {
-      default: () => {
-        return { url: '', url_name: '', validUrl: true }
-      },
-      required: false,
-      type: Object,
-    },
-    readonly: {
-      default: false,
-      required: false,
-      type: Boolean,
-    },
-    required: {
-      default: false,
-      required: false,
-      type: Boolean,
-    },
-    type: {
-      default: 'href',
-      required: false,
-      type: String,
-    },
-    types: {
-      default: false,
-      required: false,
-      type: Boolean,
-    },
+  readonly: {
+    default: false,
+    type: Boolean
   },
-  watch: {
-    internalLink: {
-      deep: true,
-      handler: function (newValue) {
-        this.$emit('update:link', newValue)
-      },
-    },
+  required: {
+    default: false,
+    type: Boolean
   },
+  review: {
+    default: false,
+    type: Boolean
+  },
+  type: {
+    default: 'href',
+    type: String
+  },
+  types: {
+    default: false,
+    type: Boolean
+  }
+});
+
+const incomplete = ref(false);
+const internalValue = ref(linkValue.value);
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  component logic
+//  --------------------------------------------------------------------------------------------------------------------
+const checkLinkValid = (link) => {
+  link.validUrl = isValidUrl(link.url);
+  incomplete.value = !link.url || !link.url_name;
+};
+
+const isValidUrl = (url) => {
+  var pattern = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/, 'i');
+  return !!pattern.test(url);
+};
+
+//  --------------------------------------------------------------------------------------------------------------------
+//  watchers
+//  --------------------------------------------------------------------------------------------------------------------
+watch(
+  internalValue,
+  (newValue) => {
+    linkValue.value = newValue;
+  },
+  { deep: true }
+);
+
+if (internalValue.value) {
+  internalValue.value = linkValue.value;
+  internalValue.value.validUrl = true;
 }
 </script>
 

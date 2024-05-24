@@ -153,9 +153,9 @@
         :prefetch="true"
         :help-text="getHelpText('functions')"
       />
-      <LinksInput
+      <LinkInput
         id="url"
-        v-model:links-value="data.url"
+        v-model:link-value="data.url"
         v-model:review-value="reviewValue.url"
         :readonly="readonly"
         :review="review"
@@ -240,7 +240,7 @@
         :help-text="getHelpText('contentlink')"
         :types="true"
       />
-      <LinksInput
+      <!-- <LinksInput
         id="literatureLinks"
         v-model:links-value="data.literatureLinks"
         v-model:review-value="reviewValue.literatureLinks"
@@ -250,7 +250,7 @@
         label="Text-Anleitung"
         :help-text="getHelpText('contentlink')"
         :types="true"
-      />
+      /> -->
       <AppSelect
         id="requires_registration"
         v-model:input-value="data.requires_registration"
@@ -379,7 +379,7 @@
         :rows="3"
         :help-text="getHelpText('disclaimer')"
       />
-      <LinksInput
+      <!-- <LinksInput
         id="video_tutorials"
         v-model:links-value="data.video_tutorials"
         v-model:review-value="reviewValue.video_tutorials"
@@ -390,7 +390,7 @@
         :type="'video'"
         :help-text="getHelpText('video_tutorials')"
         :types="false"
-      />
+      /> -->
       <DataProtectionInput
         v-if="dltFeatures"
         id="server_location"
@@ -494,6 +494,7 @@ import AppSelect from '../components/AppSelect.vue';
 import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
 import DataProtectionInput from '../components/DataProtectionInput.vue';
 import FileInput from '../components/FileInput.vue';
+import LinkInput from '../components/LinkInput.vue';
 import LinksInput from '../components/LinksInput.vue';
 import ListInput from '../components/ListInput.vue';
 import PendingCoAuthors from '../components/PendingCoAuthors.vue';
