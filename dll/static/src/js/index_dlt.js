@@ -1,2 +1,2 @@
-import './index'
-import '../scss/main_dlt.scss'
+import './index';
+import '../scss/main_dlt.scss';

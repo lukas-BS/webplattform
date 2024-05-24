@@ -138,7 +138,7 @@
         :help-text="getHelpText('competences')"
       />
 
-      <Select
+      <AppSelect
         id="category"
         v-model:review-value="reviewValue.category"
         v-model:input-value="data.category"
@@ -162,7 +162,7 @@
         :initial="data.target_group"
         :help-text="getHelpText('target_group')"
       />
-      <Select
+      <AppSelect
         id="language"
         v-model:review-value="reviewValue.language"
         v-model:input-value="data.language"
@@ -223,7 +223,7 @@
         :rows="10"
         :help-text="getHelpText('additional_info')"
       />
-      <Select
+      <AppSelect
         id="license"
         v-model:review-value="reviewValue.licence"
         v-model:input-value="data.licence"
@@ -279,12 +279,12 @@
 import { ref } from 'vue';
 
 import AppDropdown from '../components/AppDropdown.vue';
+import AppSelect from '../components/AppSelect.vue';
 import ContentSubmissionForm from '../components/ContentSubmissionForm.vue';
 import FileInput from '../components/FileInput.vue';
 import LinksInput from '../components/LinksInput.vue';
 import ListInput from '../components/ListInput.vue';
 import PendingCoAuthors from '../components/PendingCoAuthors.vue';
-import Select from '../components/Select.vue';
 import TextArea from '../components/TextArea.vue';
 import TextInput from '../components/TextInput.vue';
 import { useSubmission } from '../composables/submission';
