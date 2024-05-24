@@ -12,7 +12,7 @@
         <div class="d-flex align-items-baseline">
           <input
             :id="props.id"
-            v-model="link.name"
+            v-model="linksValue[index].name"
             type="text"
             class="form-control me-3"
             :placeholder="props.namePlaceholder"
@@ -20,15 +20,15 @@
           />
           <input
             :id="props.id"
-            v-model="link.url"
+            v-model="linksValue[index].url"
             type="text"
             class="form-control me-3"
             :class="{ 'form__field--error': !link.validUrl }"
             :placeholder="props.linkPlaceholder"
             :readonly="props.readonly"
-            @blur="checkLinkValid(link)"
+            @blur="checkLinkValid(linksValue[index])"
           />
-          <select v-if="props.types" v-model="link.type" class="form-control me-3" name="types">
+          <select v-if="props.types" v-model="linksValue[index].type" class="form-control me-3" name="types">
             <option value="video">Video / Audio</option>
             <option value="href">Text</option>
           </select>
@@ -36,7 +36,7 @@
             v-if="!props.readonly"
             class="button--danger button--smallSquare"
             type="button"
-            @click="removeLink(link)"
+            @click="removeLink(linksValue[index])"
           >
             <span class="fas fa-times" />
           </button>
@@ -134,15 +134,8 @@ const removeLink = (link) => {
 
 const isValidUrl = (url) => {
   // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
-  var pattern = new RegExp(
-    '^(https?:\\/\\/)' +
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-      '((\\d{1,3}\\.){3}\\d{1,3}))' +
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-      '(\\?[;&a-z\\d%_.~+=-]*)?' +
-      '(\\#[-a-z\\d_]*)?$',
-    'i'
-  );
+  var pattern = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/, 'i');
+
   return !!pattern.test(url);
 };
 
@@ -171,6 +164,7 @@ if (!linksValue.value) {
 }
 
 for (let i = 0; i < linksValue.value.length; i++) {
+  console.log('set valid');
   linksValue.value[i].validUrl = true;
 }
 </script>

@@ -112,21 +112,21 @@
       />
       <AppDropdown
         id="trends"
-        v-model:value="data.trends"
+        v-model:dropdown-value="data.trends"
         v-model:review-value="reviewValue.trends"
+        label="Passende Trends"
+        fetch-url="/api/trends"
+        multiple
+        prefetch
         :readonly="readonly"
         :review="review"
-        label="Passende Trends"
         :error="errorFields.includes('trends')"
-        fetch-url="/api/trends"
-        :multiple="true"
         :help-text="getHelpText('trends')"
-        :prefetch="true"
       />
       <AppDropdown
         v-if="!dltFeatures"
         id="competences"
-        v-model:value="data.competences"
+        v-model:dropdown-value="data.competences"
         v-model:review-value="reviewValue.competences"
         :readonly="readonly"
         :review="review"
@@ -141,7 +141,7 @@
       <AppDropdown
         v-if="!dltFeatures"
         id="tool-functions"
-        v-model:value="data.functions"
+        v-model:dropdown-value="data.functions"
         v-model:review-value="reviewValue.functions"
         :readonly="readonly"
         :review="review"
@@ -240,7 +240,7 @@
         :help-text="getHelpText('contentlink')"
         :types="true"
       />
-      <!-- <LinksInput
+      <LinksInput
         id="literatureLinks"
         v-model:links-value="data.literatureLinks"
         v-model:review-value="reviewValue.literatureLinks"
@@ -250,7 +250,7 @@
         label="Text-Anleitung"
         :help-text="getHelpText('contentlink')"
         :types="true"
-      /> -->
+      />
       <AppSelect
         id="requires_registration"
         v-model:input-value="data.requires_registration"
@@ -302,7 +302,7 @@
       />
       <TextArea
         id="description"
-        v-model:value="data.description"
+        v-model:input-value="data.description"
         v-model:review-value="reviewValue.description"
         :readonly="readonly"
         :review="review"
@@ -379,7 +379,7 @@
         :rows="3"
         :help-text="getHelpText('disclaimer')"
       />
-      <!-- <LinksInput
+      <LinksInput
         id="video_tutorials"
         v-model:links-value="data.video_tutorials"
         v-model:review-value="reviewValue.video_tutorials"
@@ -390,7 +390,7 @@
         :type="'video'"
         :help-text="getHelpText('video_tutorials')"
         :types="false"
-      /> -->
+      />
       <DataProtectionInput
         v-if="dltFeatures"
         id="server_location"
