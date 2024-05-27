@@ -125,8 +125,10 @@ import { usePreventEnter } from '../composables/preventEnter';
 //  --------------------------------------------------------------------------------------------------------------------
 //  component variables
 //  --------------------------------------------------------------------------------------------------------------------
-const { contents, currentPage, dataUrl, loading, q, queryParams, sorting, updateContents } = useContentFilter();
-const { jumpTo, nextPage, pagination, previousPage, updatePagination } = usePagination(updateContents);
+const { contents, currentPage, currentResponse, dataUrl, loading, q, queryParams, sorting, updateContents } =
+  useContentFilter();
+
+const { jumpTo, nextPage, pagination, previousPage } = usePagination(updateContents, currentResponse);
 const { preventEnter } = usePreventEnter();
 
 const teachingModules = ref(true);
@@ -134,14 +136,14 @@ const trends = ref(true);
 const tools = ref(true);
 const windowWidth = ref(0);
 
+sorting.value = 'az';
+dataUrl.value = '/api/inhalte';
+
 // const competence = ref({
 //   name: 'Kommunizieren & Kooperieren',
 //   description:
 //     'Um im digitalen Raum adäquat KOMMUNIZIEREN & KOOPERIEREN zu können, braucht es entsprechende Kompetenzen, digitale Werkzeuge zur angemessenen und effektiven Kommunikation einsetzen und in digitalen Umgebungen zielgerichtet kooperieren zu können. Dabei geht es vor allem darum, entsprechend der jeweiligen Situation und ausgerichtet an den Kommunikations- bzw. Kooperationspartnern die passenden Werkzeuge auszuwählen und entsprechende Umgangsregeln einzuhalten.',
 // });
-
-sorting.value = 'az';
-dataUrl.value = '/api/inhalte';
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
@@ -165,11 +167,6 @@ const onResize = () => {
   windowWidth.value = window.innerWidth;
 };
 
-const initAppData = async () => {
-  const initContentResponse = await updateContents();
-  updatePagination(initContentResponse);
-};
-
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
@@ -190,7 +187,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize);
 });
 
-initAppData();
+updateContents();
 </script>
 
 <style scoped></style>

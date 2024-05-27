@@ -1,6 +1,6 @@
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
-export function usePagination(updateContents) {
+export function usePagination(updateContents, currentResponse) {
   const pagination = ref({
     count: 0,
     next: null,
@@ -17,20 +17,23 @@ export function usePagination(updateContents) {
     };
   };
 
-  const jumpTo = async (newPage) => {
-    const response = await updateContents(newPage);
-    updatePagination(response);
+  const jumpTo = (newPage) => {
+    updateContents(newPage);
   };
 
-  const previousPage = async (newPage) => {
-    const response = await updateContents(newPage);
-    updatePagination(response);
+  const previousPage = (newPage) => {
+    updateContents(newPage);
   };
 
   const nextPage = async (newPage) => {
-    const response = await updateContents(newPage);
-    updatePagination(response);
+    updateContents(newPage);
   };
+
+  watch(currentResponse, (newResponse) => {
+    if (newResponse) {
+      updatePagination(newResponse);
+    }
+  });
 
   return {
     jumpTo,

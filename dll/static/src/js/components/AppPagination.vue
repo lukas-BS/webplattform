@@ -38,7 +38,15 @@
 <script setup>
 import { computed } from 'vue';
 
-const pagination = defineModel('pagination', { default: () => {}, type: Object });
+const pagination = defineModel('pagination', {
+  default: {
+    count: 0,
+    next: null,
+    perPage: 20,
+    prev: null
+  },
+  type: Object
+});
 const currentPage = defineModel('currentPage', { default: 1, type: Number });
 
 const props = defineProps({

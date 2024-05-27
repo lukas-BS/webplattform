@@ -298,6 +298,7 @@ import { usePreventEnter } from '../composables/preventEnter';
 const {
   contents,
   currentPage,
+  currentResponse,
   dataUrl,
   debouncedUpdate,
   getSubjects,
@@ -308,7 +309,7 @@ const {
   sorting,
   updateContents
 } = useContentFilter();
-const { jumpTo, nextPage, pagination, previousPage, updatePagination } = usePagination(updateContents);
+const { jumpTo, nextPage, pagination, previousPage } = usePagination(updateContents, currentResponse);
 const { preventEnter } = usePreventEnter();
 
 const applications = ref([]);
@@ -386,14 +387,6 @@ const functionsFilter = computed(() => {
 });
 
 //  --------------------------------------------------------------------------------------------------------------------
-//  component logic
-//  --------------------------------------------------------------------------------------------------------------------
-const initAppData = async () => {
-  const initContentResponse = await updateContents();
-  updatePagination(initContentResponse);
-};
-
-//  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
 watchEffect(() => {
@@ -422,7 +415,10 @@ watch(activePotentials, () => {
   });
 });
 
-initAppData();
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+updateContents();
 </script>
 
 <style scoped></style>

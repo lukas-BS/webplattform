@@ -137,6 +137,7 @@ const {
   competences,
   contents,
   currentPage,
+  currentResponse,
   dataUrl,
   debouncedUpdate,
   loading,
@@ -145,7 +146,7 @@ const {
   sorting,
   updateContents
 } = useContentFilter();
-const { jumpTo, nextPage, pagination, previousPage, updatePagination } = usePagination(updateContents);
+const { jumpTo, nextPage, pagination, previousPage } = usePagination(updateContents, currentResponse);
 const { preventEnter } = usePreventEnter();
 
 const language = ref(null);
@@ -164,14 +165,6 @@ const trendFilterQueryParams = computed(() => {
 });
 
 //  --------------------------------------------------------------------------------------------------------------------
-//  component logic
-//  --------------------------------------------------------------------------------------------------------------------
-const initAppData = async () => {
-  const initContentResponse = await updateContents();
-  updatePagination(initContentResponse);
-};
-
-//  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
 watchEffect(() => {
@@ -182,7 +175,10 @@ watch(trendTypes, () => {
   debouncedUpdate();
 });
 
-initAppData();
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+updateContents();
 </script>
 
 <style scoped></style>

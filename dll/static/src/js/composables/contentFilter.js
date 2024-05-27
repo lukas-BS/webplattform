@@ -16,6 +16,7 @@ export function useContentFilter() {
   const sorting = ref('-latest');
   const q = ref('');
   const competences = ref([]);
+  const currentResponse = ref(null);
 
   const windowDom = computed(() => {
     return window;
@@ -39,7 +40,7 @@ export function useContentFilter() {
   };
 
   const updateContents = async (page) => {
-    let updateResponse = null;
+    currentResponse.value = null;
     const params = getParams(page);
     loading.value = true;
 
@@ -58,7 +59,7 @@ export function useContentFilter() {
         window.scroll(0, 0);
         updateQueryString(params);
         contents.value = response.data.results;
-        updateResponse = response;
+        currentResponse.value = response;
       })
       .catch((error) => {
         console.log(error);
@@ -67,7 +68,7 @@ export function useContentFilter() {
         loading.value = false;
       });
 
-    return updateResponse;
+    return currentResponse.value;
   };
 
   //  --------------------------------------------------------------------------
@@ -87,6 +88,7 @@ export function useContentFilter() {
     competences,
     contents,
     currentPage,
+    currentResponse,
     dataUrl,
     debouncedUpdate,
     getSubjects,

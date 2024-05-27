@@ -133,6 +133,7 @@ const {
   competences,
   contents,
   currentPage,
+  currentResponse,
   dataUrl,
   debouncedUpdate,
   getSubjects,
@@ -143,7 +144,7 @@ const {
   updateContents
 } = useContentFilter();
 
-const { jumpTo, nextPage, pagination, previousPage, updatePagination } = usePagination(updateContents);
+const { jumpTo, nextPage, pagination, previousPage } = usePagination(updateContents, currentResponse);
 const { preventEnter } = usePreventEnter();
 
 const subjects = ref([]);
@@ -170,21 +171,16 @@ const teachingModulesQueryParams = computed(() => {
 });
 
 //  --------------------------------------------------------------------------------------------------------------------
-//  component logic
-//  --------------------------------------------------------------------------------------------------------------------
-const initAppData = async () => {
-  const initContentResponse = await updateContents();
-  updatePagination(initContentResponse);
-};
-
-//  --------------------------------------------------------------------------------------------------------------------
 //  watchers
 //  --------------------------------------------------------------------------------------------------------------------
 watchEffect(() => {
   queryParams.value = teachingModulesQueryParams.value;
 });
 
-initAppData();
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+updateContents();
 </script>
 
 <style scoped></style>
