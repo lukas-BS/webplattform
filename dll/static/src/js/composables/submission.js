@@ -157,7 +157,7 @@ export function useSubmission() {
     errors.value = [];
     loading.value = true;
     axios
-      .post('api/inhalt-bearbeiten/', {
+      .post('/api/inhalt-bearbeiten/', {
         ...data.value,
         resourcetype: resourceType.value
       })
@@ -189,6 +189,7 @@ export function useSubmission() {
     } else if (data.value.literatureLinks) {
       data.value.contentlink_set = data.value.literatureLinks;
     }
+
     data.value.related_content = data.value.tools.concat(data.value.trends.concat(data.value.teaching_modules));
     if (data.value.data_privacy_assessment) {
       delete data.value.data_privacy_assessment.id;

@@ -8,11 +8,11 @@
       type="button"
     />
     <div class="form__list-inputs">
-      <div v-for="(link, index) in linksValue" :key="index" class="mb-2">
+      <div v-for="(link, index) in internalValue" :key="index" class="mb-2">
         <div class="d-flex align-items-baseline">
           <input
             :id="props.id"
-            v-model="linksValue[index].name"
+            v-model="link.name"
             type="text"
             class="form-control me-3"
             :placeholder="props.namePlaceholder"
@@ -20,15 +20,15 @@
           />
           <input
             :id="props.id"
-            v-model="linksValue[index].url"
+            v-model="link.url"
             type="text"
             class="form-control me-3"
             :class="{ 'form__field--error': !link.validUrl }"
             :placeholder="props.linkPlaceholder"
             :readonly="props.readonly"
-            @blur="checkLinkValid(linksValue[index])"
+            @blur="checkLinkValid(link)"
           />
-          <select v-if="props.types" v-model="linksValue[index].type" class="form-control me-3" name="types">
+          <select v-if="props.types" v-model="link.type" class="form-control me-3" name="types">
             <option value="video">Video / Audio</option>
             <option value="href">Text</option>
           </select>
@@ -36,7 +36,7 @@
             v-if="!props.readonly"
             class="button--danger button--smallSquare"
             type="button"
-            @click="removeLink(linksValue[index])"
+            @click="removeLink(link)"
           >
             <span class="fas fa-times" />
           </button>
@@ -45,6 +45,7 @@
           Bitte geben Sie eine valide URL ein. Die URL muss mit http:// bzw. https:// beginnen.
         </div>
       </div>
+      <div v-if="readonlyAndEmpty">Keine Daten</div>
     </div>
     <div v-if="!props.readonly">
       <button class="button--neutral button--smallSquare" type="button" @click="addLink()">
@@ -61,7 +62,7 @@
 </template>
 
 <script setup>
-import { watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import ReviewInput from './ReviewInput.vue';
 
@@ -69,7 +70,7 @@ import ReviewInput from './ReviewInput.vue';
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
 const linksValue = defineModel('linksValue', {
-  default: () => [{ url: '', url_name: '', validUrl: true }],
+  default: [],
   type: Array
 });
 const reviewValue = defineModel('reviewValue', { default: '', type: String });
@@ -121,15 +122,17 @@ const props = defineProps({
   }
 });
 
+const internalValue = ref(linksValue.value);
+
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const addLink = () => {
-  linksValue.value.push({ name: '', type: props.type, url: '', validUrl: true });
+  internalValue.value.push({ name: '', type: props.type, url: '', validUrl: true });
 };
 
 const removeLink = (link) => {
-  linksValue.value.splice(linksValue.value.indexOf(link), 1);
+  internalValue.value.splice(internalValue.value.indexOf(link), 1);
 };
 
 const isValidUrl = (url) => {
@@ -140,8 +143,14 @@ const isValidUrl = (url) => {
 };
 
 const checkLinkValid = (link) => {
-  link.validUrl = isValidUrl(link.url);
+  if (!props.readonly) {
+    link.validUrl = isValidUrl(link.url);
+  }
 };
+
+const readonlyAndEmpty = computed(() => {
+  return props.readonly && internalValue.value.length === 0;
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
@@ -149,24 +158,26 @@ const checkLinkValid = (link) => {
 watch(
   () => props.error,
   () => {
-    for (let i = 0; i < linksValue.value.length; i++) {
-      console.log('checking link');
-      checkLinkValid(linksValue.value[i]);
-    }
+    linksValue.value.forEach((link) => {
+      checkLinkValid(link);
+    });
   }
+);
+
+watch(
+  internalValue,
+  (newValue) => {
+    linksValue.value = newValue;
+  },
+  { deep: true }
 );
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
-if (!linksValue.value) {
-  linksValue.value = [];
-}
-
-for (let i = 0; i < linksValue.value.length; i++) {
-  console.log('set valid');
-  linksValue.value[i].validUrl = true;
-}
+internalValue.value.forEach((link) => {
+  link.validUrl = true;
+});
 </script>
 
 <style scoped></style>
