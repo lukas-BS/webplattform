@@ -101,22 +101,13 @@
             <li v-if="mode === 'review' && content.can_assign && !content.reviewer" class="content-box__action">
               <div style="width: 250px">
                 Reviewer zuweisen:
-                <!-- TODO: Check -->
-                <!-- <v-select
-                  :options="reviewers"
-                  label="username"
-                  :multiple="false"
-                  @input="claimReview(content)"
-                  v-model="content.reviewer_pk"
-                  :reduce="reduceReviewer" /> -->
                 <Multiselect
                   v-model="content.reviewer_pk"
                   class="dll-dropdown"
                   close-on-select
                   searchable
-                  object
-                  :options="reviewers"
-                  @change="claimReview(content)"
+                  :options="mappedReviewers"
+                  @select="claimReview(content)"
                 />
               </div>
             </li>
@@ -165,8 +156,9 @@ import { useContentFilter } from '../composables/contentFilter';
 import { usePagination } from '../composables/pagination';
 
 const { axios } = useAxios();
-const { contents, currentPage, dataUrl, debouncedUpdate, q, queryParams, updateContents } = useContentFilter(axios);
-const { jumpTo, nextPage, pagination, previousPage, updatePagination } = usePagination(updateContents);
+const { contents, currentPage, currentResponse, dataUrl, debouncedUpdate, q, queryParams, updateContents } =
+  useContentFilter();
+const { jumpTo, nextPage, pagination, previousPage } = usePagination(updateContents, currentResponse);
 
 const type = ref('');
 const status = ref('');
@@ -180,53 +172,38 @@ dataUrl.value = window.dllData.retrieveUrl;
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
 const overviewQueryParams = computed(() => {
-  const params = {
+  return {
     status: status.value,
     type: window.dllData.type ?? type.value
   };
+});
 
-  return params;
+const mappedReviewers = computed(() => {
+  return reviewers.value.map((reviewer) => {
+    return {
+      label: reviewer.username,
+      value: reviewer.pk
+    };
+  });
 });
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
-const reduceReviewer = (option) => {
-  return option.pk;
-};
-
 const claimReview = (content) => {
-  let data = {};
-  if (content.reviewer_pk) {
-    data['user'] = content.reviewer_pk;
-  }
+  const data = content.reviewer_pk ? { user: content.reviewer_pk } : {};
+
   axios
     .post(content.assign_reviewer_url, data)
-    .then(async () => {
-      const response = await updateContents(currentPage.value);
-      updatePagination(response);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    .then(() => updateContents(currentPage.value))
+    .catch((err) => console.log(err));
 };
 
-const unassign = (content) => {
+const unassign = (content) =>
   axios
-    .post(content.unassign_reviewer_url, {})
-    .then(async () => {
-      const response = await updateContents(currentPage.value);
-      updatePagination(response);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
-const initAppData = async () => {
-  const initContentResponse = await updateContents();
-  updatePagination(initContentResponse);
-};
+    .post(content.unassign_reviewer_url)
+    .then(() => updateContents(currentPage.value))
+    .catch((err) => console.log(err));
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  watchers
@@ -243,18 +220,24 @@ onBeforeMount(() => {
     throw Error('Retrieve URL is not defined.');
   }
 
-  if (mode.value === 'overview') {
+  const fetchReviewers = () =>
+    axios.get('/api/reviewers').then((res) => {
+      reviewers.value = res.data.results;
+    });
+
+  const fetchInvitations = () =>
     axios.get('/api/meine-einladungen').then((res) => {
       invitationContents.value = res.data.results;
     });
-  }
 
-  axios.get('/api/reviewers').then((res) => {
-    reviewers.value = res.data.results;
-  });
+  if (mode.value === 'overview') {
+    fetchInvitations().finally(fetchReviewers);
+  } else {
+    fetchReviewers();
+  }
 });
 
-initAppData();
+updateContents();
 </script>
 
 <style scoped></style>
