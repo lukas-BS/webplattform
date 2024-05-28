@@ -1,9 +1,9 @@
-import $ from 'jquery'
+import $ from 'jquery';
 
 $(document).scroll(function (e) {
   if ($(document).scrollTop() >= 10) {
-    $('.js-header').addClass('header-border')
+    $('.js-header').addClass('header-border');
   } else {
-    $('.js-header').removeClass('header-border')
+    $('.js-header').removeClass('header-border');
   }
-})
+});

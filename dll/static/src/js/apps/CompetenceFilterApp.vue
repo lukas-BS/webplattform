@@ -14,7 +14,8 @@
             <p class="mb-5 d-lg-none" v-html="windowCom.competenceText" />
           </div>
         </div>
-        <form id="filterForm" :action="dataUrl" class="collapse d-lg-block" method="get">
+
+        <form id="filterForm" :action="dataUrl" class="d-lg-block collapse" method="get">
           <h2>Filtern nach</h2>
 
           <h3 class="form-subhead">Sortierung</h3>
@@ -58,13 +59,13 @@
             </li>
           </ul>
         </form>
-        <div class="text-center">
+        <div class="text-center d-lg-none">
           <button
-            aria-controls="filterForm"
-            aria-expanded="false"
-            class="button button--primary d-lg-none"
+            class="button button--primary"
             data-bs-target="#filterForm"
             data-bs-toggle="collapse"
+            aria-controls="filterForm"
+            aria-expanded="false"
             type="button"
           >
             Filter ausklappen <span class="fas fa-chevron-circle-down" />
@@ -114,7 +115,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 
 import AppPagination from '../components/AppPagination.vue';
 import ContentTeaser from '../components/ContentTeaser.vue';
@@ -179,7 +180,6 @@ watchEffect(() => {
 //  --------------------------------------------------------------------------------------------------------------------
 onMounted(async () => {
   windowWidth.value = window.innerWidth;
-  await nextTick();
   window.addEventListener('resize', onResize);
 });
 

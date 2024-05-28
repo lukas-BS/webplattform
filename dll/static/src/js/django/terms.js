@@ -1,3 +1,3 @@
 window.showDeleteModal = () => {
-    $('.js-deleteModal').modal({backdrop: 'static'});
-}
+  $('.js-deleteModal').modal({ backdrop: 'static' });
+};

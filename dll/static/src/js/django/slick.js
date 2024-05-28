@@ -1,34 +1,32 @@
 import $ from 'jquery';
 
-
 $('.js-slick-wrapper').slick({
-    infinite: true,
-    slidesToShow: 3,
-    slidesToScroll: 3,
-    dots: true,
-    autoplay: true,
-    responsive: [
-        {
-            breakpoint: 1490,
-            settings: {
-                slidesToShow: 2,
-                slidesToScroll: 2,
-            }
-        },
-        {
-            breakpoint: 920,
-            settings: {
-                slidesToShow: 1,
-                slidesToScroll: 1,
-            }
-        }
-    ]
-})
+  autoplay: true,
+  dots: true,
+  infinite: true,
+  responsive: [
+    {
+      breakpoint: 1490,
+      settings: {
+        slidesToScroll: 2,
+        slidesToShow: 2
+      }
+    },
+    {
+      breakpoint: 920,
+      settings: {
+        slidesToScroll: 1,
+        slidesToShow: 1
+      }
+    }
+  ],
+  slidesToScroll: 3,
+  slidesToShow: 3
+});
 $('.js-testimonials').slick({
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    dots: true,
-    autoplay: true,
-})
-
+  autoplay: true,
+  dots: true,
+  infinite: true,
+  slidesToScroll: 1,
+  slidesToShow: 1
+});
