@@ -5,9 +5,10 @@ import { useAxios } from './axios';
 import { useQuery } from './query';
 
 const { updateQueryString } = useQuery();
-const { axios } = useAxios();
 
 export function useContentFilter() {
+  const { axios } = useAxios();
+
   const currentPage = ref(1);
   const dataUrl = ref(null);
   const queryParams = ref({});
@@ -85,6 +86,7 @@ export function useContentFilter() {
   const debouncedUpdate = debounce(updateContents, 500);
 
   return {
+    axios,
     competences,
     contents,
     currentPage,

@@ -5,8 +5,8 @@
         <div>
           <label for="status">Status:</label>
         </div>
-        <select id="status" v-model="status" name="status" @change="updateReviews">
-          <option value="">Alle</option>
+        <select id="status" v-model="status" class="form-control" name="status" @change="updateContents">
+          <option :value="undefined">Alle</option>
           <option value="0">Neu</option>
           <option value="4">Änderungen angefragt</option>
           <option value="2">Akzeptiert</option>
@@ -17,11 +17,11 @@
         <div>
           <label for="contentSearch">Suche:</label>
         </div>
-        <input id="contentSearch" v-model="searchTerm" type="text" name="q" @input="debouncedUpdate" />
+        <input id="contentSearch" v-model="q" class="form-control" type="text" name="q" @keydown="preventEnter" />
       </div>
     </div>
 
-    <div v-for="(review, index) in reviews" :key="index" class="content-box" :class="'content-box--' + review.type">
+    <div v-for="(review, index) in contents" :key="index" class="content-box" :class="'content-box--' + review.type">
       <div class="row">
         <div class="col-sm-3">
           <div class="content-box__type">{{ review.type_verbose }} ({{ review.status_display }})</div>
@@ -93,122 +93,86 @@
 </template>
 
 <script setup>
-import { debounce } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
 import AppPagination from '../components/AppPagination.vue';
-import { useAxios } from '../composables/axios';
+import { useContentFilter } from '../composables/contentFilter';
 import { usePagination } from '../composables/pagination';
+import { usePreventEnter } from '../composables/preventEnter';
 
-const { axios } = useAxios();
+const { axios, contents, currentPage, currentResponse, dataUrl, q, queryParams, updateContents } = useContentFilter();
+const { jumpTo, nextPage, pagination, previousPage } = usePagination(updateContents, currentResponse);
+const { preventEnter } = usePreventEnter();
+
+if (!window.dllData.retrieveUrl) {
+  throw Error('Retrieve URL is not defined.');
+}
+dataUrl.value = window.dllData.retrieveUrl;
 
 const reviews = ref([]);
 const type = ref(null);
-const searchTerm = ref(null);
-const status = ref(null);
-const mode = ref('user');
-const retrieveUrl = ref(null);
-const updateUrl = ref(null);
-// const invitationContents = ref([]);
-// const reviewers = ref([]);
+const status = ref(undefined);
+const mode = ref(window.dllData.mode);
+const updateUrl = ref(window.dllData.updateUrl);
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  computed
 //  --------------------------------------------------------------------------------------------------------------------
-const params = computed(() => {
-  return {
-    q: searchTerm.value,
-    status: status.value,
-    type: type.value
-  };
+const testimonialParams = computed(() => {
+  return { status: status.value, type: type.value };
 });
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const changeComment = (review) => {
-  if (review.change === undefined) {
-    review.change = true;
-    // Vue.set(review, 'change', true);
-  } else {
-    review.change = !review.change;
-    // Vue.set(review, 'change', !review.change);
-  }
+  review.change = !review.change;
 };
 
-const updateReviews = (page) => {
-  axios
-    .get(retrieveUrl.value, { params: { ...params.value, page: Number.isInteger(page) ? page : 1 } })
-    .then((res) => {
-      reviews.value = res.data.results;
-      updatePagination(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
-const sendChange = (url, body) => {
-  body = body || {};
+const sendChange = (url, body = {}) => {
   axios
     .post(url, body)
-    .then(() => {
-      updateReviews();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    .then(() => updateContents())
+    .catch((err) => console.log(err));
 };
 
 const accept = (review) => {
-  const url = `${retrieveUrl.value}${review.pk}/accept/`;
+  const url = `${dataUrl.value}${review.pk}/accept/`;
   sendChange(url);
 };
 
 const decline = (review) => {
-  const url = `${retrieveUrl.value}${review.pk}/decline/`;
+  const url = `${dataUrl.value}${review.pk}/decline/`;
   sendChange(url);
 };
 
 const requestChange = (review) => {
   if (!review.comment) {
     review.commentError = 'Bitte gib einen Kommentar ein.';
-    // Vue.set(review, 'commentError', 'Bitte gib einen Kommentar ein.');
     return;
   }
 
-  const url = `${retrieveUrl.value}${review.pk}/request_changes/`;
-  const body = {
-    comment: review.comment
-  };
-
-  sendChange(url, body);
+  sendChange(`${dataUrl.value}${review.pk}/request_changes/`, { comment: review.comment });
 };
 
-const submitChange = (review) => {
-  const url = `${updateUrl.value}${review.testimonial_pk}/`;
-  const body = {
-    comment: review.testimonial_comment
-  };
+const submitChange = (review) =>
+  axios
+    .patch(`${updateUrl.value}${review.testimonial_pk}/`, {
+      comment: review.testimonial_comment
+    })
+    .then(updateContents);
 
-  axios.patch(url, body).then(() => {
-    updateReviews();
-  });
-};
+//  --------------------------------------------------------------------------------------------------------------------
+//  watchers
+//  --------------------------------------------------------------------------------------------------------------------
+watchEffect(() => {
+  queryParams.value = testimonialParams.value;
+});
 
 //  --------------------------------------------------------------------------------------------------------------------
 //  lifecycle
 //  --------------------------------------------------------------------------------------------------------------------
-if (!window.dllData.retrieveUrl) {
-  throw Error('Retrieve URL is not defined.');
-}
-retrieveUrl.value = window.dllData.retrieveUrl;
-updateUrl.value = window.dllData.updateUrl;
-mode.value = window.dllData.mode;
-
-updateReviews();
-const debouncedUpdate = debounce(updateReviews, 500);
-const { jumpTo, nextPage, pagination, previousPage, updatePagination } = usePagination(updateReviews);
+updateContents();
 </script>
 
 <style scoped></style>
