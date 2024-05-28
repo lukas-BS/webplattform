@@ -200,7 +200,7 @@ export function useSubmission() {
     if (previewImage.value) {
       let formData = new FormData();
       formData.append('image', previewImage.value, previewImage.value.name);
-      axios
+      await axios
         .put('/api/inhalt-bearbeiten/' + data.value.slug + '/vorschau-bild', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'

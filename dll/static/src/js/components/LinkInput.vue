@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import ReviewInput from './ReviewInput.vue';
 
@@ -61,7 +61,7 @@ import ReviewInput from './ReviewInput.vue';
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
 const linkValue = defineModel('linkValue', {
-  default: { url: '', url_name: '', validUrl: true },
+  default: () => {},
   type: Object
 });
 const reviewValue = defineModel('reviewValue', { default: '', type: String });
@@ -112,8 +112,10 @@ const internalValue = ref(linkValue.value);
 //  component logic
 //  --------------------------------------------------------------------------------------------------------------------
 const checkLinkValid = (link) => {
-  link.validUrl = isValidUrl(link.url);
-  incomplete.value = !link.url || !link.url_name;
+  if (!props.readonly) {
+    link.validUrl = isValidUrl(link.url);
+    incomplete.value = !link.url || !link.url_name;
+  }
 };
 
 const isValidUrl = (url) => {
@@ -132,7 +134,14 @@ watch(
   { deep: true }
 );
 
-if (internalValue.value) {
+//  --------------------------------------------------------------------------------------------------------------------
+//  lifecycle
+//  --------------------------------------------------------------------------------------------------------------------
+if (!internalValue.value) {
+  internalValue.value = { url: '', url_name: '', validUrl: true };
+}
+
+if (linkValue.value) {
   internalValue.value = linkValue.value;
   internalValue.value.validUrl = true;
 }

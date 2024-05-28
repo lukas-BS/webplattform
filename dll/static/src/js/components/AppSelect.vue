@@ -41,13 +41,13 @@ import ReviewInput from './ReviewInput.vue';
 //  --------------------------------------------------------------------------------------------------------------------
 //  models + props
 //  --------------------------------------------------------------------------------------------------------------------
-const selectValue = defineModel('inputValue', { default: '', type: [String, Number] });
+const selectValue = defineModel('inputValue', { default: '', type: [String, Number, Boolean] });
 const reviewValue = defineModel('reviewValue', { default: '', type: String });
 
 const props = defineProps({
   defaultVal: {
     default: '',
-    type: [String, Number]
+    type: [String, Number, Boolean]
   },
   error: {
     default: false,
